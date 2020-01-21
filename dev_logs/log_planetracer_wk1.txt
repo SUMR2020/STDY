@@ -1,0 +1,4 @@
+January 21st, 2020: 11:35am to 3:30pm
+- getting everyone used to git and downloading necessary programs
+- creating tasks on trello (updating the agile board)
+- research into design patterns
