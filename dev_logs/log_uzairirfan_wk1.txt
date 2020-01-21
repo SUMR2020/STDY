@@ -1,0 +1,1 @@
+Started the dev log and getting used to git. Using this meeting to assign tasks and ensure everyone has android studio and anything else needed to start project.
