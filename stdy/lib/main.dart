@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'GradesMain.dart';
 
 void main() => runApp(MyApp());
 
@@ -7,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'STDY',
+      title: 'test',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -18,9 +19,9 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.pink,
+        primarySwatch: Colors.cyan,
       ),
-      home: MyHomePage(title: 'STDY'),
+      home: MyHomePage(title: 'test'),
     );
   }
 }
@@ -45,6 +46,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  Widget _screen;
 
   void _incrementCounter() {
     setState(() {
@@ -57,8 +59,32 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  GradesMain _gradeP;
+  MyAppState(){
+    _gradeP = new GradesMain(onSubmit: (){onSubmit();});
+    _screen = _gradeP;
+    print("etest");
+
+  }
+
+  void onSubmit(){
+    print("opened grades page");
+  }
+  void _goGradesPage(){
+    print("grades clicked");
+  }
+
+  void _setAuthenticated(bool auth){
+    setState(){
+      if(auth==false){
+
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -66,13 +92,22 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
+      appBar: new AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         centerTitle: true,
+        actions: <Widget>[
+          new IconButton(icon: new Icon(Icons.home), onPressed: (){_goGradesPage();}),
+          new IconButton(icon: new Icon(Icons.exit_to_app), onPressed: null)
+        ]
+
       ),
-      body: Center(
+      body: new GradesMain(onSubmit: null),
+      /*
+        body:
+
+      Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -107,6 +142,8 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    */
+
     );
   }
 }
