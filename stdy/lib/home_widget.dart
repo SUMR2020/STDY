@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:study/progress_page.dart';
 import 'placeholder_widget.dart';
 import 'grades_page.dart';
 import 'schedule_page.dart';
@@ -15,7 +16,7 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     SchedulePage(),
-    PlaceholderWidget(Colors.deepOrange), // put progress widget here (minna)
+    progressPage(), // put progress widget here (minna)
     GradesPage() // put grademain widget here(sharjeel)
   ];
   Widget build(BuildContext context) {
