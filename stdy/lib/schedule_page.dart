@@ -21,7 +21,7 @@ class SchedulePage extends StatelessWidget {
   Widget build(BuildContext context){
     return new Column(
       children: <Widget>[
-        new TextField(controller: _grade, decoration: new InputDecoration(hintText: "0-100%"), ),
+        new TextField(controller: _grade, decoration: new InputDecoration(hintText: "Schedule"), ),
       ],
     );
 
