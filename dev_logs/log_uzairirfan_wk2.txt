@@ -1,0 +1,1 @@
+Integrated firebase and google sign in to the login screen. Spent a very long time doing this, took about 4.5 hours to get this working through trial and error.
