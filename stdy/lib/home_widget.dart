@@ -28,15 +28,15 @@ class _HomeState extends State<Home> {
         currentIndex: _currentIndex,
         items: [
           new BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.calendar_today),
             title: Text('Schedule'),
           ),
           new BottomNavigationBarItem(
-            icon: Icon(Icons.mail),
+            icon: Icon(Icons.pie_chart),
             title: Text('Progress'),
           ),
           new BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.add),
               title: Text('Grade Calculator')
           )
         ],
