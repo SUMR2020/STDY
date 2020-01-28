@@ -5,14 +5,14 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('First Screen'),
+        title: Text('STDY'),
       ),
       body: Center(
         child: RaisedButton(
-          child: Text('Launch screen'),
+          child: Text('Login'),
           onPressed: () {
             // Navigate to the second screen when tapped.
-            Navigator.pushNamed(context, '/second');
+            Navigator.pushReplacementNamed(context, '/second');
           },
         ),
       ),
