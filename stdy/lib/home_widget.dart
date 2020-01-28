@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'placeholder_widget.dart';
+import 'grades_page.dart';
 
 
 class Home extends StatefulWidget {
@@ -15,7 +16,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     PlaceholderWidget(Colors.white),
     PlaceholderWidget(Colors.deepOrange), // put progress widget here (minna)
-    PlaceholderWidget(Colors.deepOrange) // put grademain widget here(sharjeel)
+    GradesPage() // put grademain widget here(sharjeel)
   ];
   Widget build(BuildContext context) {
     return Scaffold(
