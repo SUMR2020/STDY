@@ -2,3 +2,7 @@ January 21st, 2020: 11:35am to 3:30pm
 - getting everyone used to git and downloading necessary programs
 - creating tasks on trello (updating the agile board)
 - created android studio project
+
+January 24th, 2020: 6pm to 8pm
+- creating a simple navigation bar to traverse different pages
+
