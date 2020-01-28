@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'placeholder_widget.dart';
 import 'grades_page.dart';
-
+import 'schedule_page.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class _HomeState extends State<Home> {
   @override
   int _currentIndex = 0;
   final List<Widget> _children = [
-    PlaceholderWidget(Colors.white),
+    SchedulePage(),
     PlaceholderWidget(Colors.deepOrange), // put progress widget here (minna)
     GradesPage() // put grademain widget here(sharjeel)
   ];
