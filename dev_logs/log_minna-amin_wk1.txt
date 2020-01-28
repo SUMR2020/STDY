@@ -1,1 +1,1 @@
-hallo making changes to test git
+January 28 2019: worked on progress page and text styling
