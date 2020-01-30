@@ -1,1 +1,5 @@
-Worked 2.5 hours during tuesday meeting session.
+1. Jan 21 (Tues) 11:30-2:00 (2.5 hours)
+   a. Worked with group to get android studio and flutter set up for programming later on.m 
+
+1. Jan 21 (Tues) UNKOWN (2 hours)
+   a. Implemented a single test page which consists of one textfield for grade input. 
