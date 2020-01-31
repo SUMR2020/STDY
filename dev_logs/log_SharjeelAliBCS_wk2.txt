@@ -1,0 +1,5 @@
+1. Jan 28 (Tues) 11:00-12:00 (1 hour)
+   a. Worked with group to implement grades page changes with sign in and navigation bar. 
+1. Jan 28 (Tues) 13:00-14:30 (1.5 hours)
+   a. Worked with group, adding scrolling to grades page as well as a button for calculating the grade and a button for creating new textfields (for the other grades)
+
