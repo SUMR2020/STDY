@@ -1,0 +1,10 @@
+January 28th, 2020: 11:35am to 3:00pm
+- created schedule_page and worked on understanding dart and flutter's google api auth packages
+- tried different methods to get user authorization but was not successful
+
+January 28th, 2020: 6pm to 8pm
+- fixed errors with github repository
+- tried to use firebase_auth to get authentication headers from user
+
+February 1st, 2020: 4:30pm to 
+- 
