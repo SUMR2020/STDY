@@ -7,4 +7,3 @@ January 28th, 2020: 6pm to 8pm
 - tried to use firebase_auth to get authentication headers from user
 
 February 1st, 2020: 4:30pm to 
-- 
