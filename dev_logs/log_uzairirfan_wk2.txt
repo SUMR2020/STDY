@@ -1,1 +1,3 @@
 Integrated firebase and google sign in to the login screen. Spent a very long time doing this, took about 4.5 hours to get this working through trial and error.
+
+Assisted RC with trying to get google calendar api integrated and working, spent about 2 hours with that.
