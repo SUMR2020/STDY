@@ -6,4 +6,5 @@ January 28th, 2020: 6pm to 8pm
 - fixed errors with github repository
 - tried to use firebase_auth to get authentication headers from user
 
-February 1st, 2020: 4:30pm to 
+February 1st, 2020: 4:30pm to 7pm
+- got google calendar api to work and show me current events on a users calendar
