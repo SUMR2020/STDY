@@ -1,5 +1,9 @@
 1. Jan 28 (Tues) 11:00-12:00 (1 hour)
    a. Worked with group to implement grades page changes with sign in and navigation bar. 
-1. Jan 28 (Tues) 13:00-14:30 (1.5 hours)
+2. Jan 28 (Tues) 13:00-14:30 (1.5 hours)
    a. Worked with group, adding scrolling to grades page as well as a button for calculating the grade and a button for creating new textfields (for the other grades)
+3. Feb 2 (Sun) 12:00-16:00 (4 hours)
+   a. Updated grades page to show a row container per grade entered. This is used to show the three variables used per assignment (grade, total, weight). 
+   b. Added an algorithim to calculate the grades based on the three variables defined above and to display the grade on the screen using a setState() function. 
+
 
