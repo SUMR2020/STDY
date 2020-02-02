@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  table_calendar: ^2.2.2
   googleapis: ^0.54.0
   googleapis_auth: any
   firebase_auth: ^0.15.4

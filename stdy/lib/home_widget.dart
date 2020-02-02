@@ -10,12 +10,39 @@ import "package:googleapis_auth/auth_io.dart" as auth;
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:google_sign_in/google_sign_in.dart';
 
+DateTime start = new DateTime.now().subtract(new Duration(days: 10));
+DateTime end = new DateTime.now().add(new Duration(days: 10));
+
 
 final GoogleSignIn _googleSignIn =
 new GoogleSignIn(scopes: [calendar.CalendarApi.CalendarScope]);
 
 final scopes = [calendar.CalendarApi.CalendarScope];
 
+Future<calendar.CalendarApi> gettingCalendar() async {
+  final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+
+  final GoogleSignInAuthentication googleAuth =
+  await googleUser.authentication;
+
+  auth.AccessToken token = auth.AccessToken("Bearer", googleAuth.accessToken,
+      DateTime.now().add(Duration(days: 1)).toUtc());
+  auth.AccessCredentials(token, googleUser.id, scopes);
+  http.BaseClient _client = http.Client();
+  auth.AuthClient _authClient = auth.authenticatedClient(
+      _client, auth.AccessCredentials(token, googleUser.id, scopes));
+  calendar.CalendarApi calendarApi;
+  calendarApi = new calendar.CalendarApi(_authClient);
+  var calEvents = calendarApi.events.list("primary", timeMin: start.toUtc(), timeMax: end.toUtc(), orderBy: 'startTime', singleEvents: true);
+  calEvents.then((_events) {
+    _events.items.forEach((_event) {
+      print(_event.summary);
+      print(_event.start.dateTime);
+      //SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+    });
+  });
+  return calendarApi;
+}
 
 class Home extends StatefulWidget {
   @override
@@ -24,8 +51,6 @@ class Home extends StatefulWidget {
   }
 }
 
-calendar.CalendarApi calendarApi;
-
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
@@ -33,32 +58,11 @@ class _HomeState extends State<Home> {
     progressPage(), // put progress widget here (minna)
     GradesPage() // put grademain widget here(sharjeel)
   ];
-  //calendar.CalendarApi calendarApi;
-  _testSignInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-
-    final GoogleSignInAuthentication googleAuth =
-    await googleUser.authentication;
-
-    auth.AccessToken token = auth.AccessToken("Bearer", googleAuth.accessToken,
-        DateTime.now().add(Duration(days: 1)).toUtc());
-    auth.AccessCredentials(token, googleUser.id, scopes);
-    http.BaseClient _client = http.Client();
-    auth.AuthClient _authClient = auth.authenticatedClient(
-        _client, auth.AccessCredentials(token, googleUser.id, scopes));
-    calendarApi = new calendar.CalendarApi(_authClient);
-    var calEvents = calendarApi.events.list("primary");
-    calEvents.then((_events) {
-      _events.items.forEach((_event) {
-        print(_event.summary);
-      });
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    _testSignInWithGoogle();
+    //_testSignInWithGoogle();
   }
   Widget build(BuildContext context) {
     return Scaffold(
