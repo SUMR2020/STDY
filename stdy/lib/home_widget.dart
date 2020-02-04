@@ -14,6 +14,7 @@ DateTime start = new DateTime.now().subtract(new Duration(days: 10));
 DateTime end = new DateTime.now().add(new Duration(days: 10));
 
 
+
 final GoogleSignIn _googleSignIn =
 new GoogleSignIn(scopes: [calendar.CalendarApi.CalendarScope]);
 
@@ -34,12 +35,10 @@ Future<calendar.CalendarApi> gettingCalendar() async {
   calendar.CalendarApi calendarApi;
   calendarApi = new calendar.CalendarApi(_authClient);
   var calEvents = calendarApi.events.list("primary", timeMin: start.toUtc(), timeMax: end.toUtc(), orderBy: 'startTime', singleEvents: true);
-  calEvents.then((_events) {
-    _events.items.forEach((_event) {
-      print(_event.summary);
-      print(_event.start.dateTime);
-      //SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-    });
+  var _events = await calEvents;
+  _events.items.forEach((_event) {
+    print(_event.summary);
+    print(_event.start.dateTime.day.toString() +" "+ _event.start.dateTime.month.toString() + " " + _event.start.dateTime.year.toString());
   });
   return calendarApi;
 }
