@@ -1,0 +1,4 @@
+February 3rd: changes it from statelss widget to staetful
+made a static button
+
+february 4th: worked with group to merge branches and fix conflict issues
