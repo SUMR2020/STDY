@@ -1,0 +1,3 @@
+January 28th, 2020: 11:35am to 4:00pm
+- Parsing the google calendar results into a map to be used by a calendar wiget
+- worked on getting a widget for the calendar working
