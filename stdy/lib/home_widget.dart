@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:study/progress_page.dart';
-import 'grades_page.dart';
+import 'grades_year_page.dart';
 import 'schedule_page.dart';
 import 'dart:async';
-
 
 import "package:http/http.dart" as http;
 import "package:googleapis_auth/auth_io.dart" as auth;
@@ -31,7 +30,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     SchedulePage(),
     progressPage(), // put progress widget here (minna)
-    GradesPage() // put grademain widget here(sharjeel)
+    GradesYearPage() // put grademain widget here(sharjeel)
   ];
   //calendar.CalendarApi calendarApi;
   _testSignInWithGoogle() async {
