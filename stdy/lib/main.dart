@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:study/settings_page.dart';
 import 'home_widget.dart';
 import 'login_page.dart';
 
@@ -8,15 +9,22 @@ Color stdyPink = Color(0xFFFDA3A4);
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: stdyPink,
-        accentColor: stdyPink,
-        buttonColor: stdyPink
-      ),
+//      theme: ThemeData(
+//        brightness: Brightness.light,
+//        primaryColor: stdyPink,
+//        accentColor: stdyPink,
+//        buttonColor: stdyPink
+//      ),
+//      darkTheme: ThemeData(
+//          brightness: Brightness.dark,
+//          primaryColor: stdyPink,
+//          accentColor: stdyPink,
+//          buttonColor: stdyPink
+//      ),
       title: 'STDY',
       initialRoute: '/',
       routes: {

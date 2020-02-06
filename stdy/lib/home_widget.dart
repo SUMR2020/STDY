@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:study/progress_page.dart';
 import 'grades_page.dart';
 import 'schedule_page.dart';
+import 'settings_page.dart';
 import 'dart:async';
 
 
@@ -55,7 +56,8 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     SchedulePage(),
     progressPage(), // put progress widget here (minna)
-    GradesPage() // put grademain widget here(sharjeel)
+    GradesPage(), // put grademain widget here(sharjeel)
+    SettingsScreen()
   ];
 
   @override
@@ -84,6 +86,10 @@ class _HomeState extends State<Home> {
           new BottomNavigationBarItem(
               icon: Icon(Icons.add),
               title: Text('Grade Calculator')
+          ),
+          new BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              title: Text('Settings')
           )
         ],
       ),
