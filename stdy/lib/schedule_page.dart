@@ -10,12 +10,13 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'main.dart';
 
-bool created = false;
 bool initial = false;
 
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
 Map<DateTime, List> eventCal = {};
+
+Future <bool> _OnStartup;
 
 Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
   if (initial == true) {
@@ -59,8 +60,9 @@ class SchedulePage extends StatefulWidget {
   SchedulePage({Key key, @required this.onSubmit}) : super(key: key);
 
   final VoidCallback onSubmit;
-
   static final TextEditingController _grade = new TextEditingController();
+
+
 
   String get grade => _grade.text;
 
@@ -81,6 +83,11 @@ class SchedulePage extends StatefulWidget {
 
 class _MyHomePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
+
+  _MyHomePageState(){
+    _OnStartup = loadEvents();
+  }
+
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
   String _currentMonth = DateFormat.yMMM().format(DateTime.now());
@@ -101,7 +108,10 @@ class _MyHomePageState extends State<SchedulePage>
   Future<bool> loadEvents() async {
     events = await gettingCalendar();
     eventCal = await getEvents(events);
-    for (var date in eventCal.keys) {
+    var dates = eventCal.keys;
+    var date;
+    for (int i = 0; i < dates.length; i++) {
+      date = dates.elementAt(i);
       for (var i = 0; i < eventCal[date].length; i++) {
         Event x = new Event(
           date: date,
@@ -109,18 +119,19 @@ class _MyHomePageState extends State<SchedulePage>
           icon: _eventIcon,
         );
         if (!contains(x)) {
-          _markedDateMap.add(
-              date,
-              new Event(
-                date: date,
-                title: eventCal[date][i],
-                icon: _eventIcon,
-              ));
+        _markedDateMap.add(
+            date,
+            new Event(
+              date: date,
+              title: eventCal[date][i],
+              icon: _eventIcon,
+            ));
         }
       }
+    }
       return (true);
     }
-  }
+
 
   static Widget _eventIcon = new Container(
     decoration: new BoxDecoration(
@@ -244,18 +255,15 @@ class _MyHomePageState extends State<SchedulePage>
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder(
-                  future: loadEvents(),
+                  future: _OnStartup,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
-                      created = true;
                       createCalendar();
                       return _calendarCarouselNoHeader;
-                    } else {
-                      if (created) {
-                        return _calendarCarouselNoHeader;
-                      } else {
-                        return CircularProgressIndicator();
-                      }
+                    }  else {
+                        return CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(stdyPink),
+                        );
                     }
                   })
               //_calendarCarouselNoHeader,
