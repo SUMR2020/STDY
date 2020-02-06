@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:study/main.dart';
 import 'package:study/progress_page.dart';
 import 'grades_year_page.dart';
 import 'schedule_page.dart';
+import 'settings_page.dart';
 import 'dart:async';
 
 import "package:http/http.dart" as http;
@@ -54,7 +56,8 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     SchedulePage(),
     progressPage(), // put progress widget here (minna)
-    GradesYearPage() // put grademain widget here(sharjeel)
+    GradesYearPage(),
+    SettingsScreen()// put grademain widget here(sharjeel)
   ];
 
   @override
@@ -71,6 +74,8 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,
+        selectedItemColor: stdyPink,
+        unselectedItemColor: stdyPink,
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
@@ -83,6 +88,10 @@ class _HomeState extends State<Home> {
           new BottomNavigationBarItem(
               icon: Icon(Icons.add),
               title: Text('Grade Calculator')
+          ),
+          new BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              title: Text('Settings')
           )
         ],
       ),
