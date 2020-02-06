@@ -10,8 +10,6 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'main.dart';
 
-bool initial = false;
-
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
 Map<DateTime, List> eventCal = {};
@@ -19,20 +17,14 @@ Map<DateTime, List> eventCal = {};
 Future <bool> _OnStartup;
 
 Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
-  if (initial == true) {
-    print("in init");
-    start = new DateTime.now().subtract(new Duration(days: 2));
-    end = new DateTime.now().add(new Duration(days: 2));
-  }
+
   var calEvents = events.events.list("primary",
       timeMin: start.toUtc(),
       timeMax: end.toUtc(),
       orderBy: 'startTime',
       singleEvents: true);
   var _events = await calEvents;
-  if (initial == false) {
-    initial = true;
-  }
+
   _events.items.forEach((_event) {
     DateTime eventTime = DateTime(_event.start.dateTime.year,
         _event.start.dateTime.month, _event.start.dateTime.day);
