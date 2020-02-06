@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:study/main.dart';
 import 'package:study/progress_page.dart';
 import 'grades_page.dart';
 import 'schedule_page.dart';
@@ -74,6 +75,8 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,
+        selectedItemColor: stdyPink,
+        unselectedItemColor: stdyPink,
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),

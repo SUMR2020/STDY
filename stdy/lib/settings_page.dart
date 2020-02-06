@@ -10,32 +10,25 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ThemeChanger>(
-      create: (_) => ThemeChanger(ThemeData.dark()),
-      child: new MaterialAppWithTheme(),
-    );
-  }
-}
-
-class MaterialAppWithTheme extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Provider.of<ThemeChanger>(context);
     ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
-    return MaterialApp(
-      theme: theme.getTheme(),
-      body: Center(
+    return Scaffold(
+      body: Container(
         child: Column(
           children: <Widget>[
             FlatButton(
-                child: Text('Dark Theme'),
-                onPressed: () => _themeChanger.setTheme(ThemeData.dark())),
+                child: Text('Light Mode'),
+                onPressed: () => _themeChanger.setTheme(themeStyleData[ThemeStyle.Light])),
             FlatButton(
-                child: Text('Light Theme'),
-                onPressed: () => _themeChanger.setTheme(ThemeData.light())),
+                child: Text('Dark Mode'),
+                onPressed: () => _themeChanger.setTheme(themeStyleData[ThemeStyle.Dark])),
+            FlatButton(
+                child: Text('Dark Mode (OLED)'),
+                onPressed: () => _themeChanger.setTheme(themeStyleData[ThemeStyle.DarkOLED])),
           ],
         ),
       ),
     );
   }
 }
+
+

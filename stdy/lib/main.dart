@@ -1,30 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:study/settings_page.dart';
 import 'home_widget.dart';
 import 'login_page.dart';
+import 'package:provider/provider.dart';
+import 'bloc/theme.dart';
+import 'package:flutter/services.dart';
 
-
-void main() => runApp(MyApp());
 Color stdyPink = Color(0xFFFDA3A4);
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
+    runApp(MyApp());
+  });
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider<ThemeChanger>(
+      create: (_) => ThemeChanger(themeStyleData[ThemeStyle.Dark]),
+      child: new MaterialAppWithTheme(),
+    );
+  }
+}
+
+class MaterialAppWithTheme extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
+
     return MaterialApp(
-//      theme: ThemeData(
-//        brightness: Brightness.light,
-//        primaryColor: stdyPink,
-//        accentColor: stdyPink,
-//        buttonColor: stdyPink
-//      ),
-//      darkTheme: ThemeData(
-//          brightness: Brightness.dark,
-//          primaryColor: stdyPink,
-//          accentColor: stdyPink,
-//          buttonColor: stdyPink
-//      ),
+      theme: theme.getTheme(),
       title: 'STDY',
       initialRoute: '/',
       routes: {
