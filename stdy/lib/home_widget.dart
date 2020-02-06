@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:study/main.dart';
 import 'package:study/progress_page.dart';
-import 'grades_page.dart';
+import 'grades_year_page.dart';
 import 'schedule_page.dart';
 import 'settings_page.dart';
 import 'dart:async';
-
 
 import "package:http/http.dart" as http;
 import "package:googleapis_auth/auth_io.dart" as auth;
@@ -57,8 +56,8 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     SchedulePage(),
     progressPage(), // put progress widget here (minna)
-    GradesPage(), // put grademain widget here(sharjeel)
-    SettingsScreen()
+    GradesYearPage(),
+    SettingsScreen()// put grademain widget here(sharjeel)
   ];
 
   @override
