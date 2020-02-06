@@ -10,35 +10,48 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'main.dart';
 
+bool created = false;
+bool initial = false;
+
+DateTime start = new DateTime.now().subtract(new Duration(days: 30));
+DateTime end = new DateTime.now().add(new Duration(days: 30));
+Map<DateTime, List> eventCal = {};
+
 Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
-  final Map<DateTime, List> eventCal = {};
+  if (initial == true) {
+    print("in init");
+    start = new DateTime.now().subtract(new Duration(days: 2));
+    end = new DateTime.now().add(new Duration(days: 2));
+  }
   var calEvents = events.events.list("primary",
       timeMin: start.toUtc(),
       timeMax: end.toUtc(),
       orderBy: 'startTime',
       singleEvents: true);
   var _events = await calEvents;
+  if (initial == false) {
+    initial = true;
+  }
   _events.items.forEach((_event) {
-    DateTime eventTime = DateTime(
-        _event.start.dateTime.year,
-        _event.start.dateTime.month,
-        _event.start.dateTime.day);
+    DateTime eventTime = DateTime(_event.start.dateTime.year,
+        _event.start.dateTime.month, _event.start.dateTime.day);
     if (eventCal.containsKey(eventTime)) {
       List<String> DayEvents = (eventCal[DateTime(
-          _event.start.dateTime.year,
-          _event.start.dateTime.month,
-          _event.start.dateTime.day,
-          )]);
-      DayEvents.add(_event.summary);
-      eventCal[eventTime] = DayEvents;
-      // eventCal[DateTime(_event.start.dateTime.year, _event.start.dateTime.month, _event.start.dateTime.day, _event.start.dateTime.hour, _event.start.dateTime.minute, _event.start.dateTime.second)] = DayEvents.add(_event.summary);
-
-      //   eventCal.update(eventTime, (value) => (DayEvents.add(_event.summary)));
+        _event.start.dateTime.year,
+        _event.start.dateTime.month,
+        _event.start.dateTime.day,
+      )]);
+      if ((DayEvents.contains(_event.summary)) == false) {
+        DayEvents.add(_event.summary);
+        print("Added: " + _event.summary);
+        eventCal[eventTime] = DayEvents;
+      }
     } else {
       List<String> DayEvents = [_event.summary];
       eventCal[(eventTime)] = DayEvents;
     }
   });
+
   return eventCal;
 }
 
@@ -66,7 +79,8 @@ class SchedulePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MyHomePageState extends State<SchedulePage> {
+class _MyHomePageState extends State<SchedulePage>
+    with TickerProviderStateMixin {
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
   String _currentMonth = DateFormat.yMMM().format(DateTime.now());
@@ -74,30 +88,37 @@ class _MyHomePageState extends State<SchedulePage> {
   Map<DateTime, List> eventCal;
   calendar.CalendarApi events;
 
-  loadEvents() async {
-    var eventlist = await gettingCalendar();
-    events = eventlist;
-    eventCal = await getEvents(events);
-    print("Before eventCal");
-    _markedDateMap.add(
-        new DateTime(2019, 2, 10),
-        new Event(
-          date: new DateTime(2019, 2, 10),
-          title: 'Event 4',
-          icon: _eventIcon,
-        ));
-    eventCal.forEach((k, v) => print(k));
-    for (var date in eventCal.keys) {
-     for (var i = 0; i < eventCal[date].length; i++) {
-        print("add " + eventCal[date][i]);
-        _markedDateMap.add(
-            date,
-            new Event(
-              date: date,
-              title: eventCal[date][i],
-              icon: _eventIcon,
-            ));
+  bool contains(Event i) {
+    List events = _markedDateMap.getEvents(i.date);
+    for (Event e in events) {
+      if (e == i) {
+        return true;
       }
+    }
+    return false;
+  }
+
+  Future<bool> loadEvents() async {
+    events = await gettingCalendar();
+    eventCal = await getEvents(events);
+    for (var date in eventCal.keys) {
+      for (var i = 0; i < eventCal[date].length; i++) {
+        Event x = new Event(
+          date: date,
+          title: eventCal[date][i],
+          icon: _eventIcon,
+        );
+        if (!contains(x)) {
+          _markedDateMap.add(
+              date,
+              new Event(
+                date: date,
+                title: eventCal[date][i],
+                icon: _eventIcon,
+              ));
+        }
+      }
+      return (true);
     }
   }
 
@@ -118,15 +139,6 @@ class _MyHomePageState extends State<SchedulePage> {
 
   @override
   void initState() {
-    /// Add more events to _markedDateMap EventList
-    // eventCal.forEach((k,v)
-//    loadEvents();
-//    print ("before adding");
-//    for (var date in eventCal.keys) {
-//      for (var i = 0; i < eventCal[date].length; i++) {
-//        _markedDateMap.add(date, eventCal[date][i]);
-//      }
-//    }
     super.initState();
   }
 
@@ -136,11 +148,15 @@ class _MyHomePageState extends State<SchedulePage> {
       selectedDayBorderColor: stdyPink,
       todayBorderColor: stdyPink,
       onDayPressed: (DateTime date, List<Event> events) {
-        this.setState(() => _currentDate2 = date);
-        events.forEach((event) => print(event.title));
+        if (date != _currentDate2) {
+          print("pressed");
+          this.setState(() => _currentDate2 = date);
+          events.forEach((event) => print(event.title));
+        }
       },
+
       daysHaveCircularBorder: true,
-      showOnlyCurrentMonthDate: false,
+      showOnlyCurrentMonthDate: true,
       weekendTextStyle: TextStyle(
         color: Colors.white,
       ),
@@ -188,79 +204,12 @@ class _MyHomePageState extends State<SchedulePage> {
       onDayLongPressed: (DateTime date) {
         print('long pressed date $date');
       },
-      staticSixWeekFormat: true,
+      // staticSixWeekFormat: true,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    /// Example Calendar Carousel without header and custom prev & next button
-    print(_markedDateMap);
-    //   loadEvents().then((response){
-//      _calendarCarouselNoHeader = CalendarCarousel<Event>(
-//        selectedDayButtonColor: stdyPink,
-//        selectedDayBorderColor: stdyPink,
-//        todayBorderColor: stdyPink,
-//        onDayPressed: (DateTime date, List<Event> events) {
-//          this.setState(() => _currentDate2 = date);
-//          events.forEach((event) => print(event.title));
-//        },
-//        daysHaveCircularBorder: true,
-//        showOnlyCurrentMonthDate: false,
-//        weekendTextStyle: TextStyle(
-//          color: Colors.white,
-//        ),
-//        thisMonthDayBorderColor: Colors.grey,
-//
-//        weekFormat: false,
-//        markedDatesMap: _markedDateMap,
-//        height: 420.0,
-//        selectedDateTime: _currentDate2,
-//        targetDateTime: _targetDateTime,
-//        customGridViewPhysics: NeverScrollableScrollPhysics(),
-//        markedDateCustomShapeBorder: CircleBorder(
-//            side: BorderSide(color: stdyPink)
-//        ),
-//        markedDateCustomTextStyle: TextStyle(
-//          fontSize: 18,
-//          color: stdyPink,
-//        ),
-//        showHeader: false,
-//
-//
-//        weekdayTextStyle: TextStyle(
-//          color: Colors.white,
-//        ),
-//        todayTextStyle: TextStyle(
-//          color: Colors.white,
-//        ),
-//        todayButtonColor: Colors.grey,
-//        selectedDayTextStyle: TextStyle(
-//          color: Colors.white,
-//
-//        ),
-//        minSelectedDate: _currentDate.subtract(Duration(days: 360)),
-//        maxSelectedDate: _currentDate.add(Duration(days: 360)),
-//        prevDaysTextStyle: TextStyle(
-//          fontSize: 16,
-//          color: stdyPink,
-//        ),
-//        inactiveDaysTextStyle: TextStyle(
-//          color: Colors.white,
-//          fontSize: 16,
-//        ),
-//        onCalendarChanged: (DateTime date) {
-//          this.setState(() {
-//            _targetDateTime = date;
-//            _currentMonth = DateFormat.yMMM().format(_targetDateTime);
-//          });
-//        },
-//        onDayLongPressed: (DateTime date) {
-//          print('long pressed date $date');
-//        },
-//      );
-    //  });
-    print(_markedDateMap);
     return new Scaffold(
         body: SingleChildScrollView(
       child: Column(
@@ -288,26 +237,7 @@ class _MyHomePageState extends State<SchedulePage> {
                     fontSize: 24.0,
                   ),
                 )),
-//                FlatButton(
-//                  child: Text('PREV'),
-//                  onPressed: () {
-//                    setState(() {
-//                      _targetDateTime = DateTime(
-//                          _targetDateTime.year, _targetDateTime.month - 1);
-//                      _currentMonth = DateFormat.yMMM().format(_targetDateTime);
-//                    });
-//                  },
-//                ),
-//                FlatButton(
-//                  child: Text('NEXT'),
-//                  onPressed: () {
-//                    setState(() {
-//                      _targetDateTime = DateTime(
-//                          _targetDateTime.year, _targetDateTime.month + 1);
-//                      _currentMonth = DateFormat.yMMM().format(_targetDateTime);
-//                    });
-//                  },
-//                )
+//
               ],
             ),
           ),
@@ -316,12 +246,16 @@ class _MyHomePageState extends State<SchedulePage> {
               child: FutureBuilder(
                   future: loadEvents(),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      created = true;
                       createCalendar();
-                      print (_calendarCarouselNoHeader.markedDatesMap.getEvents(_currentDate));
                       return _calendarCarouselNoHeader;
                     } else {
-                      return new CircularProgressIndicator();
+                      if (created) {
+                        return _calendarCarouselNoHeader;
+                      } else {
+                        return CircularProgressIndicator();
+                      }
                     }
                   })
               //_calendarCarouselNoHeader,
