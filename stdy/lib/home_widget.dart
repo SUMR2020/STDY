@@ -11,11 +11,6 @@ import "package:googleapis_auth/auth_io.dart" as auth;
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:google_sign_in/google_sign_in.dart';
 
-DateTime start = new DateTime.now().subtract(new Duration(days: 10));
-DateTime end = new DateTime.now().add(new Duration(days: 10));
-
-
-
 final GoogleSignIn _googleSignIn =
 new GoogleSignIn(scopes: [calendar.CalendarApi.CalendarScope]);
 
@@ -35,12 +30,6 @@ Future<calendar.CalendarApi> gettingCalendar() async {
       _client, auth.AccessCredentials(token, googleUser.id, scopes));
   calendar.CalendarApi calendarApi;
   calendarApi = new calendar.CalendarApi(_authClient);
-  var calEvents = calendarApi.events.list("primary", timeMin: start.toUtc(), timeMax: end.toUtc(), orderBy: 'startTime', singleEvents: true);
-  var _events = await calEvents;
-  _events.items.forEach((_event) {
-    print(_event.summary);
-    print(_event.start.dateTime.day.toString() +" "+ _event.start.dateTime.month.toString() + " " + _event.start.dateTime.year.toString());
-  });
   return calendarApi;
 }
 
