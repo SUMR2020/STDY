@@ -1,2 +1,2 @@
-
+January 27th created progress widget
 January 28 2019: worked on progress page and text styling
