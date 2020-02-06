@@ -25,28 +25,24 @@ class GradeData {
   }
 
 
-  void addData() async {
+  void addData(String course, int year) async {
+
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     bool exists=true;
 
-    print("went into addData");
-
     await db.collection("users").document(uid).get().then((DocumentSnapshot data) {
       exists = data.exists;
-      print("it exists db is $exists");
 
     });
 
-    print("it exists is $exists");
-
     if(exists){
-      await db.collection("users").document(uid).collection("Grades").document("ENGL1500").setData({"id": "COMP3004", "year": 2020, "grade": -1});
-
+      await db.collection("users").document(uid).collection("Grades").document(course).setData({"id": course, "year": year, "grade": -1});
     }
+
     else{
       await db.collection("users").document(uid).setData({"gpa": -1});
-      await db.collection("users").document(uid).collection("Grades").document("ENGL1500").setData({"id": "COMP3004","year": 2020, "grade": -1});
+      await db.collection("users").document(uid).collection("Grades").document(course).setData({"id": course,"year": year, "grade": -1});
 
     }
 
@@ -54,17 +50,56 @@ class GradeData {
 
   }
 
-  void getCourses() async {
+  Future <List<DocumentSnapshot>> getCourseNames() async {
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     print("test");
     final QuerySnapshot result =
     await db.collection('users').document(uid).collection("Grades").getDocuments();
     final List<DocumentSnapshot> documents = result.documents;
-    documents.forEach((data) => print(data.documentID));
+
+    //documents.forEach((data) => print(data.data));
+    return documents;
 
   }
 
+  Map<int, List<String>> getCourseByYear(List<DocumentSnapshot> documents){
+    Map<int, List<String>> mapData = Map();
+
+    for(int i =0; i<documents.length; i++) {
+      int year = documents[i].data["year"];
+
+      if (!mapData.containsKey(year)) {
+        mapData[year] = <String>[];
+
+      }
+
+      mapData[year].add(documents[i].data["id"]);
+
+
+
+    }
+      print(mapData.length);
+
+
+    return mapData;
+  }
+
+
+  List<int> getYears(List<DocumentSnapshot> documents) {
+
+    List<int> years = <int>[];
+    print(documents.length);
+    for(int i =0; i<documents.length; i++){
+      if(!years.contains(documents[i].data["year"]))
+        years.add(documents[i].data["year"]);
+
+    }
+
+    return years;
+
+
+  }
 
   void getData() async{
     final FirebaseUser user = await _auth.currentUser();
@@ -76,7 +111,6 @@ class GradeData {
 
     print("uis is $uid");
     await db.collection("users").document(uid).get().then((DocumentSnapshot data){
-          print(data.exists);
           mapData = data.data;
           print("data is $mapData");
 
