@@ -76,6 +76,14 @@ class GradesYearPageState extends State<GradesYearPage> {
     return items;
   }
 
+  void _removeData(String course, String semester) async{
+    await firehouse.remove_data((course+semester).replaceAll(' ',''));
+
+    await _getData();
+    print("in add course");
+    setState(() {});
+    
+  }
 
   void _addData() async {
 
@@ -112,7 +120,7 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   }
 
-  List<Widget> _buildCourses(List<String> courses){
+  List<Widget> _buildCourses(String semester, List<String> courses){
     List<Widget> courseWidgets = <Widget>[];
 
     for(int i =0; i<courses.length; i++){
@@ -123,9 +131,7 @@ class GradesYearPageState extends State<GradesYearPage> {
               icon: Icon(Icons.delete),
               tooltip: 'Increase volume by 10',
               onPressed: () {
-                setState(() {
-                  print("delete pressed");
-                });
+                _removeData(courses[i], semester);
               },
             ),
             onTap: () {
@@ -158,7 +164,7 @@ class GradesYearPageState extends State<GradesYearPage> {
           },
           body: Container(
             child: Column(
-              children: _buildCourses(item.expandedText)
+              children: _buildCourses(item.headerValue, item.expandedText)
             )
               ),
           isExpanded: item.isExpanded,
