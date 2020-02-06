@@ -3,8 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'grades_data.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'course_input_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
+import '../main.dart';
+
 //https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
 class GradesYearPage extends StatefulWidget {
   @override
@@ -46,10 +49,10 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   }
 
-  List<Item> generateItems(Map<int, List<String>> data) {
+  List<Item> generateItems(Map<String, List<String>> data) {
     List<Item> items = <Item>[];
 
-    List<int> sortedKeys = data.keys.toList()..sort();
+    List<String> sortedKeys = data.keys.toList()..sort();
 
     sortedKeys.forEach((key) =>
         //print(key)
@@ -76,7 +79,14 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   void _addData() async {
 
-    await firehouse.addData(_addCourse.text, int.parse(_addYear.text));
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CourseInputPage(),
+        ));
+    print(result);
+
+    await firehouse.addData(result);
 
     await _getData();
     print("in add course");
@@ -89,7 +99,7 @@ class GradesYearPageState extends State<GradesYearPage> {
     courseData =  await firehouse.getCourseNames();
 
     print("testing course");
-    Map<int, List<String>> courseByYear = firehouse.getCourseByYear(courseData);
+    Map<String, List<String>> courseByYear = firehouse.getCourseByYear(courseData);
     //courseByYear.forEach((key,val) => print(key));
 
     _data = generateItems(courseByYear);
@@ -143,7 +153,7 @@ class GradesYearPageState extends State<GradesYearPage> {
         return ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
-              title: Text("Year ${item.headerValue}"),
+              title: Text(item.headerValue),
             );
           },
           body: Container(
@@ -187,7 +197,9 @@ class GradesYearPageState extends State<GradesYearPage> {
       builder: (context, projectSnap) {
         if (!projectSnap.hasData) {
           //print('project snapshot data is: ${projectSnap.data}');
-          return Container();
+          return CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(stdyPink),
+          );
         }
         else {
           return _buildPanel();
@@ -212,24 +224,6 @@ class GradesYearPageState extends State<GradesYearPage> {
                 _addData();
               },
             ),
-
-            Container(
-                child:  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      new Text("Course: "),
-                      new SizedBox(width : 50,child: TextField(controller: _addCourse,
-                        decoration: new InputDecoration(hintText: "aaaa####"),
-                     )),
-                      new Text("Year: "),
-                      new SizedBox(width : 50,child: TextField(controller: _addYear,
-                        decoration: new InputDecoration(hintText: "####"),
-                        keyboardType: TextInputType.number,)),
-                    ]
-                )
-            )
-            ,
-            Text('Years'),
 
             Container(child: projectWidget()),
           ],

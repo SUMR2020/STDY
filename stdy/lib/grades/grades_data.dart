@@ -25,26 +25,28 @@ class GradeData {
   }
 
 
-  void addData(String course, int year) async {
+  void addData(List<String> data) async {
 
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     bool exists=true;
+    String course = data[0];
+    String semester = data[1];
+    int year = int.parse(data[2]);
+
+
 
     await db.collection("users").document(uid).get().then((DocumentSnapshot data) {
       exists = data.exists;
 
     });
 
-    if(exists){
-      await db.collection("users").document(uid).collection("Grades").document(course).setData({"id": course, "year": year, "grade": -1});
-    }
-
-    else{
+    if(!exists) {
       await db.collection("users").document(uid).setData({"gpa": -1});
-      await db.collection("users").document(uid).collection("Grades").document(course).setData({"id": course,"year": year, "grade": -1});
-
     }
+      await db.collection("users").document(uid).collection("Grades").document(data.join()).setData(
+          {"id": course,"year": year, "grade": -1,"semester": semester}
+          );
 
     print("added data to $uid");
 
@@ -63,43 +65,25 @@ class GradeData {
 
   }
 
-  Map<int, List<String>> getCourseByYear(List<DocumentSnapshot> documents){
-    Map<int, List<String>> mapData = Map();
+  Map<String, List<String>> getCourseByYear(List<DocumentSnapshot> documents){
+    Map<String, List<String>> mapData = Map();
 
     for(int i =0; i<documents.length; i++) {
-      int year = documents[i].data["year"];
+      String sem =  documents[i].data["semester"]+" "+documents[i].data["year"].toString();
 
-      if (!mapData.containsKey(year)) {
-        mapData[year] = <String>[];
+      if (!mapData.containsKey(sem)) {
+        mapData[sem] = <String>[];
 
       }
 
-      mapData[year].add(documents[i].data["id"]);
-
-
+      mapData[sem].add(documents[i].data["id"]);
 
     }
-      print(mapData.length);
 
 
     return mapData;
   }
 
-
-  List<int> getYears(List<DocumentSnapshot> documents) {
-
-    List<int> years = <int>[];
-    print(documents.length);
-    for(int i =0; i<documents.length; i++){
-      if(!years.contains(documents[i].data["year"]))
-        years.add(documents[i].data["year"]);
-
-    }
-
-    return years;
-
-
-  }
 
   void getData() async{
     final FirebaseUser user = await _auth.currentUser();

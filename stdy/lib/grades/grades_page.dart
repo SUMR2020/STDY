@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
-import 'home_widget.dart';
+import '../home_widget.dart';
 
 class GradesPage extends StatefulWidget {
   @override
