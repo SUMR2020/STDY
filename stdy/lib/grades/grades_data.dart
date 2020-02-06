@@ -53,7 +53,7 @@ class GradeData {
     if(!exists) {
       await db.collection("users").document(uid).setData({"gpa": -1});
     }
-      await db.collection("users").document(uid).collection("Grades").document(data.join()).setData(
+      await db.collection("users").document(uid).collection("Grades").document(data.join().replaceAll(' ','')).setData(
           {"id": course,"year": year, "grade": -1,"semester": semester}
           );
 

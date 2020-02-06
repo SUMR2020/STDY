@@ -82,7 +82,7 @@ class GradesYearPageState extends State<GradesYearPage> {
     await _getData();
     print("in add course");
     setState(() {});
-    
+
   }
 
   void _addData() async {
