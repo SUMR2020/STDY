@@ -1,0 +1,5 @@
+1. Feb 4 (Tues) 11:30-2:30 (3 hours)
+   a. Worked with team to pull new features
+   b. Changed design of grades page so that the grades are saved on google firebase database instead 
+2. Feb 4 (Tues) 5:00-7:30 (2.5 hours)
+   a. Added code to create new data using the google user id of a user as well as read database data. 
