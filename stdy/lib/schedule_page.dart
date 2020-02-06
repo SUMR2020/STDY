@@ -150,7 +150,6 @@ class _MyHomePageState extends State<SchedulePage> {
       height: 420.0,
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
-
       customGridViewPhysics: null,
       isScrollable: false,
       markedDateCustomShapeBorder:
@@ -189,6 +188,7 @@ class _MyHomePageState extends State<SchedulePage> {
       onDayLongPressed: (DateTime date) {
         print('long pressed date $date');
       },
+      staticSixWeekFormat: true,
     );
   }
 
