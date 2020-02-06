@@ -1,3 +1,10 @@
-January 28th, 2020: 11:35am to 4:00pm
+January 28th, 2020: 11:35am to 7:40pm
 - Parsing the google calendar results into a map to be used by a calendar wiget
 - worked on getting a widget for the calendar working
+- implemented carousel calendar
+- created a FutureBuilder to listen to changes in the event list
+
+Febraury 6th, 2020: 10am to 3pm
+- Updated animation for waiting
+- error debugging 
+- made calendar more efficient

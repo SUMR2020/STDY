@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:study/main.dart';
 import 'package:study/progress_page.dart';
 import 'grades_year_page.dart';
 import 'schedule_page.dart';
+import 'settings_page.dart';
 import 'dart:async';
 
 import "package:http/http.dart" as http;
 import "package:googleapis_auth/auth_io.dart" as auth;
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:google_sign_in/google_sign_in.dart';
-
-DateTime start = new DateTime.now().subtract(new Duration(days: 10));
-DateTime end = new DateTime.now().add(new Duration(days: 10));
-
-
 
 final GoogleSignIn _googleSignIn =
 new GoogleSignIn(scopes: [calendar.CalendarApi.CalendarScope]);
@@ -33,12 +30,6 @@ Future<calendar.CalendarApi> gettingCalendar() async {
       _client, auth.AccessCredentials(token, googleUser.id, scopes));
   calendar.CalendarApi calendarApi;
   calendarApi = new calendar.CalendarApi(_authClient);
-  var calEvents = calendarApi.events.list("primary", timeMin: start.toUtc(), timeMax: end.toUtc(), orderBy: 'startTime', singleEvents: true);
-  var _events = await calEvents;
-  _events.items.forEach((_event) {
-    print(_event.summary);
-    print(_event.start.dateTime.day.toString() +" "+ _event.start.dateTime.month.toString() + " " + _event.start.dateTime.year.toString());
-  });
   return calendarApi;
 }
 
@@ -54,7 +45,8 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     SchedulePage(),
     progressPage(), // put progress widget here (minna)
-    GradesYearPage() // put grademain widget here(sharjeel)
+    GradesYearPage(),
+    SettingsScreen()// put grademain widget here(sharjeel)
   ];
 
   @override
@@ -71,6 +63,8 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,
+        selectedItemColor: stdyPink,
+        unselectedItemColor: stdyPink,
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
@@ -83,6 +77,10 @@ class _HomeState extends State<Home> {
           new BottomNavigationBarItem(
               icon: Icon(Icons.add),
               title: Text('Grade Calculator')
+          ),
+          new BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              title: Text('Settings')
           )
         ],
       ),
