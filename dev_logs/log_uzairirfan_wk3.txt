@@ -1,0 +1,3 @@
+Spent around 11 hours over the course of 2 days trying to implement app wide dark mode and light mode. I have successfully created themes and implemented a settings page to enable the user to switch between themes. There is also a third theme option for OLED making the background pure black. 
+
+Still need to implement a save state so app will remember theme when you close and reopen it.

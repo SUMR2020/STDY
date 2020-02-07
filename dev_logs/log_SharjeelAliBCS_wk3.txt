@@ -3,3 +3,6 @@
    b. Changed design of grades page so that the grades are saved on google firebase database instead 
 2. Feb 4 (Tues) 5:00-7:30 (2.5 hours)
    a. Added code to create new data using the google user id of a user as well as read database data. 
+3. Feb 6 (Thurs) 10:00- 3:00 (5 hours)
+   a. Added the ability for the user to input a course by its id and year. 
+   b. Implemented an expansion list design pattern to showcase the various courses that are pulled from the firebase database asynchronously . 
