@@ -13,15 +13,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('STDY'),
-      ),
       body: Center(
         child: RaisedButton(
           child: Text('Login'),
           onPressed: () {
             signInWithGoogle().whenComplete(() {
-              Navigator.of(context).push(
+              Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) {
                     return Home();
