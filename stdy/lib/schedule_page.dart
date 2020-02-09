@@ -9,6 +9,8 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'main.dart';
+import 'package:intl/intl.dart';
+
 
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
@@ -28,6 +30,7 @@ Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
   _events.items.forEach((_event) {
     DateTime eventTime = DateTime(_event.start.dateTime.year,
         _event.start.dateTime.month, _event.start.dateTime.day);
+    var summary = ("["+_event.start.dateTime.hour.toString().padLeft(2, "0") +":"+_event.start.dateTime.minute.toString().padLeft(2, "0")+"] " + _event.summary);
     if (eventCal.containsKey(eventTime)) {
       List<String> DayEvents = (eventCal[DateTime(
         _event.start.dateTime.year,
@@ -35,16 +38,16 @@ Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
         _event.start.dateTime.day,
       )]);
       if ((DayEvents.contains(_event.summary)) == false) {
-        DayEvents.add(_event.summary);
-        print("Added: " + _event.summary);
+         DayEvents.add(summary);
+        print("Added: " + summary);
         eventCal[eventTime] = DayEvents;
       }
     } else {
-      List<String> DayEvents = [_event.summary];
+      print("Added: " + summary);
+      List<String> DayEvents = [summary];
       eventCal[(eventTime)] = DayEvents;
     }
   });
-
   return eventCal;
 }
 
@@ -205,11 +208,85 @@ class _MyHomePageState extends State<SchedulePage>
         });
       },
       onDayLongPressed: (DateTime date) {
+        var events = _markedDateMap.getEvents(date);
+        this.setState(() => _currentDate2 = date);
+        events.forEach((event) => print(event.title));
+        String formatDate(DateTime date) => new DateFormat("EEEE, MMM d, yyyy").format(date);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return new SimpleDialog(
+              title: Text(formatDate(date)),
+              children: <Widget>[
+                new Container(
+                  height: 100.0,
+                  width: 100.0,
+                  child: new ListView.builder(
+                    // Let the ListView know how many items it needs to build.
+                    itemCount: events.length,
+                    // Provide a builder function. This is where the magic happens.
+                    // Convert each item into a widget based on the type of item it is.
+                    itemBuilder: (context, index) {
+                      final item = events[index];
+                        return ListTile(
+                          title: Text(item.title),
+                         // subtitle: Text(item.body),
+                        );
+                      }
+
+                  ))]
+
+                  );
+
+          },
+        );
+//        showDialog(
+//          context: context,
+//          builder: (BuildContext context) {
+//            // return object of type Dialog
+//            return AlertDialog(
+//              title: new Text(formatDate(date)),
+//              content: ListView.builder(
+//                // Let the ListView know how many items it needs to build.
+//                itemCount: items.length,
+//                // Provide a builder function. This is where the magic happens.
+//                // Convert each item into a widget based on the type of item it is.
+//                itemBuilder: (context, index) {
+//                  final item = items[index];
+//
+//                  if (item is HeadingItem) {
+//                    return ListTile(
+//                      title: Text(
+//                        item.heading,
+//                        style: Theme.of(context).textTheme.headline,
+//                      ),
+//                    );
+//                  } else if (item is MessageItem) {
+//                    return ListTile(
+//                      title: Text(item.sender),
+//                      subtitle: Text(item.body),
+//                    );
+//                  }
+//                },
+//              ),
+//              actions: <Widget>[
+//                // usually buttons at the bottom of the dialog
+//                new FlatButton(
+//                  child: new Text("Close"),
+//                  onPressed: () {
+//                    Navigator.of(context).pop();
+//                  },
+//                ),
+//              ],
+//            );
+//          },
+//        );
         print('long pressed date $date');
       },
       // staticSixWeekFormat: true,
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
