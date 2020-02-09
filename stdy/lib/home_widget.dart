@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:study/main.dart';
 import 'package:study/progress_page.dart';
-import 'grades_year_page.dart';
+import 'grades/grades_year_page.dart';
 import 'schedule_page.dart';
 import 'settings_page.dart';
 import 'dart:async';
