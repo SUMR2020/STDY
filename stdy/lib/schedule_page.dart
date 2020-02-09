@@ -9,33 +9,33 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'main.dart';
-
-bool initial = false;
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'bloc/theme.dart';
 
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
 Map<DateTime, List> eventCal = {};
 
-Future <bool> _OnStartup;
+Future<bool> _OnStartup;
 
 Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
-  if (initial == true) {
-    print("in init");
-    start = new DateTime.now().subtract(new Duration(days: 2));
-    end = new DateTime.now().add(new Duration(days: 2));
-  }
   var calEvents = events.events.list("primary",
       timeMin: start.toUtc(),
       timeMax: end.toUtc(),
       orderBy: 'startTime',
       singleEvents: true);
   var _events = await calEvents;
-  if (initial == false) {
-    initial = true;
-  }
+
   _events.items.forEach((_event) {
     DateTime eventTime = DateTime(_event.start.dateTime.year,
         _event.start.dateTime.month, _event.start.dateTime.day);
+    var summary = ("[" +
+        _event.start.dateTime.hour.toString().padLeft(2, "0") +
+        ":" +
+        _event.start.dateTime.minute.toString().padLeft(2, "0") +
+        "] " +
+        _event.summary);
     if (eventCal.containsKey(eventTime)) {
       List<String> DayEvents = (eventCal[DateTime(
         _event.start.dateTime.year,
@@ -43,16 +43,16 @@ Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
         _event.start.dateTime.day,
       )]);
       if ((DayEvents.contains(_event.summary)) == false) {
-        DayEvents.add(_event.summary);
-        print("Added: " + _event.summary);
+        DayEvents.add(summary);
+        print("Added: " + summary);
         eventCal[eventTime] = DayEvents;
       }
     } else {
-      List<String> DayEvents = [_event.summary];
+      print("Added: " + summary);
+      List<String> DayEvents = [summary];
       eventCal[(eventTime)] = DayEvents;
     }
   });
-
   return eventCal;
 }
 
@@ -61,8 +61,6 @@ class SchedulePage extends StatefulWidget {
 
   final VoidCallback onSubmit;
   static final TextEditingController _grade = new TextEditingController();
-
-
 
   String get grade => _grade.text;
 
@@ -83,8 +81,7 @@ class SchedulePage extends StatefulWidget {
 
 class _MyHomePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
-
-  _MyHomePageState(){
+  _MyHomePageState() {
     _OnStartup = loadEvents();
   }
 
@@ -119,19 +116,18 @@ class _MyHomePageState extends State<SchedulePage>
           icon: _eventIcon,
         );
         if (!contains(x)) {
-        _markedDateMap.add(
-            date,
-            new Event(
-              date: date,
-              title: eventCal[date][i],
-              icon: _eventIcon,
-            ));
+          _markedDateMap.add(
+              date,
+              new Event(
+                date: date,
+                title: eventCal[date][i],
+                icon: _eventIcon,
+              ));
         }
       }
     }
-      return (true);
-    }
-
+    return (true);
+  }
 
   static Widget _eventIcon = new Container(
     decoration: new BoxDecoration(
@@ -153,11 +149,28 @@ class _MyHomePageState extends State<SchedulePage>
     super.initState();
   }
 
-  void createCalendar() {
+  void createCalendar(ThemeChanger theme) {
+    var colour;
+    var colourweekend;
+    if (theme.getTheme() == themeStyleData[ThemeStyle.Dark]) {
+      colour = Colors.white;
+      colourweekend = Colors.white;
+    }
+
+    if (theme.getTheme() == themeStyleData[ThemeStyle.DarkOLED]) {
+      colour = Colors.white;
+      colourweekend = Colors.white;
+    }
+
+    if (theme.getTheme() == themeStyleData[ThemeStyle.Light]) {
+      colour = stdyPink;
+      colourweekend = Colors.black;
+    }
+
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
       selectedDayButtonColor: stdyPink,
       selectedDayBorderColor: stdyPink,
-      todayBorderColor: stdyPink,
+      todayBorderColor: Colors.blueGrey,
       onDayPressed: (DateTime date, List<Event> events) {
         if (date != _currentDate2) {
           print("pressed");
@@ -165,11 +178,20 @@ class _MyHomePageState extends State<SchedulePage>
           events.forEach((event) => print(event.title));
         }
       },
-
+      daysTextStyle: new TextStyle(color: colourweekend),
+      inactiveDaysTextStyle: TextStyle(
+        color: colourweekend,
+      ),
+      markedDateWidget: Container(
+        margin: EdgeInsets.symmetric(horizontal: 1.0),
+        color: stdyPink,
+        height: 4.0,
+        width: 4.0,
+      ),
       daysHaveCircularBorder: true,
       showOnlyCurrentMonthDate: true,
       weekendTextStyle: TextStyle(
-        color: Colors.white,
+        color: colourweekend,
       ),
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
@@ -187,24 +209,20 @@ class _MyHomePageState extends State<SchedulePage>
       ),
       showHeader: false,
       weekdayTextStyle: TextStyle(
-        color: Colors.white,
+        color: colourweekend,
       ),
       todayTextStyle: TextStyle(
-        color: Colors.white,
+        color: colour,
       ),
-      todayButtonColor: Colors.grey,
+      todayButtonColor: Colors.blueGrey,
       selectedDayTextStyle: TextStyle(
-        color: Colors.white,
+        color: colourweekend,
       ),
       minSelectedDate: _currentDate.subtract(Duration(days: 360)),
       maxSelectedDate: _currentDate.add(Duration(days: 360)),
       prevDaysTextStyle: TextStyle(
         fontSize: 16,
         color: stdyPink,
-      ),
-      inactiveDaysTextStyle: TextStyle(
-        color: Colors.white,
-        fontSize: 16,
       ),
       onCalendarChanged: (DateTime date) {
         this.setState(() {
@@ -213,24 +231,59 @@ class _MyHomePageState extends State<SchedulePage>
         });
       },
       onDayLongPressed: (DateTime date) {
+        var events = _markedDateMap.getEvents(date);
+        this.setState(() => _currentDate2 = date);
+        events.forEach((event) => print(event.title));
+        String formatDate(DateTime date) =>
+            new DateFormat("EEEE, MMM d, yyyy").format(date);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return new SimpleDialog(
+                title: Text(formatDate(date)),
+                children: <Widget>[
+                  new Container(
+                      height: 300.0,
+                      width: 100.0,
+                      child: events.isEmpty
+                          ? Center(child: Text('No events scheduled'))
+                          : new ListView.builder(
+                              // Let the ListView know how many items it needs to build.
+                              itemCount: events.length,
+                              // Provide a builder function. This is where the magic happens.
+                              // Convert each item into a widget based on the type of item it is.
+                              itemBuilder: (context, index) {
+                                final item = events[index];
+                                return ListTile(
+                                  title: Text(item.title),
+                                  // subtitle: Text(item.body),
+                                );
+                              }))
+                ]);
+          },
+        );
         print('long pressed date $date');
       },
-      // staticSixWeekFormat: true,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
     return new Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: Icon(Icons.add),
+          backgroundColor: stdyPink,
+          shape: CircleBorder(),
+        ),
         body: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 16.0),
-            child: _calendarCarousel,
-          ),
           Container(
             margin: EdgeInsets.only(
               top: 30.0,
@@ -258,18 +311,21 @@ class _MyHomePageState extends State<SchedulePage>
                   future: _OnStartup,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
-                      createCalendar();
+                      createCalendar(theme);
                       return _calendarCarouselNoHeader;
-                    }  else {
-                        return CircularProgressIndicator(
-                          valueColor: new AlwaysStoppedAnimation<Color>(stdyPink),
-                        );
+                    } else {
+                      return CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(stdyPink),
+                      );
                     }
                   })
               //_calendarCarouselNoHeader,
-              ), //
+              ),
+
+          //
         ],
       ),
     ));
+
   }
 }

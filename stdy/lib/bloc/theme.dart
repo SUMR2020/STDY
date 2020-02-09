@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:study/main.dart';
 
+import '../main.dart';
+
 class ThemeChanger with ChangeNotifier {
   ThemeData _themeData;
 
@@ -26,18 +28,20 @@ final themeStyleData = {
     primaryColor: stdyPink,
     accentColor: stdyPink,
     buttonColor: stdyPink,
+    primaryTextTheme: TextTheme(title: TextStyle(color: stdyPink)),
   ),
   ThemeStyle.Dark: ThemeData(
     brightness: Brightness.dark,
     primaryColor: stdyPink,
     accentColor: stdyPink,
     buttonColor: stdyPink,
+    primaryTextTheme: TextTheme(title: TextStyle(color: stdyPink)),
   ),
   ThemeStyle.DarkOLED: ThemeData(
-    brightness: Brightness.dark,
-    primaryColor: stdyPink,
-    accentColor: stdyPink,
-    buttonColor: stdyPink,
-    scaffoldBackgroundColor: Colors.black
-  ),
+      brightness: Brightness.dark,
+      primaryColor: stdyPink,
+      accentColor: stdyPink,
+      buttonColor: stdyPink,
+      primaryTextTheme: TextTheme(title: TextStyle(color: stdyPink)),
+      scaffoldBackgroundColor: Colors.black),
 };

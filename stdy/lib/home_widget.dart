@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:study/main.dart';
 import 'package:study/progress_page.dart';
-import 'grades_year_page.dart';
+import 'grades/grades_year_page.dart';
 import 'schedule_page.dart';
 import 'settings_page.dart';
 import 'dart:async';
@@ -46,7 +46,7 @@ class _HomeState extends State<Home> {
     SchedulePage(),
     progressPage(), // put progress widget here (minna)
     GradesYearPage(),
-    SettingsScreen()// put grademain widget here(sharjeel)
+    SettingsScreen()
   ];
 
   @override
@@ -57,6 +57,9 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Color(0x00000000),
+        elevation: 0,
         title: Text('STDY'),
       ),
       body: _children[_currentIndex],
