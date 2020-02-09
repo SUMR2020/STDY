@@ -15,14 +15,7 @@ class progressPageState extends State<progressPage>{
   static final TextEditingController _task = new TextEditingController();
   static List<Widget> _children;
 
-  progressPageState(){
-    _children = [
-      RaisedButton(
-        child: Text("Enter new task"),
-        onPressed: (){},
-      ),
-    ];
-  }
+  progressPageState(){}
 
 
   Widget build(BuildContext context) {
