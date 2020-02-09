@@ -219,9 +219,9 @@ class _MyHomePageState extends State<SchedulePage>
               title: Text(formatDate(date)),
               children: <Widget>[
                 new Container(
-                  height: 100.0,
+                  height: 300.0,
                   width: 100.0,
-                  child: new ListView.builder(
+                  child: events.isEmpty ? Center(child: Text('No events scheduled')) : new ListView.builder(
                     // Let the ListView know how many items it needs to build.
                     itemCount: events.length,
                     // Provide a builder function. This is where the magic happens.
