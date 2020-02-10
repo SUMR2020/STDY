@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:study/CustomForm.dart';
 import 'home_widget.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
@@ -12,6 +13,7 @@ import 'main.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'bloc/theme.dart';
+import 'selection_page.dart';
 
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
@@ -142,7 +144,7 @@ class _MyHomePageState extends State<SchedulePage>
 
   EventList<Event> _markedDateMap = new EventList<Event>();
 
-  CalendarCarousel _calendarCarousel, _calendarCarouselNoHeader;
+  CalendarCarousel  _calendarCarouselNoHeader;
 
   @override
   void initState() {
@@ -273,7 +275,10 @@ class _MyHomePageState extends State<SchedulePage>
     return new Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // Add your onPressed code here!
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SelectionPage()),
+            );
           },
           child: Icon(Icons.add),
           backgroundColor: stdyPink,
