@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  shared_preferences:
   provider:
   validate: ^1.7.0
   table_calendar: ^2.2.2

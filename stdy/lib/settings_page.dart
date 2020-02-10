@@ -17,13 +17,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: <Widget>[
             FlatButton(
                 child: Text('Light Mode'),
-                onPressed: () => _themeChanger.setTheme(themeStyleData[ThemeStyle.Light])),
+                onPressed: () => _themeChanger.setTheme(themeStyleData[ThemeStyle.Light], "Light")),
             FlatButton(
                 child: Text('Dark Mode'),
-                onPressed: () => _themeChanger.setTheme(themeStyleData[ThemeStyle.Dark])),
+                onPressed: () => _themeChanger.setTheme(themeStyleData[ThemeStyle.Dark], "Dark")),
             FlatButton(
                 child: Text('Dark Mode (OLED)'),
-                onPressed: () => _themeChanger.setTheme(themeStyleData[ThemeStyle.DarkOLED])),
+                onPressed: () => _themeChanger.setTheme(themeStyleData[ThemeStyle.DarkOLED], "OLED")),
           ],
         ),
       ),
