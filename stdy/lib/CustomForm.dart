@@ -1,17 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/main.dart';
-import 'package:validate/validate.dart';
+import 'grades/grades_data.dart';
 
-class LoginPage extends StatefulWidget {
+Future<bool> _CoursesLoaded;
+
+class TaskPage extends StatefulWidget {
   String taskType;
   int index;
-  LoginPage(String t, int i) {
+  TaskPage(String t, int i) {
     taskType = t;
     index = i;
   }
   @override
-  State<StatefulWidget> createState() => new _LoginPageState(taskType, index);
+  State<StatefulWidget> createState() => new _TaskPageState(taskType, index);
 }
 
 class _Data {
@@ -19,21 +22,42 @@ class _Data {
   String length = '';
   DateTime dueDate;
   List<DateTime> dates;
+  String dropDownValue;
+
+  String getDropDownValue(){
+    return dropDownValue;
+  }
+  void setDropDownValue(String d){
+    dropDownValue = d;
+  }
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _TaskPageState extends State<TaskPage> {
   String taskType;
   int index ;
+  GradeData grades = new GradeData();
+  List<DocumentSnapshot> courses;
+  List<String> courseNames = List<String>();
+
   List<String> tasks = ["pages of reading.", "estimated time to spend on the assignment.", "estimated time to spend on the project.",
     "amount of time to spend on lectures.", "amount of time to spend writing notes."];
 
-  List<String> tasks1 = ["Amount of pages", "Estimated time", "Estimated time",
-    "Amount of time", "Estimated time"];
+  List<String> tasks1 = ["Amount of pages", "Estimated time (h)", "Estimated time (h)",
+    "Amount of time (h)", "Estimated time (h)"];
 
-  _LoginPageState(String t, int i) {
+  _TaskPageState(String t, int i) {
     taskType = t;
     index = i;
+    _CoursesLoaded = getCourses();
   }
+
+  Future<bool> getCourses() async {
+    courses = await grades.getCourseNames();
+    courses.forEach((data) => print(data.data["id"]));
+    courses.forEach((data) => courseNames.add(data.data["id"]));
+    return true;
+  }
+
 
   bool isNumeric(String s) {
     if(s == null) {
@@ -41,8 +65,6 @@ class _LoginPageState extends State<LoginPage> {
     }
     return double.parse(s, (e) => null) != null;
   }
-  bool isNullEmptyFalseOrZero(Object o) =>
-      o == null || false == o || 0 == o || "" == o;
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   _Data _data = new _Data();
@@ -59,17 +81,48 @@ class _LoginPageState extends State<LoginPage> {
       return 'Please enter a valid number.';
     return null;
   }
-
   void submit() {
     // First validate form.
-    if (this._formKey.currentState.validate() &&(!isNullEmptyFalseOrZero(_data.dueDate))) {
-      _formKey.currentState.save(); // Save our form now.
-      print('Printing the login data.');
-      print('Email: ${_data.name}');
-      print('Password: ${_data.length}');
+    if (_data.dueDate == null && _data.dropDownValue == null){
+      print ("in if");
+      showDialog(context: context,
+      builder:  (BuildContext context){
+        return AlertDialog(
+          title: const Text('Please select a due date and course.'),
+        );
+      });
     }
-    else{
-      print ("not valid");
+    else if (_data.dueDate == null){
+      showDialog(context: context,
+          builder:  (BuildContext context){
+            return AlertDialog(
+              title: const Text('Please select a due date.'),
+            );
+          });
+    }
+   else if (_data.dropDownValue == null){
+      showDialog(context: context,
+          builder:  (BuildContext context){
+            return AlertDialog(
+              title: const Text('Please select a course.'),
+            );
+          });
+    }
+   else {
+      if (this._formKey.currentState.validate()) {
+        _formKey.currentState.save(); // Save our form now.
+        print('Printing the login data.');
+        print('Email: ${_data.name}');
+        print('Password: ${_data.length}');
+        print('due date: ${_data.dueDate.toString()}');
+        print('course: ${_data.dropDownValue}');
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => TaskPage(taskType, index)));
+      }
+      else {
+        print("not valid");
+      }
     }
   }
 
@@ -125,6 +178,55 @@ class _LoginPageState extends State<LoginPage> {
                       this._data.length = value;
                     }
                 ),
+                new Container(
+                  child:
+                  FutureBuilder(
+                      future: _CoursesLoaded,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          return  DropdownButton<String>(
+                            hint: Text(
+                              "Select course",
+                            ),
+                            value: _data.getDropDownValue(),
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            isExpanded: true,
+                            elevation: 16,
+                            style: TextStyle(
+                                color: stdyPink
+                            ),
+                            underline: Container(
+                              height: 2,
+                              color: stdyPink,
+                            ),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                _data.setDropDownValue(newValue);
+                              });
+                            },
+                            items: courseNames
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            })
+                                .toList(),
+                          );
+                        } else {
+                          return new Container();
+                        }
+                      })
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                    child: new Text(
+                    "Selected due date:                                                    " +
+                        (_data.dueDate.toString() == "null" ? "" : _data.dueDate.day.toString().padLeft(2, "0")
+                            + "-" + _data.dueDate.month.toString().padLeft(2, "0")
+                            + "-" + _data.dueDate.year.toString().padLeft(2, "0")),
+                )),
                 RaisedButton(
                   onPressed: () => _selectDate(context),
                   child: Text('Select due date'),
@@ -144,7 +246,7 @@ class _LoginPageState extends State<LoginPage> {
                   margin: new EdgeInsets.only(
                       top: 20.0
                   ),
-                )
+                ),
               ],
             ),
           )
