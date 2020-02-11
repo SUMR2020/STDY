@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Text('Login'),
           onPressed: () {
             signInWithGoogle().whenComplete(() {
-              Navigator.of(context).pushReplacement(
+              Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
                     return Home();
@@ -36,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
+
 
 Future<String> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
