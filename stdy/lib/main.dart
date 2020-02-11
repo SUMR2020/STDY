@@ -5,9 +5,11 @@ import 'package:provider/provider.dart';
 import 'bloc/theme.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'push_notifictions.dart' as notifs ;
 
 Color stdyPink = Color(0xFFFDA3A4);
 Future<bool> _themeLoaded;
+String themeDrop;
 
 Future<String> loadTheme() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -17,6 +19,7 @@ Future<String> loadTheme() async {
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
+    notifs.PushNotificationsManager().init();
     runApp(MyApp());
   });
 }
@@ -49,8 +52,9 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (snapshot.hasData){
           if(theme == "Light")loadedTheme = themeStyleData[ThemeStyle.Light];
-          if(theme == "Dark")loadedTheme = themeStyleData[ThemeStyle.Dark];
-          if(theme == "OLED")loadedTheme = themeStyleData[ThemeStyle.DarkOLED];
+          else if(theme == "Dark")loadedTheme = themeStyleData[ThemeStyle.Dark];
+          else loadedTheme = themeStyleData[ThemeStyle.DarkOLED];
+          themeDrop = theme;
           return new MaterialAppWithTheme();
           }
           else

@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  firebase_messaging:
   shared_preferences:
   provider:
   calendarro: ^1.1.2
