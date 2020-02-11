@@ -5,5 +5,6 @@ February 10th, 2020: 4pm to 8pm
 - Finished the base form, added:
 	- selecting date
 	- selecting from submitted courses in the database
+	- checkboxes for the day of the week
 - implemented submitting the data once it was verified
 - added dialog boxes for validation errors
