@@ -1,17 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/main.dart';
-import 'package:validate/validate.dart';
+import 'grades/grades_data.dart';
+import 'package:calendarro/calendarro.dart';
 
-class LoginPage extends StatefulWidget {
+Future<bool> _CoursesLoaded;
+
+class TaskPage extends StatefulWidget {
   String taskType;
   int index;
-  LoginPage(String t, int i) {
+  TaskPage(String t, int i) {
     taskType = t;
     index = i;
   }
   @override
-  State<StatefulWidget> createState() => new _LoginPageState(taskType, index);
+  State<StatefulWidget> createState() => new _TaskPageState(taskType, index);
 }
 
 class _Data {
@@ -19,30 +23,65 @@ class _Data {
   String length = '';
   DateTime dueDate;
   List<DateTime> dates;
+  String dropDownValue;
+  bool monVal = false;
+  bool tuVal = false;
+  bool wedVal = false;
+  bool thurVal = false;
+  bool friVal = false;
+  bool satVal = false;
+  bool sunVal = false;
+  String getDropDownValue() {
+    return dropDownValue;
+  }
+
+  void setDropDownValue(String d) {
+    dropDownValue = d;
+  }
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _TaskPageState extends State<TaskPage> {
   String taskType;
-  int index ;
-  List<String> tasks = ["pages of reading.", "estimated time to spend on the assignment.", "estimated time to spend on the project.",
-    "amount of time to spend on lectures.", "amount of time to spend writing notes."];
+  int index;
+  GradeData grades = new GradeData();
+  List<DocumentSnapshot> courses;
+  List<String> courseNames = List<String>();
 
-  List<String> tasks1 = ["Amount of pages", "Estimated time", "Estimated time",
-    "Amount of time", "Estimated time"];
+  List<String> tasks = [
+    "pages of reading.",
+    "estimated time to spend on the assignment.",
+    "estimated time to spend on the project.",
+    "amount of time to spend on lectures.",
+    "amount of time to spend writing notes."
+  ];
 
-  _LoginPageState(String t, int i) {
+  List<String> tasks1 = [
+    "Amount of pages",
+    "Estimated time (h)",
+    "Estimated time (h)",
+    "Amount of time (h)",
+    "Estimated time (h)"
+  ];
+
+  _TaskPageState(String t, int i) {
     taskType = t;
     index = i;
+    _CoursesLoaded = getCourses();
+  }
+
+  Future<bool> getCourses() async {
+    courses = await grades.getCourseNames();
+    courses.forEach((data) => print(data.data["id"]));
+    courses.forEach((data) => courseNames.add(data.data["id"]));
+    return true;
   }
 
   bool isNumeric(String s) {
-    if(s == null) {
+    if (s == null) {
       return false;
     }
     return double.parse(s, (e) => null) != null;
   }
-  bool isNullEmptyFalseOrZero(Object o) =>
-      o == null || false == o || 0 == o || "" == o;
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   _Data _data = new _Data();
@@ -50,29 +89,57 @@ class _LoginPageState extends State<LoginPage> {
   String _validateName(String value) {
     // If empty value, the isEmail function throw a error.
     // So I changed this function with try and catch.
-      if (value.isEmpty) return 'Please enter a valid name.';
+    if (value.isEmpty) return 'Please enter a valid name.';
     return null;
   }
 
   String _validateAmount(String value) {
-    if (!isNumeric(value))
-      return 'Please enter a valid number.';
+    if (!isNumeric(value)) return 'Please enter a valid number.';
     return null;
   }
 
   void submit() {
     // First validate form.
-    if (this._formKey.currentState.validate() &&(!isNullEmptyFalseOrZero(_data.dueDate))) {
-      _formKey.currentState.save(); // Save our form now.
-      print('Printing the login data.');
-      print('Email: ${_data.name}');
-      print('Password: ${_data.length}');
-    }
-    else{
-      print ("not valid");
+    if (_data.dueDate == null && _data.dropDownValue == null) {
+      print("in if");
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Please select a due date and course.'),
+            );
+          });
+    } else if (_data.dueDate == null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Please select a due date.'),
+            );
+          });
+    } else if (_data.dropDownValue == null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Please select a course.'),
+            );
+          });
+    } else {
+      if (this._formKey.currentState.validate()) {
+        _formKey.currentState.save(); // Save our form now.
+        print('Printing the login data.');
+        print('Email: ${_data.name}');
+        print('Password: ${_data.length}');
+        print('due date: ${_data.dueDate.toString()}');
+        print('course: ${_data.dropDownValue}');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (_) => TaskPage(taskType, index)));
+      } else {
+        print("not valid");
+      }
     }
   }
-
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -82,9 +149,50 @@ class _LoginPageState extends State<LoginPage> {
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {
-        print (picked);
+        print(picked);
         _data.dueDate = picked;
       });
+  }
+
+  Widget checkbox(String title, bool boolValue) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(title),
+        Checkbox(
+          activeColor: stdyPink,
+          value: boolValue,
+          onChanged: (bool value) {
+            /// manage the state of each value
+            setState(() {
+              switch (title) {
+                case "Mon":
+                  _data.monVal = value;
+                  break;
+                case "Tues":
+                  _data.tuVal = value;
+                  break;
+                case "Wed":
+                  _data.wedVal = value;
+                  break;
+                case "Thur":
+                  _data.thurVal = value;
+                  break;
+                case "Fri":
+                  _data.friVal = value;
+                  break;
+                case "Sat":
+                  _data.satVal = value;
+                  break;
+                case "Sun":
+                  _data.sunVal = value;
+                  break;
+              }
+            });
+          },
+        )
+      ],
+    );
   }
 
   @override
@@ -93,10 +201,10 @@ class _LoginPageState extends State<LoginPage> {
 
     return new Scaffold(
       appBar: new AppBar(
-          centerTitle: true,
-          backgroundColor: Color(0x00000000),
-          elevation: 0,
-          title: Text('INFORMATION FOR ' + taskType),
+        centerTitle: true,
+        backgroundColor: Color(0x00000000),
+        elevation: 0,
+        title: Text('INFORMATION FOR ' + taskType),
       ),
       body: new Container(
           padding: new EdgeInsets.all(20.0),
@@ -106,49 +214,113 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 new TextFormField(
                     decoration: new InputDecoration(
-                        hintText: 'Enter name here...',
-                        labelText: taskType[0].toUpperCase()+ taskType.substring(1).toLowerCase() + " name",
+                      hintText: 'Enter name here...',
+                      labelText: taskType[0].toUpperCase() +
+                          taskType.substring(1).toLowerCase() +
+                          " name",
                     ),
                     validator: this._validateName,
                     onSaved: (String value) {
                       this._data.name = value;
-                    }
-                ),
+                    }),
                 new TextFormField(
-
                     decoration: new InputDecoration(
-                        hintText: "Please enter " + tasks[index],
-                        labelText: tasks1[index],
+                      hintText: "Please enter " + tasks[index],
+                      labelText: tasks1[index],
                     ),
                     validator: this._validateAmount,
                     onSaved: (String value) {
                       this._data.length = value;
-                    }
-                ),
+                    }),
+                new Container(
+                    child: FutureBuilder(
+                        future: _CoursesLoaded,
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            return DropdownButton<String>(
+                              hint: Text(
+                                "Select course",
+                              ),
+                              value: _data.getDropDownValue(),
+                              icon: Icon(Icons.arrow_downward),
+                              iconSize: 24,
+                              isExpanded: true,
+                              elevation: 16,
+                              style: TextStyle(color: stdyPink),
+                              underline: Container(
+                                height: 2,
+                                color: stdyPink,
+                              ),
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  _data.setDropDownValue(newValue);
+                                });
+                              },
+                              items: courseNames.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            );
+                          } else {
+                            return new Container();
+                          }
+                        })),
+                Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    child: new Text(
+                      "Selected due date:                                                    " +
+                          (_data.dueDate.toString() == "null"
+                              ? ""
+                              : _data.dueDate.day.toString().padLeft(2, "0") +
+                                  "-" +
+                                  _data.dueDate.month
+                                      .toString()
+                                      .padLeft(2, "0") +
+                                  "-" +
+                                  _data.dueDate.year
+                                      .toString()
+                                      .padLeft(2, "0")),
+                    )),
                 RaisedButton(
                   onPressed: () => _selectDate(context),
                   child: Text('Select due date'),
+                ),
+                new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        checkbox("Mon", _data.monVal),
+                        checkbox("Tues", _data.tuVal),
+                        checkbox("Wed", _data.wedVal),
+                        checkbox("Thur", _data.thurVal),
+                        checkbox("Fri", _data.friVal),
+                        checkbox("Sat", _data.satVal),
+                        checkbox("Sun", _data.sunVal),
+                      ],
+                    ),
+                  ],
                 ),
                 new Container(
                   width: screenSize.width,
                   child: new RaisedButton(
                     child: new Text(
                       'Submit',
-                      style: new TextStyle(
-                          color: Colors.white
-                      ),
+                      style: new TextStyle(color: Colors.white),
                     ),
                     onPressed: this.submit,
                     color: stdyPink,
                   ),
-                  margin: new EdgeInsets.only(
-                      top: 20.0
-                  ),
-                )
+                  margin: new EdgeInsets.only(top: 20.0),
+                ),
               ],
             ),
-          )
-      ),
+          )),
     );
   }
 }

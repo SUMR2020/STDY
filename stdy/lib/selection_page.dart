@@ -31,7 +31,7 @@ class _SelectionPageState extends State<SelectionPage> {
               print (tasks[index]);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  LoginPage(tasks[index], index),
+                MaterialPageRoute(builder: (context) =>  TaskPage(tasks[index], index),
               ));
             },
             child: Container(

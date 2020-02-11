@@ -19,6 +19,7 @@ environment:
 dependencies:
   shared_preferences:
   provider:
+  calendarro: ^1.1.2
   validate: ^1.7.0
   table_calendar: ^2.2.2
   flutter_calendar_carousel: ^1.4.10
