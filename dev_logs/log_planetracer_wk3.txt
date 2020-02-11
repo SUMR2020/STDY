@@ -9,7 +9,9 @@ February 6th, 2020: 10am to 3pm
 - error debugging 
 - made calendar more efficient
 
-February 9th, 2020: 3pm to 6pm
+February 9th, 2020: 3pm to 9pm
 - added a popup on the calendar to show the user the events for the selected date
 - worked with uzair on the colour schemes for the schedule for dark mode, light mode and OLED mode
 - added button to add tasks
+- added forms for the different tasks
+- added a page to link to the forms for diff tasks

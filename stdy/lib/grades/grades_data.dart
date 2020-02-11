@@ -25,11 +25,9 @@ class GradeData {
   }
 
   void remove_data(String id) async{
-
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     db.collection("users").document(uid).collection("Grades").document(id).delete();
-
     print("removed $id");
 
   }

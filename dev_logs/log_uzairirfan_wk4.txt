@@ -1,0 +1,1 @@
+I spent abount 6 hours, I changed the theme selector on the settings page to  be a drop down menu. I added a signout button and I implemented firebase cloud messaging for notifications
