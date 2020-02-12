@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/main.dart';
 import 'grades/grades_data.dart';
-import 'package:calendarro/calendarro.dart';
 
 Future<bool> _CoursesLoaded;
 
