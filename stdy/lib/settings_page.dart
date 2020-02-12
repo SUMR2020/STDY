@@ -58,6 +58,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               }).toList(),
             ),
+//            RaisedButton(
+//              child: Text('Font Up'),
+//              onPressed: (){
+//                fontScale = fontScale+2;
+//                print(fontScale);
+//              },
+//            ),
+//            RaisedButton(
+//              child: Text('Font Down'),
+//              onPressed: (){
+//                fontScale = fontScale-2;
+//                print(fontScale);
+//              },
+//            ),
+            Slider(
+                value: fontScale.toDouble(),
+                min: -10.0,
+                max: 19.0,
+                divisions: 10,
+                activeColor: stdyPink,
+                inactiveColor: Colors.blueGrey,
+                label: fontScale.toString(),
+                onChanged: (double newValue) {
+                  setState(() {
+                    fontScale = newValue.round();
+                  });
+                },
+                semanticFormatterCallback: (double newValue) {
+                  return '${newValue.round()} dollars';
+                }
+            ),
             RaisedButton(
               child: Text('Sign Out'),
               onPressed: (){

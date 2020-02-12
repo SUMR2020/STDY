@@ -10,6 +10,7 @@ import 'push_notifictions.dart' as notifs ;
 Color stdyPink = Color(0xFFFDA3A4);
 Future<bool> _themeLoaded;
 String themeDrop;
+int fontScale = 0;
 
 Future<String> loadTheme() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();

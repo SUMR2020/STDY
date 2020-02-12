@@ -206,7 +206,7 @@ class _MyHomePageState extends State<SchedulePage>
       markedDateCustomShapeBorder:
           CircleBorder(side: BorderSide(color: stdyPink)),
       markedDateCustomTextStyle: TextStyle(
-        fontSize: 18,
+        fontSize: 18 + fontScale.toDouble(),
         color: stdyPink,
       ),
       showHeader: false,
@@ -223,7 +223,7 @@ class _MyHomePageState extends State<SchedulePage>
       minSelectedDate: _currentDate.subtract(Duration(days: 360)),
       maxSelectedDate: _currentDate.add(Duration(days: 360)),
       prevDaysTextStyle: TextStyle(
-        fontSize: 16,
+        fontSize: 16 + fontScale.toDouble(),
         color: stdyPink,
       ),
       onCalendarChanged: (DateTime date) {
@@ -303,7 +303,7 @@ class _MyHomePageState extends State<SchedulePage>
                   _currentMonth,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 24.0,
+                    fontSize: 24.0 + fontScale,
                   ),
                 )),
 //
