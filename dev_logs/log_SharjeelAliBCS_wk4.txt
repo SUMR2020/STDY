@@ -1,0 +1,5 @@
+NOTE: Was sick for most of the week, so no coding done till Feb 16
+1. Feb 16 (Sun) 12:30-5:30 (5 hours)
+   a. Added sorting of semesters and years
+   b. Added full student GPA as well as a gpa per semester and a course grade displayed
+   c. Gave the user the option to add a course grade. 
