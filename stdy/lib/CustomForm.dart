@@ -35,7 +35,7 @@ class _Data {
   String semester;
   int year;
   bool forMarks = false;
-  List<DateTime> dates;
+  List<DateTime> dates = List<DateTime>();
   String dropDownValue;
   bool monVal = false;
   bool tuVal = false;
@@ -142,15 +142,21 @@ class _TaskPageState extends State<TaskPage> {
     } else {
       if (this._formKey.currentState.validate()) {
         _formKey.currentState.save(); // Save our form now.
-        print('Printing the login data.');
-        print('Email: ${_data.name}');
-        print('Password: ${_data.length}');
-        print('due date: ${_data.dueDate.toString()}');
-        print('course: ${_data.dropDownValue}');
         List<int> done;
         final daysToGenerate = _data.dueDate.difference(DateTime.now()).inDays + 2;
-        _data.dates = List.generate(daysToGenerate, (i) => DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + (i)));
-        grades.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks, null, null);
+        var dates = List.generate(daysToGenerate, (i) => DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + (i)));
+        for (DateTime date in dates){
+          print (date.toString());
+
+          if ((date.weekday == 1) && (_data.monVal == true)) _data.dates.add(date);
+          if ((date.weekday == 2) && (_data.tuVal == true)) _data.dates.add(date);
+          if ((date.weekday == 3) && (_data.wedVal == true)) _data.dates.add(date);
+          if ((date.weekday == 4) && (_data.thurVal == true)) _data.dates.add(date);
+          if ((date.weekday == 5) && (_data.friVal == true)) _data.dates.add(date);
+          if ((date.weekday == 6) && (_data.satVal == true)) _data.dates.add(date);
+          if ((date.weekday == 7) && (_data.sunVal == true)) _data.dates.add(date);
+        }
+        grades.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks, null, null, taskType.toLowerCase());
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (_) => TaskPage(taskType, index)));
       } else {

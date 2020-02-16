@@ -58,12 +58,12 @@ class GradeData {
     print("added data to $uid");
   }
 
-    void addTaskData(String name, String course, int toDo, List<DateTime> dates, DateTime dueDate, List<int> done, bool forMarks, double weight, double grade) async {
+    void addTaskData(String name, String course, int toDo, List<DateTime> dates, DateTime dueDate, List<int> done, bool forMarks, double weight, double grade, String type) async {
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     course = course.replaceAll(" ", "");
     await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(name).setData(
-        {"name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks, "weight": weight, "grade": grade}
+        {"name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks, "weight": weight, "grade": grade, "type": type}
     );
 
 //    if (forMarks) {
@@ -82,14 +82,26 @@ class GradeData {
   Future <List<DocumentSnapshot>> getCourseNames() async {
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
-    print("test");
     final QuerySnapshot result =
     await db.collection('users').document(uid).collection("Grades").getDocuments();
     final List<DocumentSnapshot> documents = result.documents;
-
-    //documents.forEach((data) => print(data.data));
     return documents;
 
+  }
+
+  Future <List<DocumentSnapshot>> getTasks() async {
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    List<DocumentSnapshot> allTasks = new List<DocumentSnapshot>();
+    List<DocumentSnapshot> courses = await getCourseNames();
+    for (DocumentSnapshot course in courses){
+      String name = course.data["id"] + course.data["semester"] + course.data["year"].toString();
+      final QuerySnapshot courseTasks =
+      await db.collection('users').document(uid).collection("Grades").document(name).collection("Tasks").getDocuments();
+      final List<DocumentSnapshot> documents = courseTasks.documents;
+      documents.forEach((data) => allTasks.add(data));
+    }
+    return allTasks;
   }
 
   Map<String, List<String>> getCourseByYear(List<DocumentSnapshot> documents){
