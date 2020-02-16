@@ -17,10 +17,24 @@ class TaskPage extends StatefulWidget {
   State<StatefulWidget> createState() => new _TaskPageState(taskType, index);
 }
 
+class _Course{
+  String name;
+  String semester;
+  int year;
+  _Course (int y, String n, String s) {
+    name = n;
+    semester = s;
+    year = y;
+  }
+}
+
 class _Data {
   String name = '';
   String length = '';
   DateTime dueDate;
+  String semester;
+  int year;
+  bool forMarks = false;
   List<DateTime> dates;
   String dropDownValue;
   bool monVal = false;
@@ -33,7 +47,6 @@ class _Data {
   String getDropDownValue() {
     return dropDownValue;
   }
-
   void setDropDownValue(String d) {
     dropDownValue = d;
   }
@@ -44,6 +57,7 @@ class _TaskPageState extends State<TaskPage> {
   int index;
   GradeData grades = new GradeData();
   List<DocumentSnapshot> courses;
+  List<_Course> courseObjs = List<_Course>();
   List<String> courseNames = List<String>();
 
   List<String> tasks = [
@@ -71,7 +85,8 @@ class _TaskPageState extends State<TaskPage> {
   Future<bool> getCourses() async {
     courses = await grades.getCourseNames();
     courses.forEach((data) => print(data.data["id"]));
-    courses.forEach((data) => courseNames.add(data.data["id"]));
+    courses.forEach((data) => courseObjs.add(new _Course(data.data["year"], data.data["id"], data.data["semester"])));
+    courseObjs.forEach((data) => courseNames.add((data.name+" " + data.semester+ " " +(data.year.toString()))));
     return true;
   }
 
@@ -132,6 +147,10 @@ class _TaskPageState extends State<TaskPage> {
         print('Password: ${_data.length}');
         print('due date: ${_data.dueDate.toString()}');
         print('course: ${_data.dropDownValue}');
+        List<int> done;
+        final daysToGenerate = _data.dueDate.difference(DateTime.now()).inDays + 2;
+        _data.dates = List.generate(daysToGenerate, (i) => DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + (i)));
+        grades.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks);
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (_) => TaskPage(taskType, index)));
       } else {
@@ -246,7 +265,10 @@ class _TaskPageState extends State<TaskPage> {
                               iconSize: 24,
                               isExpanded: true,
                               elevation: 16,
-                              style: TextStyle(color: stdyPink),
+                              style: TextStyle(
+                                color: stdyPink,
+                                fontSize: 14 + fontScale.toDouble(),
+                              ),
                               underline: Container(
                                 height: 2,
                                 color: stdyPink,
@@ -286,7 +308,13 @@ class _TaskPageState extends State<TaskPage> {
                     )),
                 RaisedButton(
                   onPressed: () => _selectDate(context),
-                  child: Text('Select due date'),
+                  child: Text(
+                    'Select due date',
+                    style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 14 + fontScale.toDouble(),
+                    ),
+                  ),
                 ),
                 new Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -310,13 +338,26 @@ class _TaskPageState extends State<TaskPage> {
                   child: new RaisedButton(
                     child: new Text(
                       'Submit',
-                      style: new TextStyle(color: Colors.white),
+                      style: new TextStyle(
+                        color: Colors.white,
+                        fontSize: 14 + fontScale.toDouble(),
+                      ),
                     ),
                     onPressed: this.submit,
                     color: stdyPink,
                   ),
                   margin: new EdgeInsets.only(top: 20.0),
                 ),
+                new CheckboxListTile(
+                  title: Text("Is this worth marks?"),
+                  value: _data.forMarks,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _data.forMarks = value;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                )
               ],
             ),
           )),

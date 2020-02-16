@@ -56,8 +56,29 @@ class GradeData {
           );
 
     print("added data to $uid");
+  }
+
+  void addTaskData(String name, String course, int toDo, List<DateTime> dates, DateTime dueDate, List<int> done, bool forMarks) async {
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    course = course.replaceAll(" ", "");
+    await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(name).setData(
+        {"name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks}
+    );
+
+//    if (forMarks) {
+//      print ("in for");
+//      var tasks = {name : -1};
+//      course = course.replaceAll(" ", "");
+//
+//      DocumentReference docRef = db.collection("users").document(uid).collection("Grades").document(course);
+//      docRef.setData({"tasks": tasks}, merge: true);
+//    }
+
+    print("added data to $uid");
 
   }
+
 
   Future <List<DocumentSnapshot>> getCourseNames() async {
     final FirebaseUser user = await _auth.currentUser();
@@ -110,7 +131,4 @@ class GradeData {
     String data = jsonEncode(mapData);
     print("got data from $data");
   }
-
-
-
 }
