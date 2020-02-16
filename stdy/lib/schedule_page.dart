@@ -180,8 +180,10 @@ class _MyHomePageState extends State<SchedulePage>
           events.forEach((event) => print(event.title));
         }
       },
-      daysTextStyle: new TextStyle(color: colourweekend),
+      daysTextStyle: new TextStyle(color: colourweekend,
+      fontSize: 14 + fontScale.toDouble()),
       inactiveDaysTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colourweekend,
       ),
       markedDateWidget: Container(
@@ -193,6 +195,7 @@ class _MyHomePageState extends State<SchedulePage>
       daysHaveCircularBorder: true,
       showOnlyCurrentMonthDate: true,
       weekendTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colourweekend,
       ),
       thisMonthDayBorderColor: Colors.grey,
@@ -211,13 +214,16 @@ class _MyHomePageState extends State<SchedulePage>
       ),
       showHeader: false,
       weekdayTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colourweekend,
       ),
       todayTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colour,
       ),
       todayButtonColor: Colors.blueGrey,
       selectedDayTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colourweekend,
       ),
       minSelectedDate: _currentDate.subtract(Duration(days: 360)),
