@@ -150,7 +150,7 @@ class _TaskPageState extends State<TaskPage> {
         List<int> done;
         final daysToGenerate = _data.dueDate.difference(DateTime.now()).inDays + 2;
         _data.dates = List.generate(daysToGenerate, (i) => DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + (i)));
-        grades.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks);
+        grades.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks, null, null);
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (_) => TaskPage(taskType, index)));
       } else {
