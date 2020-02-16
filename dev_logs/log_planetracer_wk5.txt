@@ -1,0 +1,4 @@
+February 16th, 2020: 10am to 2pm
+- Researched the firebase database
+- Created an additional task collection to add to course collection that Sharjeel created
+- Created a list of DateTimes between two DateTimes

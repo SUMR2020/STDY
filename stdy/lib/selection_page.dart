@@ -49,7 +49,8 @@ class _SelectionPageState extends State<SelectionPage> {
                             child: Text(
                              tasks[index],
                               textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 20.0),
+                              style: TextStyle(fontSize: 20 + fontScale.toDouble(),),
+
                               maxLines: 1,
                             ),
                             decoration: BoxDecoration(
