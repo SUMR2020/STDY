@@ -1,4 +1,3 @@
-import 'package:calendarro/calendarro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/CustomForm.dart';
@@ -14,9 +13,6 @@ class SelectionPage extends StatefulWidget {
 
 class _SelectionPageState extends State<SelectionPage> {
   List<String> tasks = ["READING", "ASSIGNMENT", "PROJECT", "LECTURES", "NOTES"];
-  String taskType;
-  int index;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

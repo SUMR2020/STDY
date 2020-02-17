@@ -13,17 +13,55 @@ class CourseInputState extends State<CourseInputPage>{
 
   var _addYear = TextEditingController();
   var _addCourse = TextEditingController();
+  var _addGrade = TextEditingController();
 
-  String dropdownValue;
+  String dropdownValueSem;
 
   CourseInputState(){
-    dropdownValue = "Semester";
+    dropdownValueSem = "Semester";
   }
 
   void addCourseButton(BuildContext context){
-    print(dropdownValue);
-    Navigator.pop(context, [_addCourse.text,  dropdownValue,_addYear.text]);
+    String grade = _addGrade.text;
+
+    if(dropdownValueSem=="Semester" ||
+      _addCourse.text=='' || _addYear.text==''
+    ){
+      _showDialog();
+      return;
+    }
+
+    if(grade==''){
+      grade = 'CURR';
+    }
+
+    print(dropdownValueSem);
+    Navigator.pop(context, [_addCourse.text,  dropdownValueSem,_addYear.text, grade]);
   }
+
+  void _showDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Error"),
+          content: new Text("One of the input fields is empty."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +84,7 @@ class CourseInputState extends State<CourseInputPage>{
             )),
             Text("Course Semester"),
           DropdownButton<String>(
-            value: dropdownValue,
+            value: dropdownValueSem,
             icon: Icon(Icons.arrow_downward),
             iconSize: 24,
             elevation: 16,
@@ -59,7 +97,7 @@ class CourseInputState extends State<CourseInputPage>{
             ),
             onChanged: (String newValue) {
               setState(() {
-                dropdownValue = newValue;
+                dropdownValueSem = newValue;
               });
             },
             items: <String>["Semester","Fall", "Winter", "Summer"]
@@ -71,6 +109,11 @@ class CourseInputState extends State<CourseInputPage>{
             })
                 .toList(),
           ),
+
+          Text("Grade (Leave blank for CURR)"),
+          new SizedBox(child: TextField(controller: _addGrade,
+              decoration: new InputDecoration(hintText: "0-100%"),keyboardType: TextInputType.number
+          )),
 
 
 
