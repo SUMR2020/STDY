@@ -14,26 +14,12 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'bloc/theme.dart';
 import 'selection_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'grades/grades_data.dart';
 
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
 Map<DateTime, List> eventCal = {};
 
 Future<bool> _OnStartup;
-Future<bool> _tasksLoaded;
-
-class _task {
-  String type;
-  String name;
-  int time;
-  _task(String t, String n, int ti) {
-    type = t;
-    name = n;
-    time = ti;
-  }
-}
 
 Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
   var calEvents = events.events.list("primary",
@@ -60,9 +46,11 @@ Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
       )]);
       if ((DayEvents.contains(_event.summary)) == false) {
         DayEvents.add(summary);
+        print("Added: " + summary);
         eventCal[eventTime] = DayEvents;
       }
     } else {
+      print("Added: " + summary);
       List<String> DayEvents = [summary];
       eventCal[(eventTime)] = DayEvents;
     }
@@ -72,8 +60,10 @@ Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
 
 class SchedulePage extends StatefulWidget {
   SchedulePage({Key key, @required this.onSubmit}) : super(key: key);
+
   final VoidCallback onSubmit;
   static final TextEditingController _grade = new TextEditingController();
+
   String get grade => _grade.text;
 
   @override
@@ -95,11 +85,7 @@ class _MyHomePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
   _MyHomePageState() {
     _OnStartup = loadEvents();
-    _tasksLoaded = getTasks();
   }
-  List<DocumentSnapshot> taskDocs;
-  List<_task> todayTasks = new List<_task>();
-  GradeData grades = new GradeData();
 
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
@@ -107,25 +93,6 @@ class _MyHomePageState extends State<SchedulePage>
   DateTime _targetDateTime = DateTime.now();
   Map<DateTime, List> eventCal;
   calendar.CalendarApi events;
-
-  Future<bool> getTasks() async {
-    taskDocs = await grades.getTasks();
-    for (DocumentSnapshot task in taskDocs) {;
-     var dates = (task.data['dates']);
-     List<DateTime> datesObjs = new List<DateTime>();
-
-      for (Timestamp t in dates){
-        DateTime date = (t.toDate());
-        datesObjs.add(DateTime(date.year, date.month, date.day));
-      }
-      DateTime today = DateTime.now();
-      if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
-        print(task.data["name"]);
-        todayTasks.add(new _task(task.data["type"], task.data["name"], 0));
-      }
-    }
-    return true;
-  }
 
   bool contains(Event i) {
     List events = _markedDateMap.getEvents(i.date);
@@ -177,7 +144,7 @@ class _MyHomePageState extends State<SchedulePage>
 
   EventList<Event> _markedDateMap = new EventList<Event>();
 
-  CalendarCarousel _calendarCarouselNoHeader;
+  CalendarCarousel  _calendarCarouselNoHeader;
 
   @override
   void initState() {
@@ -203,7 +170,6 @@ class _MyHomePageState extends State<SchedulePage>
     }
 
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
-      height: 340,
       selectedDayButtonColor: stdyPink,
       selectedDayBorderColor: stdyPink,
       todayBorderColor: Colors.blueGrey,
@@ -214,8 +180,8 @@ class _MyHomePageState extends State<SchedulePage>
           events.forEach((event) => print(event.title));
         }
       },
-      daysTextStyle: new TextStyle(
-          color: colourweekend, fontSize: 14 + fontScale.toDouble()),
+      daysTextStyle: new TextStyle(color: colourweekend,
+      fontSize: 14 + fontScale.toDouble()),
       inactiveDaysTextStyle: TextStyle(
         fontSize: 14 + fontScale.toDouble(),
         color: colourweekend,
@@ -235,6 +201,7 @@ class _MyHomePageState extends State<SchedulePage>
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
       markedDatesMap: _markedDateMap,
+      height: 420.0,
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
       customGridViewPhysics: null,
@@ -308,46 +275,6 @@ class _MyHomePageState extends State<SchedulePage>
     );
   }
 
-  IconData getIcon(String taskType) {
-    if (taskType == "reading") return Icons.book;
-    if (taskType == "assignment") return Icons.assignment;
-    if (taskType == "project") return Icons.subtitles;
-    if (taskType == "lectures") return Icons.ondemand_video;
-    if (taskType == "notes") return Icons.event_note;
-  }
-
-  String getTypeString(String taskType, int time){
-    if (taskType == "reading") return (time.toString() + " pages");
-    return (time.toString() + " hours");
-  }
-
-  Widget _listTaskView() {
-    List<String> tasks = new List<String>();
-    List<String> taskTypes = new List<String>();
-    List<int> time = new List<int>();
-    for (_task task in todayTasks) {
-      tasks.add(task.name);
-      taskTypes.add(task.type);
-      time.add(task.time);
-    }
-    return new Container(
-        height: 260.0,
-        child: new ListView.builder(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemCount: tasks.length,
-      itemBuilder: (context, index) {
-        return Card( //                           <-- Card widget
-          child: ListTile(
-            leading: Icon(getIcon(taskTypes[index])),
-            title: Text(tasks[index]),
-            trailing: Text(getTypeString(taskTypes[index], time[index])),
-          ),
-        );
-      },
-    ));
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeChanger>(context);
@@ -364,62 +291,52 @@ class _MyHomePageState extends State<SchedulePage>
           shape: CircleBorder(),
         ),
         body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(
-                  top: 30.0,
-                  bottom: 16.0,
-                  left: 16.0,
-                  right: 16.0,
-                ),
-                child: new Row(
-                  children: <Widget>[
-                    Expanded(
-                        child: Text(
-                      _currentMonth,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24.0 + fontScale,
-                      ),
-                    )),
-//
-                  ],
-                ),
-              ),
-              Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: FutureBuilder(
-                      future: _OnStartup,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          createCalendar(theme);
-                          return _calendarCarouselNoHeader;
-                        } else {
-                          return CircularProgressIndicator(
-                            valueColor:
-                                new AlwaysStoppedAnimation<Color>(stdyPink),
-                          );
-                        }
-                      })
-                  //_calendarCarouselNoHeader,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(
+              top: 30.0,
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+            ),
+            child: new Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                  _currentMonth,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0 + fontScale,
                   ),
-              Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: FutureBuilder(
-                      future: _tasksLoaded,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          return _listTaskView();
-                        } else {
-                          return SizedBox.shrink();
-                        }
-                      }))
-              //
-            ],
+                )),
+//
+              ],
+            ),
           ),
-        ));
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              child: FutureBuilder(
+                  future: _OnStartup,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      createCalendar(theme);
+                      return _calendarCarouselNoHeader;
+                    } else {
+                      return CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(stdyPink),
+                      );
+                    }
+                  })
+              //_calendarCarouselNoHeader,
+              ),
+
+          //
+        ],
+      ),
+    ));
+
   }
 }
