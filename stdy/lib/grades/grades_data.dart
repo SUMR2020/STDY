@@ -174,12 +174,12 @@ class GradeData {
     print("added data to $uid");
   }
 
-  void addTaskData(String name, String course, int toDo, List<DateTime> dates, DateTime dueDate, List<int> done, bool forMarks, double weight, double grade, String type) async {
+  void addTaskData(String name, String course, int toDo, List<DateTime> dates, DateTime dueDate, List<int> done, bool forMarks, double weight, double grade, String type, String daily) async {
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     course = course.replaceAll(" ", "");
     await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(name).setData(
-        {"name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks, "weight": weight, "grade": grade, "type": type}
+        {"name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks, "weight": weight, "grade": grade, "type": type, "daily": daily}
     );
 
 //    if (forMarks) {

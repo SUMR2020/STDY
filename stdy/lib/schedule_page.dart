@@ -26,8 +26,8 @@ Future<bool> _tasksLoaded;
 class _task {
   String type;
   String name;
-  int time;
-  _task(String t, String n, int ti) {
+  String time;
+  _task(String t, String n, String ti) {
     type = t;
     name = n;
     time = ti;
@@ -124,8 +124,7 @@ class _MyHomePageState extends State<SchedulePage>
     }
     DateTime today = DateTime.now();
     if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
-      print(task.data["name"]);
-      todayTasks.add(new _task(task.data["type"], task.data["name"], 0));
+      todayTasks.add(new _task(task.data["type"], task.data["name"],task.data["daily"]));
     }
     }
     return true;
@@ -177,15 +176,15 @@ class _MyHomePageState extends State<SchedulePage>
     if (taskType == "notes") return Icons.event_note;
   }
 
-  String getTypeString(String taskType, int time){
-    if (taskType == "reading") return (time.toString() + " pages");
+  String getTypeString(String taskType, String time){
+    if (taskType == "reading") return (time + " pages");
     return (time.toString() + " hours");
   }
 
   Widget _listTaskView() {
     List<String> tasks = new List<String>();
     List<String> taskTypes = new List<String>();
-    List<int> time = new List<int>();
+    List<String> time = new List<String>();
     for (_task task in todayTasks) {
       tasks.add(task.name);
       taskTypes.add(task.type);
