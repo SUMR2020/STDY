@@ -278,7 +278,7 @@ class _MyHomePageState extends State<SchedulePage>
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
       markedDatesMap: _markedDateMap,
-      height: 340.0,
+      height: 300.0,
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
       customGridViewPhysics: null,
@@ -393,6 +393,7 @@ class _MyHomePageState extends State<SchedulePage>
               ],
             ),
           ),
+
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder(
@@ -409,6 +410,27 @@ class _MyHomePageState extends State<SchedulePage>
                   })
               //_calendarCarouselNoHeader,
               ),
+          Container(
+            margin: EdgeInsets.only(
+              top: 30.0,
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+            ),
+            child: new Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                      "TO DO TODAY",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0 + fontScale,
+                      ),
+                    )),
+//
+              ],
+            ),
+          ),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder(
