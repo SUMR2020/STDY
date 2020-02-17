@@ -28,11 +28,11 @@ class GradeData {
 
     for(int i =0; i<currDocuments.length; i++) {
 
-        if(currDocuments[i].data["taken"]=="CURR"){
-          size--;
-        }
-        else{
-          gpa+= double.parse(findLetterGPA(currDocuments[i].data["grade"]));
+      if(currDocuments[i].data["taken"]=="CURR"){
+        size--;
+      }
+      else{
+        gpa+= double.parse(findLetterGPA(currDocuments[i].data["grade"]));
 
       }
     }
@@ -123,7 +123,7 @@ class GradeData {
 
   void testing() async{
 
-      // here you write the codes to input the data into firestore
+    // here you write the codes to input the data into firestore
   }
 
   void remove_data(String id) async{
@@ -167,9 +167,9 @@ class GradeData {
     if(!exists) {
       await db.collection("users").document(uid).setData({"gpa": -1});
     }
-      await db.collection("users").document(uid).collection("Grades").document(id).setData(
-          {"id": course,"year": year, "grade": grade,"semester": semester, "taken": currCourse}
-          );
+    await db.collection("users").document(uid).collection("Grades").document(id).setData(
+        {"id": course,"year": year, "grade": grade,"semester": semester, "taken": currCourse}
+    );
 
     print("added data to $uid");
   }
@@ -210,17 +210,13 @@ class GradeData {
   }
 
   Future <List<DocumentSnapshot>> getCourseData() async {
-    if (letterGPA == null) {
+    if(letterGPA==null) {
       print("letter is null");
       getGPATable();
     }
-    else {
+    else{
       print("letter isnt");
     }
-  }
-
-
-  Future <List<DocumentSnapshot>> getCourseNames() async {
 
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
@@ -235,9 +231,11 @@ class GradeData {
 
   }
 
+
   Map<String, List<String>> getCourseNameSem(List<DocumentSnapshot> documents){
 
     print("we about to sort");
+
 
 
     documents.sort((a,b) {
@@ -255,12 +253,6 @@ class GradeData {
 
     });
 
-    /*
-    documents.sort((a, b) {
-      int cmp = b.actualStartDatetime.compareTo(a.actualStartDatetime);
-      if (cmp != 0) return cmp;
-      return b.active.compareTo(a.active);
-    });*/
 
 
     print("we just sorted");
@@ -280,23 +272,13 @@ class GradeData {
 
     }
 
-    /*
-    List<String> keys = new List();
-    mapData.forEach((k, v) => keys.add(k));
-    keys.sort((a, b) => a.data["year"] - b.data["year"]);
-
-     */
-
-
-
-
     return mapData;
   }
   Future <List<DocumentSnapshot>> getTasks() async {
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     List<DocumentSnapshot> allTasks = new List<DocumentSnapshot>();
-    List<DocumentSnapshot> courses = await getCourseNames();
+    List<DocumentSnapshot> courses = await getCourseData();
     for (DocumentSnapshot course in courses){
       String name = course.data["id"] + course.data["semester"] + course.data["year"].toString();
       final QuerySnapshot courseTasks =
