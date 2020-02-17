@@ -210,13 +210,14 @@ class GradeData {
   }
 
   Future <List<DocumentSnapshot>> getCourseData() async {
-    if(letterGPA==null) {
+    if (letterGPA == null) {
       print("letter is null");
       getGPATable();
     }
-    else{
+    else {
       print("letter isnt");
     }
+  }
 
 
   Future <List<DocumentSnapshot>> getCourseNames() async {
