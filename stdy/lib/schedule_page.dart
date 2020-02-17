@@ -14,12 +14,26 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'bloc/theme.dart';
 import 'selection_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'grades/grades_data.dart';
 
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
 Map<DateTime, List> eventCal = {};
 
 Future<bool> _OnStartup;
+Future<bool> _tasksLoaded;
+
+class _task {
+  String type;
+  String name;
+  int time;
+  _task(String t, String n, int ti) {
+    type = t;
+    name = n;
+    time = ti;
+  }
+}
 
 Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
   var calEvents = events.events.list("primary",
@@ -85,7 +99,12 @@ class _MyHomePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
   _MyHomePageState() {
     _OnStartup = loadEvents();
+    _tasksLoaded = getTasks();
   }
+  List<DocumentSnapshot> taskDocs;
+  List<_task> todayTasks = new List<_task>();
+  GradeData grades = new GradeData();
+
 
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
@@ -93,6 +112,26 @@ class _MyHomePageState extends State<SchedulePage>
   DateTime _targetDateTime = DateTime.now();
   Map<DateTime, List> eventCal;
   calendar.CalendarApi events;
+
+  Future<bool> getTasks() async {
+    taskDocs = await grades.getTasks();
+    for (DocumentSnapshot task in taskDocs) {;
+    var dates = (task.data['dates']);
+    List<DateTime> datesObjs = new List<DateTime>();
+
+    for (Timestamp t in dates){
+      DateTime date = (t.toDate());
+      datesObjs.add(DateTime(date.year, date.month, date.day));
+    }
+    DateTime today = DateTime.now();
+    if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
+      print(task.data["name"]);
+      todayTasks.add(new _task(task.data["type"], task.data["name"], 0));
+    }
+    }
+    return true;
+  }
+
 
   bool contains(Event i) {
     List events = _markedDateMap.getEvents(i.date);
@@ -129,6 +168,46 @@ class _MyHomePageState extends State<SchedulePage>
       }
     }
     return (true);
+  }
+
+  IconData getIcon(String taskType) {
+    if (taskType == "reading") return Icons.book;
+    if (taskType == "assignment") return Icons.assignment;
+    if (taskType == "project") return Icons.subtitles;
+    if (taskType == "lectures") return Icons.ondemand_video;
+    if (taskType == "notes") return Icons.event_note;
+  }
+
+  String getTypeString(String taskType, int time){
+    if (taskType == "reading") return (time.toString() + " pages");
+    return (time.toString() + " hours");
+  }
+
+  Widget _listTaskView() {
+    List<String> tasks = new List<String>();
+    List<String> taskTypes = new List<String>();
+    List<int> time = new List<int>();
+    for (_task task in todayTasks) {
+      tasks.add(task.name);
+      taskTypes.add(task.type);
+      time.add(task.time);
+    }
+    return new Container(
+        height: 260.0,
+        child: new ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: tasks.length,
+          itemBuilder: (context, index) {
+            return Card( //                           <-- Card widget
+              child: ListTile(
+                leading: Icon(getIcon(taskTypes[index])),
+                title: Text(tasks[index]),
+                trailing: Text(getTypeString(taskTypes[index], time[index])),
+              ),
+            );
+          },
+        ));
   }
 
   static Widget _eventIcon = new Container(
@@ -201,7 +280,7 @@ class _MyHomePageState extends State<SchedulePage>
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
       markedDatesMap: _markedDateMap,
-      height: 420.0,
+      height: 340.0,
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
       customGridViewPhysics: null,
@@ -332,7 +411,17 @@ class _MyHomePageState extends State<SchedulePage>
                   })
               //_calendarCarouselNoHeader,
               ),
-
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              child: FutureBuilder(
+                  future: _tasksLoaded,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return _listTaskView();
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  }))
           //
         ],
       ),
