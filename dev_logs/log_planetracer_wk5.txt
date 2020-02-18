@@ -11,3 +11,8 @@ February 16th, 2020: 3pm to 12:30am
 - created a list view for the tasks for today
 - we had some github issues, so I had to redo my code and do a lot of debugging, this took quite some time
 - Added the time/amount field in the to do list
+
+February 17th, 2020: 6pm to 8:30pm
+- Added a dialog to ask for how much a user has done for a certain task
+- changed course list on tasks to only show the current courses 
+- updated schedule and task title

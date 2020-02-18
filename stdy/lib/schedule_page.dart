@@ -217,10 +217,6 @@ class _MyHomePageState extends State<SchedulePage>
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: TextFormField(),
-                                ),
-                                Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: RaisedButton(
                                     child: Text("Submit"),
@@ -420,7 +416,7 @@ class _MyHomePageState extends State<SchedulePage>
               children: <Widget>[
                 Expanded(
                     child: Text(
-                  _currentMonth,
+                  _currentMonth.toUpperCase(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0 + fontScale,

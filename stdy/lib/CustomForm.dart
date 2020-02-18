@@ -84,9 +84,12 @@ class _TaskPageState extends State<TaskPage> {
 
   Future<bool> getCourses() async {
     courses = await grades.getCourseData();
-    courses.forEach((data) => print(data.data["id"]));
-    courses.forEach((data) => courseObjs.add(new _Course(data.data["year"], data.data["id"], data.data["semester"])));
-    courseObjs.forEach((data) => courseNames.add((data.name+" " + data.semester+ " " +(data.year.toString()))));
+    for (var data in courses) {
+      if (data.data["taken"] == "CURR") {
+        courseObjs.add(new _Course(
+            data.data["year"], data.data["id"], data.data["semester"]));
+      }
+    }  courseObjs.forEach((data) => courseNames.add((data.name+" " + data.semester+ " " +(data.year.toString()))));
     return true;
   }
 
