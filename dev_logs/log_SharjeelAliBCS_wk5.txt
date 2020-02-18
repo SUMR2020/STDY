@@ -1,0 +1,3 @@
+1. Feb 17 (Mon) 5:30-7:00 (2.5 hours)
+   a. Added input page for grade page tasks
+   b. added course page
