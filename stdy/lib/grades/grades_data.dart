@@ -124,13 +124,22 @@ class GradeData {
     // here you write the codes to input the data into firestore
   }
 
-  void remove_data(String id) async{
+  void remove_course(String id) async{
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     db.collection("users").document(uid).collection("Grades").document(id).delete();
     print("removed $id");
 
   }
+
+  void remove_task(String id, String course) async{
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    db.collection("users").document(uid).collection("Grades").document(course).collection("Tasks").document(id).delete();
+    print("removed $id");
+
+  }
+
 
   void addData(List<String> data) async {
 
@@ -171,6 +180,40 @@ class GradeData {
 
     print("added data to $uid");
   }
+
+  void addTaskGrade(String name, String course, List<String> gradeInput) async {
+    print("adding $name to $course");
+
+    double weight = double.parse(gradeInput[0]);
+    double total = double.parse(gradeInput[1]);
+    double grade = double.parse(gradeInput[2]);
+
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    course = course.replaceAll(" ", "");
+    await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(name).updateData(
+        {"weight": weight, "total": total, "grade": grade});
+
+    print("added data to $uid");
+  }
+
+  void addPastTaskData(String course, List<String> data)async {
+
+    String type = data[0];
+    String name = data[1];
+    double weight = double.parse(data[2]);
+    double total = double.parse(data[3]);
+    double grade = double.parse(data[4]);
+
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+
+    await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(name).setData(
+        {"curr": false, "name": name,"course": course, "weight": weight, "grade": grade, "type": type, "total": total}
+    );
+
+  }
+
 
   void addTaskData(String name, String course, int toDo, List<DateTime> dates, DateTime dueDate, List<int> done, bool forMarks, double weight, double grade, String type) async {
     final FirebaseUser user = await _auth.currentUser();
@@ -235,7 +278,7 @@ class GradeData {
     final uid = user.uid;
 
     final QuerySnapshot result =
-    await db.collection('users').document(uid).collection("Grades").document(course).collection("tasks").getDocuments();
+    await db.collection('users').document(uid).collection("Grades").document(course).collection("Tasks").getDocuments();
     final List<DocumentSnapshot> documents = result.documents;
 
     //documents.forEach((data) => print(data.data));

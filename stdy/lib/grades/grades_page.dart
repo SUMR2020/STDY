@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import '../home_widget.dart';
 import 'grades_data.dart';
 import 'task_input_page.dart';
+import 'grade_input_page.dart';
 import '../main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -82,7 +83,7 @@ class GradesPageState extends State<GradesPage> {
 */
 
 
-  void _addData() async {
+  void _addTask() async {
 
     final result = await Navigator.push(
         context,
@@ -91,14 +92,62 @@ class GradesPageState extends State<GradesPage> {
         ));
 
     //await firehouse.addData(result);
-
+    //await firehouse.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks, null, null, null,taskType.toLowerCase());
+    await firehouse.addPastTaskData(id, result);
     //await _getData();
     print(result);
 
+    await _getData();
     setState(() {});
 
   }
-  void _removeData(Map<String, dynamic> task, String sem){
+
+  void _addGrade(String task, String type) async {
+    print("Grade added");
+
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GradeInputPage(),
+        ));
+    print(result);
+    await firehouse.addTaskGrade(task, id, result);
+
+    await _getData();
+    setState(() {});
+
+  }
+
+  void _removeData(String task) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Confirm"),
+          content: new Text("Are you sure you want to delete task $task?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Yes"),
+              onPressed: () async{
+                await firehouse.remove_task(task, id);
+                await _getData();
+                setState(() {});
+
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
 
   }
 
@@ -139,6 +188,7 @@ class GradesPageState extends State<GradesPage> {
 
   }
 
+
   List<Widget> _buildTasks(String type, List<Map<String, dynamic>> tasks){
     List<Widget> courseWidgets = <Widget>[];
 
@@ -146,8 +196,17 @@ class GradesPageState extends State<GradesPage> {
     for(int i =0; i<tasks.length; i++){
       //String grade = firehouse.getCourseGrade((tasks[i]+semester).replaceAll(' ',''));
       //print(grade);
-      double percent = tasks[i]["grade"]/tasks[i]["total"]*tasks[i]["weight"];
-      String gradeInfo = 'Earned: ${tasks[i]["grade"]}/${tasks[i]["total"]}     Percent: $percent/${tasks[i]["weight"]}%';
+
+      String gradeInfo;
+      if(tasks[i]["grade"]==null){
+        gradeInfo = "Click to add grade";
+      }
+
+      else {
+        double percent = tasks[i]["grade"] / tasks[i]["total"] *
+            tasks[i]["weight"];
+        gradeInfo = 'Earned: ${tasks[i]["grade"]}/${tasks[i]["total"]}     Percent: $percent/${tasks[i]["weight"]}%';
+      }
 
       courseWidgets.add(
         ListTile(
@@ -157,12 +216,14 @@ class GradesPageState extends State<GradesPage> {
               icon: Icon(Icons.delete),
               tooltip: 'Increase volume by 10',
               onPressed: () {
-                _removeData(tasks[i], type);
+                _removeData(tasks[i]["name"]);
               },
             ),
             onTap: () {
               setState(() {
-                print("course opened");
+                if(tasks[i]["grade"]==null){
+                  _addGrade(tasks[i]["name"], tasks[i]["type"]);
+                }
               });
             }),
 
@@ -238,7 +299,7 @@ class GradesPageState extends State<GradesPage> {
             RaisedButton(
               child: Text('Add new task'),
               onPressed: (){
-                _addData();
+                _addTask();
               },
             ),
             Container(
