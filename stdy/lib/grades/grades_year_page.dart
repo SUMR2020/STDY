@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'grades_data.dart';
+import 'grades_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'course_input_page.dart';
@@ -108,6 +109,16 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   }
 
+  void _openCoursePage(String course, String sem) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GradesPage(course, sem),
+        ));
+
+
+
+  }
 
   void _addData() async {
 
@@ -159,6 +170,7 @@ class GradesYearPageState extends State<GradesYearPage> {
               },
             ),
             onTap: () {
+              _openCoursePage(courses[i], semester);
               setState(() {
                 print("course opened");
               });
@@ -171,6 +183,7 @@ class GradesYearPageState extends State<GradesYearPage> {
     return courseWidgets;
 
   }
+
   Widget _buildPanel()  {
 
     return ExpansionPanelList(

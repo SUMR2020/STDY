@@ -16,11 +16,9 @@ class GradeData {
   Map<String, dynamic> letterGPA;
 
   GradesData(){
-
     print("started grades");
-
-
   }
+
 
   double getGPA(){
     double gpa = 0.0;
@@ -231,12 +229,67 @@ class GradeData {
 
   }
 
+  Future <List<DocumentSnapshot>> getTasksData(String course) async {
+
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+
+    final QuerySnapshot result =
+    await db.collection('users').document(uid).collection("Grades").document(course).collection("tasks").getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+
+    //documents.forEach((data) => print(data.data));
+    currDocuments = documents;
+    for(int i =0; i<documents.length; i++){
+      print("task is ${documents[i].data}");
+    }
+
+    return documents;
+
+  }
+
+  Map<String, List<Map<String, dynamic>>> getTasksByType(List<DocumentSnapshot> documents){
+
+    print("we about to sort");
+
+    /*
+    documents.sort((a,b) {
+      String aSem = a.data["semester"];
+      String bSem = b.data["semester"];
+      var aYear = a.data["year"];
+      var bYear = b.data["year"];
+      int val = bYear-aYear;
+      print("hello?");
+
+      if(val==0){
+        return aSem.compareTo(bSem);
+      }
+      return val;
+
+    });*/
+
+    print("we just sorted");
+
+    Map<String, List<Map<String, dynamic>>> mapData = Map();
+
+    for(int i =0; i<documents.length; i++) {
+      print(documents[i].documentID);
+      String type = documents[i].data["type"];
+      if (!mapData.containsKey(type)) {
+        mapData[type] = <Map<String, dynamic>>[];
+
+      }
+      mapData[type].add(documents[i].data);
+
+    }
+
+    return mapData;
+  }
+
 
   Map<String, List<String>> getCourseNameSem(List<DocumentSnapshot> documents){
 
     print("we about to sort");
-
-
 
     documents.sort((a,b) {
       String aSem = a.data["semester"];
@@ -252,8 +305,6 @@ class GradeData {
       return val;
 
     });
-
-
 
     print("we just sorted");
 
@@ -289,3 +340,5 @@ class GradeData {
     return allTasks;
   }
 }
+
+
