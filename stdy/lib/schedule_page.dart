@@ -197,13 +197,50 @@ class _MyHomePageState extends State<SchedulePage>
           shrinkWrap: true,
           itemCount: tasks.length,
           itemBuilder: (context, index) {
-            return Card( //                           <-- Card widget
+            return new GestureDetector(
+                onTap: () {
+                  print (tasks[index]);
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Form(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                    decoration: new InputDecoration(
+                                      hintText: 'How much did you complete today?',
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: TextFormField(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: RaisedButton(
+                                    child: Text("Submit"),
+                                    onPressed: () {
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+                },
+            child: new Card( //                           <-- Card widget
               child: ListTile(
                 leading: Icon(getIcon(taskTypes[index])),
                 title: Text(tasks[index]),
                 trailing: Text(getTypeString(taskTypes[index], time[index])),
               ),
-            );
+            ));
           },
         ));
   }
