@@ -16,3 +16,7 @@ February 17th, 2020: 6pm to 8:30pm
 - Added a dialog to ask for how much a user has done for a certain task
 - changed course list on tasks to only show the current courses 
 - updated schedule and task title
+
+February 19th, 2020: 5pm to 6:30pm 
+- created a unique id field for tasks so that duplicate names would not be an issue
+- updated the calculations for daily to do, there was an error
