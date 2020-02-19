@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
+<<<<<<< HEAD
         child: _signInButton()
       ),
     );
@@ -57,6 +58,23 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             )
           ],
+=======
+        child: RaisedButton(
+          child: Text('Login'),
+          onPressed: () {
+            signInWithGoogle().whenComplete(() {
+              if (authCheck) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return Home();
+                    },
+                  ),
+                );
+              }
+            });
+          },
+>>>>>>> be3afc102bf7c3b4905f919161a26ceb0f865a8e
         ),
       ),
     );
