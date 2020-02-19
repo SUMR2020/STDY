@@ -2,3 +2,12 @@ February 16th, 2020: 10am to 2pm
 - Researched the firebase database
 - Created an additional task collection to add to course collection that Sharjeel created
 - Created a list of DateTimes between two DateTimes
+
+
+February 16th, 2020: 3pm to 12:30am
+- Researched into list views and firestore array fields
+- converted dates array from firestore into DateTime array to see if the array has the current day in it
+- if so add it to the list of tasks for the day
+- created a list view for the tasks for today
+- we had some github issues, so I had to redo my code and do a lot of debugging, this took quite some time
+- Added the time/amount field in the to do list

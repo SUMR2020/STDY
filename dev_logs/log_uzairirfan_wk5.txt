@@ -1,0 +1,3 @@
+Spent about an hour fixing the master branch, because merging 2 prs was not working correctly.
+
+Spent another hour figuring out how to fix login so you can not access the app without aa google account.

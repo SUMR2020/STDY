@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'home_widget.dart';
 
+bool authCheck = false;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -18,13 +19,15 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Text('Login'),
           onPressed: () {
             signInWithGoogle().whenComplete(() {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return Home();
-                  },
-                ),
-              );
+              if (authCheck) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return Home();
+                    },
+                  ),
+                );
+              }
             });
           },
         ),
@@ -33,15 +36,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
-
-Future<String> signInWithGoogle() async {
+Future<bool> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+  if (googleSignInAccount == null) authCheck = false;
   final GoogleSignInAuthentication googleSignInAuthentication =
-  await googleSignInAccount.authentication;
+      await googleSignInAccount.authentication;
 
   final AuthCredential credential = GoogleAuthProvider.getCredential(
     accessToken: googleSignInAuthentication.accessToken,
@@ -59,11 +61,11 @@ Future<String> signInWithGoogle() async {
 
   print("SUCCESS");
 
-
-  return 'signInWithGoogle succeeded: $user';
+  authCheck = true;
+  return true;
 }
 
-void signOutGoogle() async{
+void signOutGoogle() async {
   await googleSignIn.signOut();
 
   print("User Sign Out");
