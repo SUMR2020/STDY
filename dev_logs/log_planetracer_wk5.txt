@@ -20,3 +20,5 @@ February 17th, 2020: 6pm to 8:30pm
 February 19th, 2020: 5pm to 6:30pm 
 - created a unique id field for tasks so that duplicate names would not be an issue
 - updated the calculations for daily to do, there was an error
+- changed the page it returns to after adding a task
+- added a curr field for a current task
