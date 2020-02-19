@@ -180,7 +180,7 @@ class GradeData {
     String id = (new DateTime.now().millisecondsSinceEpoch).toString();
     course = course.replaceAll(" ", "");
     await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(id).setData(
-        {"id": id, "name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks, "weight": weight, "grade": grade, "type": type, "daily": daily}
+        {"id": id, "name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks, "weight": weight, "grade": grade, "type": type, "daily": daily, "curr": true}
     );
 
 //    if (forMarks) {
