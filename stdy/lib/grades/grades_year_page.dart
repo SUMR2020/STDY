@@ -89,7 +89,7 @@ class GradesYearPageState extends State<GradesYearPage> {
             new FlatButton(
               child: new Text("Yes"),
               onPressed: () async{
-                await firehouse.remove_data((course + semester).replaceAll(' ', ''));
+                await firehouse.remove_course((course + semester).replaceAll(' ', ''));
                 await _getData();
                 setState(() {});
 
