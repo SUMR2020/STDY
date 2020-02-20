@@ -22,3 +22,7 @@ February 19th, 2020: 5pm to 6:30pm
 - updated the calculations for daily to do, there was an error
 - changed the page it returns to after adding a task
 - added a curr field for a current task
+
+February 19th, 2020: 8:30pm to 11:00pm 
+- been working on a function that takes in the amount a user did for a task
+- updates the database
