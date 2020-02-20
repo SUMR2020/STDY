@@ -26,8 +26,10 @@ Future<bool> _tasksLoaded;
 class _task {
   String type;
   String name;
+
   String time;
   _task(String t, String n, String ti) {
+
     type = t;
     name = n;
     time = ti;
@@ -124,7 +126,9 @@ class _MyHomePageState extends State<SchedulePage>
     }
     DateTime today = DateTime.now();
     if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
+
       todayTasks.add(new _task(task.data["type"], task.data["name"],task.data["daily"]));
+
     }
     }
     return true;
@@ -176,15 +180,19 @@ class _MyHomePageState extends State<SchedulePage>
     if (taskType == "notes") return Icons.event_note;
   }
 
+
   String getTypeString(String taskType, String time){
     if (taskType == "reading") return (time + " pages");
+
     return (time.toString() + " hours");
   }
 
   Widget _listTaskView() {
     List<String> tasks = new List<String>();
     List<String> taskTypes = new List<String>();
+
     List<String> time = new List<String>();
+
     for (_task task in todayTasks) {
       tasks.add(task.name);
       taskTypes.add(task.type);
@@ -197,6 +205,7 @@ class _MyHomePageState extends State<SchedulePage>
           shrinkWrap: true,
           itemCount: tasks.length,
           itemBuilder: (context, index) {
+
             return new GestureDetector(
                 onTap: () {
                   print (tasks[index]);
@@ -231,12 +240,15 @@ class _MyHomePageState extends State<SchedulePage>
                       });
                 },
             child: new Card( //                           <-- Card widget
+
               child: ListTile(
                 leading: Icon(getIcon(taskTypes[index])),
                 title: Text(tasks[index]),
                 trailing: Text(getTypeString(taskTypes[index], time[index])),
               ),
+
             ));
+
           },
         ));
   }
@@ -311,7 +323,9 @@ class _MyHomePageState extends State<SchedulePage>
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
       markedDatesMap: _markedDateMap,
+
       height: 300.0,
+
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
       customGridViewPhysics: null,
@@ -444,6 +458,7 @@ class _MyHomePageState extends State<SchedulePage>
               //_calendarCarouselNoHeader,
               ),
           Container(
+
             margin: EdgeInsets.only(
               top: 30.0,
               bottom: 16.0,
@@ -465,6 +480,7 @@ class _MyHomePageState extends State<SchedulePage>
             ),
           ),
           Container(
+
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder(
                   future: _tasksLoaded,

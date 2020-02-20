@@ -28,7 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             DropdownButton<String>(
               isExpanded: true,
               value: themeDrop,
-              icon: Icon(Icons.arrow_drop_down),
+              icon: Icon(Icons.settings_brightness),
               iconSize: 24,
               elevation: 16,
               style: TextStyle(color: stdyPink),
@@ -58,28 +58,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               }).toList(),
             ),
-//            RaisedButton(
-//              child: Text('Font Up'),
-//              onPressed: (){
-//                fontScale = fontScale+2;
-//                print(fontScale);
-//              },
-//            ),
-//            RaisedButton(
-//              child: Text('Font Down'),
-//              onPressed: (){
-//                fontScale = fontScale-2;
-//                print(fontScale);
-//              },
-//            ),
+
             Slider(
                 value: fontScale.toDouble(),
-                min: -10.0,
-                max: 19.0,
-                divisions: 10,
+                min: -5.0,
+                max: 20.0,
+                divisions: 25,
                 activeColor: stdyPink,
                 inactiveColor: Colors.blueGrey,
-                label: fontScale.toString(),
+                label: ((fontScale/20)*100).toInt().toString()+"%",
                 onChanged: (double newValue) {
                   setState(() {
                     fontScale = newValue.round();

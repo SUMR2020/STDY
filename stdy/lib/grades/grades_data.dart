@@ -181,12 +181,14 @@ class GradeData {
     print("added data to $uid");
   }
 
+
   void addTaskGrade(String name, String course, List<String> gradeInput) async {
     print("adding $name to $course");
 
     double weight = double.parse(gradeInput[0]);
     double total = double.parse(gradeInput[1]);
     double grade = double.parse(gradeInput[2]);
+
 
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
@@ -209,6 +211,7 @@ class GradeData {
     final uid = user.uid;
 
     await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(name).setData(
+
         {"curr": false, "name": name,"course": course, "weight": weight, "grade": grade, "type": type, "total": total}
     );
 
@@ -221,6 +224,7 @@ class GradeData {
     course = course.replaceAll(" ", "");
     await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(id).setData(
         {"id": id, "name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks, "weight": weight, "grade": grade, "type": type, "daily": daily, "curr": true}
+
     );
 
 //    if (forMarks) {
@@ -259,6 +263,7 @@ class GradeData {
       print("letter isnt");
     }
 
+
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
 
@@ -273,6 +278,7 @@ class GradeData {
   }
 
   Future <List<DocumentSnapshot>> getTasksData(String course) async {
+
 
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
@@ -296,6 +302,7 @@ class GradeData {
     print("we about to sort");
 
     /*
+
     documents.sort((a,b) {
       String aSem = a.data["semester"];
       String bSem = b.data["semester"];
@@ -310,6 +317,7 @@ class GradeData {
       return val;
 
     });*/
+
 
     print("we just sorted");
 
