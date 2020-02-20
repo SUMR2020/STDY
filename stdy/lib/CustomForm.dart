@@ -156,6 +156,7 @@ class _TaskPageState extends State<TaskPage> {
         final daysToGenerate = _data.dueDate.difference(DateTime.now()).inDays + 2;
         var dates = List.generate(daysToGenerate, (i) => DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + (i)));
         for (DateTime date in dates){
+
           if ((date.weekday == 1) && (_data.monVal == true)) _data.dates.add(date);
           if ((date.weekday == 2) && (_data.tuVal == true)) _data.dates.add(date);
           if ((date.weekday == 3) && (_data.wedVal == true)) _data.dates.add(date);
@@ -164,6 +165,7 @@ class _TaskPageState extends State<TaskPage> {
           if ((date.weekday == 6) && (_data.satVal == true)) _data.dates.add(date);
           if ((date.weekday == 7) && (_data.sunVal == true)) _data.dates.add(date);
         }
+
         print (dates.length);
         double dailyDouble = int.parse(_data.length)/_data.dates.length;
         String daily = dailyDouble.toStringAsFixed(2);
@@ -194,6 +196,7 @@ class _TaskPageState extends State<TaskPage> {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (_) => Home()));
         }
+
       } else {
         print("not valid");
       }

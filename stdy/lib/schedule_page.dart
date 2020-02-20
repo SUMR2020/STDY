@@ -27,6 +27,7 @@ Future<bool> _tasksLoaded;
 class Task {
   String type;
   String name;
+
   String time;
   String id;
   String course;
@@ -131,6 +132,7 @@ class _MyHomePageState extends State<SchedulePage>
     if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
       Task t = new Task(task.data["type"], task.data["name"],task.data["daily"], task.data["id"],task.data["course"]);
       todayTasks.add(t);
+
     }
     }
     return true;
@@ -182,8 +184,10 @@ class _MyHomePageState extends State<SchedulePage>
     if (taskType == "notes") return Icons.event_note;
   }
 
+
   String getTypeString(String taskType, String time){
     if (taskType == "reading") return (time + " pages");
+
     return (time.toString() + " hours");
   }
 
@@ -196,6 +200,7 @@ class _MyHomePageState extends State<SchedulePage>
           shrinkWrap: true,
           itemCount: todayTasks.length,
           itemBuilder: (context, index) {
+
             return new GestureDetector(
                 onTap: () {
                   showDialog(
@@ -244,12 +249,15 @@ class _MyHomePageState extends State<SchedulePage>
                       });
                 },
             child: new Card( //                           <-- Card widget
+
               child: ListTile(
                 leading: Icon(getIcon(todayTasks[index].type)),
                 title: Text(todayTasks[index].name),
                 trailing: Text(getTypeString(todayTasks[index].type, todayTasks[index].time)),
               ),
+
             ));
+
           },
         ));
   }
@@ -324,7 +332,9 @@ class _MyHomePageState extends State<SchedulePage>
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
       markedDatesMap: _markedDateMap,
+
       height: 300.0,
+
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
       customGridViewPhysics: null,
@@ -457,6 +467,7 @@ class _MyHomePageState extends State<SchedulePage>
               //_calendarCarouselNoHeader,
               ),
           Container(
+
             margin: EdgeInsets.only(
               top: 30.0,
               bottom: 16.0,
@@ -478,6 +489,7 @@ class _MyHomePageState extends State<SchedulePage>
             ),
           ),
           Container(
+
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder(
                   future: _tasksLoaded,
