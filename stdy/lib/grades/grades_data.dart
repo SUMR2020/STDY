@@ -16,11 +16,9 @@ class GradeData {
   Map<String, dynamic> letterGPA;
 
   GradesData(){
-
     print("started grades");
-
-
   }
+
 
   double getGPA(){
     double gpa = 0.0;
@@ -126,13 +124,22 @@ class GradeData {
     // here you write the codes to input the data into firestore
   }
 
-  void remove_data(String id) async{
+  void remove_course(String id) async{
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     db.collection("users").document(uid).collection("Grades").document(id).delete();
     print("removed $id");
 
   }
+
+  void remove_task(String id, String course) async{
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    db.collection("users").document(uid).collection("Grades").document(course).collection("Tasks").document(id).delete();
+    print("removed $id");
+
+  }
+
 
   void addData(List<String> data) async {
 
@@ -174,12 +181,50 @@ class GradeData {
     print("added data to $uid");
   }
 
-  void addTaskData(String name, String course, int toDo, List<DateTime> dates, DateTime dueDate, List<int> done, bool forMarks, double weight, double grade, String type) async {
+
+  void addTaskGrade(String name, String course, List<String> gradeInput) async {
+    print("adding $name to $course");
+
+    double weight = double.parse(gradeInput[0]);
+    double total = double.parse(gradeInput[1]);
+    double grade = double.parse(gradeInput[2]);
+
+
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     course = course.replaceAll(" ", "");
+    await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(name).updateData(
+        {"weight": weight, "total": total, "grade": grade});
+
+    print("added data to $uid");
+  }
+
+  void addPastTaskData(String course, List<String> data)async {
+
+    String type = data[0];
+    String name = data[1];
+    double weight = double.parse(data[2]);
+    double total = double.parse(data[3]);
+    double grade = double.parse(data[4]);
+
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+
     await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(name).setData(
-        {"name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks, "weight": weight, "grade": grade, "type": type}
+
+        {"curr": false, "name": name,"course": course, "weight": weight, "grade": grade, "type": type, "total": total}
+    );
+
+  }
+
+  void addTaskData(String name, String course, int toDo, List<DateTime> dates, DateTime dueDate, List<int> done, bool forMarks, double weight, double grade, String type, String daily) async {
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    String id = (new DateTime.now().millisecondsSinceEpoch).toString();
+    course = course.replaceAll(" ", "");
+    await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(id).setData(
+        {"id": id, "name": name,"course": course, "toDo": toDo,"dates": dates, "due": dueDate, "progress": done, "forMarks": forMarks, "weight": weight, "grade": grade, "type": type, "daily": daily, "curr": true}
+
     );
 
 //    if (forMarks) {
@@ -218,6 +263,7 @@ class GradeData {
       print("letter isnt");
     }
 
+
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
 
@@ -231,12 +277,70 @@ class GradeData {
 
   }
 
+  Future <List<DocumentSnapshot>> getTasksData(String course) async {
+
+
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+
+    final QuerySnapshot result =
+    await db.collection('users').document(uid).collection("Grades").document(course).collection("Tasks").getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+
+    //documents.forEach((data) => print(data.data));
+    currDocuments = documents;
+    for(int i =0; i<documents.length; i++){
+      print("task is ${documents[i].data}");
+    }
+
+    return documents;
+
+  }
+
+  Map<String, List<Map<String, dynamic>>> getTasksByType(List<DocumentSnapshot> documents){
+
+    print("we about to sort");
+
+    /*
+
+    documents.sort((a,b) {
+      String aSem = a.data["semester"];
+      String bSem = b.data["semester"];
+      var aYear = a.data["year"];
+      var bYear = b.data["year"];
+      int val = bYear-aYear;
+      print("hello?");
+
+      if(val==0){
+        return aSem.compareTo(bSem);
+      }
+      return val;
+
+    });*/
+
+
+    print("we just sorted");
+
+    Map<String, List<Map<String, dynamic>>> mapData = Map();
+
+    for(int i =0; i<documents.length; i++) {
+      print(documents[i].documentID);
+      String type = documents[i].data["type"];
+      if (!mapData.containsKey(type)) {
+        mapData[type] = <Map<String, dynamic>>[];
+
+      }
+      mapData[type].add(documents[i].data);
+
+    }
+
+    return mapData;
+  }
+
 
   Map<String, List<String>> getCourseNameSem(List<DocumentSnapshot> documents){
 
     print("we about to sort");
-
-
 
     documents.sort((a,b) {
       String aSem = a.data["semester"];
@@ -252,8 +356,6 @@ class GradeData {
       return val;
 
     });
-
-
 
     print("we just sorted");
 
@@ -289,3 +391,5 @@ class GradeData {
     return allTasks;
   }
 }
+
+

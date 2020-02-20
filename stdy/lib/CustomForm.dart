@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/main.dart';
 import 'grades/grades_data.dart';
+import 'home_widget.dart';
 
 Future<bool> _CoursesLoaded;
 
@@ -84,9 +85,12 @@ class _TaskPageState extends State<TaskPage> {
 
   Future<bool> getCourses() async {
     courses = await grades.getCourseData();
-    courses.forEach((data) => print(data.data["id"]));
-    courses.forEach((data) => courseObjs.add(new _Course(data.data["year"], data.data["id"], data.data["semester"])));
-    courseObjs.forEach((data) => courseNames.add((data.name+" " + data.semester+ " " +(data.year.toString()))));
+    for (var data in courses) {
+      if (data.data["taken"] == "CURR") {
+        courseObjs.add(new _Course(
+            data.data["year"], data.data["id"], data.data["semester"]));
+      }
+    }  courseObjs.forEach((data) => courseNames.add((data.name+" " + data.semester+ " " +(data.year.toString()))));
     return true;
   }
 
@@ -148,7 +152,6 @@ class _TaskPageState extends State<TaskPage> {
         final daysToGenerate = _data.dueDate.difference(DateTime.now()).inDays + 2;
         var dates = List.generate(daysToGenerate, (i) => DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + (i)));
         for (DateTime date in dates){
-          print (date.toString());
 
           if ((date.weekday == 1) && (_data.monVal == true)) _data.dates.add(date);
           if ((date.weekday == 2) && (_data.tuVal == true)) _data.dates.add(date);
@@ -158,10 +161,16 @@ class _TaskPageState extends State<TaskPage> {
           if ((date.weekday == 6) && (_data.satVal == true)) _data.dates.add(date);
           if ((date.weekday == 7) && (_data.sunVal == true)) _data.dates.add(date);
         }
-        grades.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks, null, null, taskType.toLowerCase());
+
+        print (dates.length);
+        double dailyDouble = int.parse(_data.length)/_data.dates.length;
+        String daily = dailyDouble.toStringAsFixed(2);
+
+        grades.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks, null, null, taskType.toLowerCase(), daily);
+
 
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_) => TaskPage(taskType, index)));
+            MaterialPageRoute(builder: (_) => Home()));
       } else {
         print("not valid");
       }
