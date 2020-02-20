@@ -17,10 +17,16 @@ Future<String> loadTheme() async {
   return prefs.getString('Theme') ?? "Light";
 }
 
+
+
+
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays([]);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
     notifs.PushNotificationsManager().init();
+    SaveFontScale().loadScale();
     runApp(MyApp());
   });
 }
@@ -29,6 +35,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   ThemeData loadedTheme;
   String theme;
+
   Future<String> getSavedTheme() async {
     String theme = await loadTheme();
     return theme;

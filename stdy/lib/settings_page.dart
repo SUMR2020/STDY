@@ -17,14 +17,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await _firebaseAuth.signOut();
     signOutGoogle();
   }
+
   @override
   Widget build(BuildContext context) {
     ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
     return Scaffold(
       body: Container(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text("Select Theme"),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                child: Text(
+                  "Select Theme",
+                  style: TextStyle(fontSize: 14.0 + fontScale),
+                ),
+              ),
+            ),
             DropdownButton<String>(
               isExpanded: true,
               value: themeDrop,
@@ -58,27 +68,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               }).toList(),
             ),
-
-            Slider(
-                value: fontScale.toDouble(),
-                min: -5.0,
-                max: 20.0,
-                divisions: 25,
-                activeColor: stdyPink,
-                inactiveColor: Colors.blueGrey,
-                label: ((fontScale/20)*100).toInt().toString()+"%",
-                onChanged: (double newValue) {
-                  setState(() {
-                    fontScale = newValue.round();
-                  });
-                },
-                semanticFormatterCallback: (double newValue) {
-                  return '${newValue.round()} dollars';
-                }
+            Text(
+              'Change Font Size',
+              style: TextStyle(
+                fontSize: 14.0 + fontScale
+              ),
             ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+              Text(
+                'A',
+                style: TextStyle(
+                  fontSize: 9,
+                ),
+              ),
+              Container(
+                width: 350,
+              child:Slider(
+                  value: fontScale.toDouble(),
+
+                  min: -5.0,
+                  max: 20.0,
+                  divisions: 25,
+                  activeColor: stdyPink,
+                  inactiveColor: Colors.blueGrey,
+                  label: ((fontScale / 20) * 100).toInt().toString() + "%",
+                  onChanged: (double newValue) {
+                    setState(() {
+                      fontScale = newValue.round();
+                      SaveFontScale().saveSize(fontScale);
+                    });
+                  },
+                  semanticFormatterCallback: (double newValue) {
+                    return '${newValue.round()} dollars';
+                  }),
+              ),
+              Text(
+                'A',
+                style: TextStyle(
+                  fontSize: 34,
+                ),
+              ),
+            ]),
             RaisedButton(
               child: Text('Sign Out'),
-              onPressed: (){
+              onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
