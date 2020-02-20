@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/CustomForm.dart';
 import 'package:study/main.dart';
-import 'package:validate/validate.dart';
 import 'CustomForm.dart';
 
 class SelectionPage extends StatefulWidget {
@@ -13,6 +12,8 @@ class SelectionPage extends StatefulWidget {
 
 class _SelectionPageState extends State<SelectionPage> {
   List<String> tasks = ["READING", "ASSIGNMENT", "PROJECT", "LECTURES", "NOTES"];
+  List<IconData> icons = [Icons.book, Icons.assignment, Icons.subtitles, Icons.ondemand_video, Icons.event_note];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,48 +24,25 @@ class _SelectionPageState extends State<SelectionPage> {
           title: Text('SELECT TYPE OF TASK')
       ),
       body:
-      ListView.builder(
-        itemCount: tasks.length,
-        itemBuilder: (BuildContext context, int index) {
-          return new GestureDetector(
-            onTap: () {
+      new ListView.builder(
+          itemCount: tasks == null ? 0 : tasks.length,
+          itemBuilder: (BuildContext context, int index) {
+            return new GestureDetector( //You need to make my child interactive
+              onTap: () {
               print (tasks[index]);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) =>  TaskPage(tasks[index], index),
               ));
             },
-            child: Container(
-                height: 45.0,
-                decoration: BoxDecoration(),
-                child: new Column(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                      child: new Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          new Container(
-                            padding: EdgeInsets.only(top: 20),
-                            child: Text(
-                             tasks[index],
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 20.0),
-                              maxLines: 1,
-                            ),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0))
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-            ),
-          );
-        },
-      ),
+              child: new Card( //I
+                child: ListTile(
+                  leading: Icon(icons[index]),
+                  title: Text(tasks[index], style: TextStyle(fontSize: 20 + fontScale.toDouble()),),
+                ),// am the clickable child
+                ),
+            );
+          }),
     );
   }
 }

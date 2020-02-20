@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:study/CustomForm.dart';
 import 'home_widget.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
@@ -14,12 +13,32 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'bloc/theme.dart';
 import 'selection_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'grades/grades_data.dart';
+import 'CustomForm.dart';
 
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
 Map<DateTime, List> eventCal = {};
 
 Future<bool> _OnStartup;
+Future<bool> _tasksLoaded;
+
+class Task {
+  String type;
+  String name;
+
+  String time;
+  String id;
+  String course;
+  Task(String t, String n, String ti, String i, String c) {
+    type = t;
+    name = n;
+    time = ti;
+    id = i;
+    course = c;
+  }
+}
 
 Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
   var calEvents = events.events.list("primary",
@@ -85,7 +104,12 @@ class _MyHomePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
   _MyHomePageState() {
     _OnStartup = loadEvents();
+    _tasksLoaded = getTasks();
   }
+  List<DocumentSnapshot> taskDocs;
+  List<Task> todayTasks = new List<Task>();
+  GradeData grades = new GradeData();
+
 
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
@@ -93,6 +117,27 @@ class _MyHomePageState extends State<SchedulePage>
   DateTime _targetDateTime = DateTime.now();
   Map<DateTime, List> eventCal;
   calendar.CalendarApi events;
+
+  Future<bool> getTasks() async {
+    taskDocs = await grades.getTasks();
+    for (DocumentSnapshot task in taskDocs) {
+    var dates = (task.data['dates']);
+    List<DateTime> datesObjs = new List<DateTime>();
+
+    for (Timestamp t in dates){
+      DateTime date = (t.toDate());
+      datesObjs.add(DateTime(date.year, date.month, date.day));
+    }
+    DateTime today = DateTime.now();
+    if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
+      Task t = new Task(task.data["type"], task.data["name"],task.data["daily"], task.data["id"],task.data["course"]);
+      todayTasks.add(t);
+
+    }
+    }
+    return true;
+  }
+
 
   bool contains(Event i) {
     List events = _markedDateMap.getEvents(i.date);
@@ -129,6 +174,92 @@ class _MyHomePageState extends State<SchedulePage>
       }
     }
     return (true);
+  }
+
+  IconData getIcon(String taskType) {
+    if (taskType == "reading") return Icons.book;
+    if (taskType == "assignment") return Icons.assignment;
+    if (taskType == "project") return Icons.subtitles;
+    if (taskType == "lectures") return Icons.ondemand_video;
+    if (taskType == "notes") return Icons.event_note;
+  }
+
+
+  String getTypeString(String taskType, String time){
+    if (taskType == "reading") return (time + " pages");
+
+    return (time.toString() + " hours");
+  }
+
+  Widget _listTaskView() {
+    String done;
+    return new Container(
+        height: 260.0,
+        child: new ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: todayTasks.length,
+          itemBuilder: (context, index) {
+
+            return new GestureDetector(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Form(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                    onChanged: (text) {
+                                      done = text;
+                                    },
+                                    decoration: new InputDecoration(
+                                      hintText: 'How much did you complete today?',
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: RaisedButton(
+                                    child: Text("Submit"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      if (isNumeric(done)) grades.updateProgressandDaily(todayTasks[index].id,todayTasks[index].course, done);
+                                      else{
+                                        Navigator.of(context).pop();
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text('Please select a valid number.'),
+                                              );
+                                            });
+                                      }
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+                },
+            child: new Card( //                           <-- Card widget
+
+              child: ListTile(
+                leading: Icon(getIcon(todayTasks[index].type)),
+                title: Text(todayTasks[index].name),
+                trailing: Text(getTypeString(todayTasks[index].type, todayTasks[index].time)),
+              ),
+
+            ));
+
+          },
+        ));
   }
 
   static Widget _eventIcon = new Container(
@@ -180,8 +311,10 @@ class _MyHomePageState extends State<SchedulePage>
           events.forEach((event) => print(event.title));
         }
       },
-      daysTextStyle: new TextStyle(color: colourweekend),
+      daysTextStyle: new TextStyle(color: colourweekend,
+      fontSize: 14 + fontScale.toDouble()),
       inactiveDaysTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colourweekend,
       ),
       markedDateWidget: Container(
@@ -193,12 +326,15 @@ class _MyHomePageState extends State<SchedulePage>
       daysHaveCircularBorder: true,
       showOnlyCurrentMonthDate: true,
       weekendTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colourweekend,
       ),
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
       markedDatesMap: _markedDateMap,
-      height: 420.0,
+
+      height: 300.0,
+
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
       customGridViewPhysics: null,
@@ -206,24 +342,27 @@ class _MyHomePageState extends State<SchedulePage>
       markedDateCustomShapeBorder:
           CircleBorder(side: BorderSide(color: stdyPink)),
       markedDateCustomTextStyle: TextStyle(
-        fontSize: 18,
+        fontSize: 18 + fontScale.toDouble(),
         color: stdyPink,
       ),
       showHeader: false,
       weekdayTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colourweekend,
       ),
       todayTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colour,
       ),
       todayButtonColor: Colors.blueGrey,
       selectedDayTextStyle: TextStyle(
+        fontSize: 14 + fontScale.toDouble(),
         color: colourweekend,
       ),
       minSelectedDate: _currentDate.subtract(Duration(days: 360)),
       maxSelectedDate: _currentDate.add(Duration(days: 360)),
       prevDaysTextStyle: TextStyle(
-        fontSize: 16,
+        fontSize: 16 + fontScale.toDouble(),
         color: stdyPink,
       ),
       onCalendarChanged: (DateTime date) {
@@ -300,16 +439,17 @@ class _MyHomePageState extends State<SchedulePage>
               children: <Widget>[
                 Expanded(
                     child: Text(
-                  _currentMonth,
+                  _currentMonth.toUpperCase(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 24.0,
+                    fontSize: 24.0 + fontScale,
                   ),
                 )),
 //
               ],
             ),
           ),
+
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder(
@@ -326,7 +466,40 @@ class _MyHomePageState extends State<SchedulePage>
                   })
               //_calendarCarouselNoHeader,
               ),
+          Container(
 
+            margin: EdgeInsets.only(
+              top: 30.0,
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+            ),
+            child: new Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                      "TO DO TODAY",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0 + fontScale,
+                      ),
+                    )),
+//
+              ],
+            ),
+          ),
+          Container(
+
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              child: FutureBuilder(
+                  future: _tasksLoaded,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return _listTaskView();
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  }))
           //
         ],
       ),

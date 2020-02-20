@@ -10,16 +10,23 @@ import 'push_notifictions.dart' as notifs ;
 Color stdyPink = Color(0xFFFDA3A4);
 Future<bool> _themeLoaded;
 String themeDrop;
+int fontScale = 0;
 
 Future<String> loadTheme() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString('Theme') ?? "Light";
 }
 
+
+
+
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays([]);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
     notifs.PushNotificationsManager().init();
+    SaveFontScale().loadScale();
     runApp(MyApp());
   });
 }
@@ -28,6 +35,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   ThemeData loadedTheme;
   String theme;
+
   Future<String> getSavedTheme() async {
     String theme = await loadTheme();
     return theme;

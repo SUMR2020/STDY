@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'grades_data.dart';
+import 'grades_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'course_input_page.dart';
@@ -19,13 +20,10 @@ class GradesYearPage extends StatefulWidget {
 class GradesYearPageState extends State<GradesYearPage> {
 
 
-
   GradeData firehouse;
 
   int marks;
   String _finalGradeText;
-  var _addYear = TextEditingController();
-  var _addCourse = TextEditingController();
   List<Item> _data; /*= <Item> [
     Item(headerValue: "test1", expandedValue: "IT WORKED", isExpanded: false)
   ];*/
@@ -34,6 +32,7 @@ class GradesYearPageState extends State<GradesYearPage> {
   List<DocumentSnapshot> courseData;
 
   Future <List<DocumentSnapshot>> _futureData;
+  String gpaPageVal;
 
 
 
@@ -42,46 +41,82 @@ class GradesYearPageState extends State<GradesYearPage> {
 
     _finalGradeText = '';
     marks = 0;
-     print("hello test");
-
 
     _futureData = _getData();
 
   }
 
+
   List<Item> generateItems(Map<String, List<String>> data) {
     List<Item> items = <Item>[];
 
-    List<String> sortedKeys = data.keys.toList()..sort();
+    //List<String> sortedKeys = new List();
+    //data.forEach((k, v) => sortedKeys.add(k));
+
+    List<String> sortedKeys = data.keys.toList();
 
     sortedKeys.forEach((key) =>
-        //print(key)
         items.add(
             Item(
                 headerValue: key.toString(),
                 expandedValue: "This is a value thing",
-                expandedText: data[key]
+                expandedText: data[key],
+                semGPA: firehouse.calculateSemGPA(key, data[key].length)
             )
         )
     );
-    /*
-    print("test:");
-    for(int i =0; i<items.length; i++){
-      print(items[i].headerValue);
-      print(items[i].expandedText);
-    }
-    print("test:");
-    */
+
+
 
     return items;
   }
 
-  void _removeData(String course, String semester) async{
-    await firehouse.remove_data((course+semester).replaceAll(' ',''));
 
-    await _getData();
-    print("in add course");
-    setState(() {});
+  void _setPageStats(){
+  }
+
+
+  void _removeData(String course, String semester) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Confirm"),
+          content: new Text("Are you sure you want to delete course $course?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Yes"),
+              onPressed: () async{
+                await firehouse.remove_course((course + semester).replaceAll(' ', ''));
+                await _getData();
+                setState(() {});
+
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+  }
+
+  void _openCoursePage(String course, String sem) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GradesPage(course, sem),
+        ));
+
+
 
   }
 
@@ -92,29 +127,25 @@ class GradesYearPageState extends State<GradesYearPage> {
         MaterialPageRoute(
           builder: (context) => CourseInputPage(),
         ));
-    print(result);
 
     await firehouse.addData(result);
 
     await _getData();
-    print("in add course");
     setState(() {});
 
   }
 
   Future <List<DocumentSnapshot>> _getData() async {
 
-    courseData =  await firehouse.getCourseNames();
+    courseData =  await firehouse.getCourseData();
 
-    print("testing course");
-    Map<String, List<String>> courseByYear = firehouse.getCourseByYear(courseData);
-    //courseByYear.forEach((key,val) => print(key));
-
+    Map<String, List<String>> courseByYear = firehouse.getCourseNameSem(courseData);
+    gpaPageVal = firehouse.getGPA().toStringAsFixed(2);
+    print("gpa is now $gpaPageVal");
     _data = generateItems(courseByYear);
+    setState(() {
+    });
 
-    _data.forEach((i) =>
-        print(i.headerValue)
-    );
 
     return courseData;
 
@@ -124,9 +155,13 @@ class GradesYearPageState extends State<GradesYearPage> {
     List<Widget> courseWidgets = <Widget>[];
 
     for(int i =0; i<courses.length; i++){
+      String grade = firehouse.getCourseGrade((courses[i]+semester).replaceAll(' ',''));
+      print(grade);
+
       courseWidgets.add(
         ListTile(
             title: Text(courses[i]),
+            subtitle: Text('Grade: $grade'),
             trailing: IconButton(
               icon: Icon(Icons.delete),
               tooltip: 'Increase volume by 10',
@@ -135,6 +170,7 @@ class GradesYearPageState extends State<GradesYearPage> {
               },
             ),
             onTap: () {
+              _openCoursePage(courses[i], semester);
               setState(() {
                 print("course opened");
               });
@@ -147,6 +183,7 @@ class GradesYearPageState extends State<GradesYearPage> {
     return courseWidgets;
 
   }
+
   Widget _buildPanel()  {
 
     return ExpansionPanelList(
@@ -160,6 +197,7 @@ class GradesYearPageState extends State<GradesYearPage> {
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
               title: Text(item.headerValue),
+              subtitle: Text('GPA: ${item.semGPA}'),
             );
           },
           body: Container(
@@ -174,29 +212,6 @@ class GradesYearPageState extends State<GradesYearPage> {
     );
   }
 
-  /*
-
-
-
-   body: Container(
-              child: Column(
-                  children: _buildCourses(item.expandedText)
-              ),
-          isExpanded: item.isExpanded,
-        );
-
-  body: ListTile(
-              title: Text(item.expandedValue),
-              subtitle: Text('To delete this panel, tap the trash can icon'),
-              trailing: Icon(Icons.delete),
-              onTap: () {
-                setState(() {
-                  _data.removeWhere((currentItem) => item == currentItem);
-                });
-              }),
-          isExpanded: item.isExpanded,
-        );
-   */
 
   Widget projectWidget() {
     return FutureBuilder(
@@ -230,7 +245,15 @@ class GradesYearPageState extends State<GradesYearPage> {
                 _addData();
               },
             ),
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Text("Student Stats"),
+                  Text("GPA: $gpaPageVal"),
 
+                ]
+              )
+            ),
             Container(child: projectWidget()),
           ],
 
@@ -247,12 +270,14 @@ class Item {
     this.headerValue,
     this.expandedText,
     this.isExpanded = false,
+    this.semGPA
   });
 
   String expandedValue;
   String headerValue;
   List<String> expandedText;
   bool isExpanded;
+  String semGPA;
 }
 
 

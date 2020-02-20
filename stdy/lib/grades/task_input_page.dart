@@ -2,42 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../main.dart';
 
-class CourseInputPage extends StatefulWidget {
+class TaskInputPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return CourseInputState();
+    return TaskInputState();
   }
 }
 
-class CourseInputState extends State<CourseInputPage>{
+class TaskInputState extends State<TaskInputPage>{
 
+  List<String> tasks = ["Choose Task", "ASSIGNMENT", "TUTORIAL", "PARTICIPATION","PROJECT", "EXAM"];
+  var _weight = TextEditingController();
+  var _total = TextEditingController();
+  var _grade = TextEditingController();
+  var _name = TextEditingController();
 
-  var _addYear = TextEditingController();
-  var _addCourse = TextEditingController();
-  var _addGrade = TextEditingController();
+  String dropdownValueTask;
 
-  String dropdownValueSem;
-
-  CourseInputState(){
-    dropdownValueSem = "Semester";
+  TaskInputPage(){
+    dropdownValueTask = "Choose Task";
   }
 
   void addCourseButton(BuildContext context){
-    String grade = _addGrade.text;
 
-    if(dropdownValueSem=="Semester" ||
-        _addCourse.text=='' || _addYear.text==''
+    if(dropdownValueTask=="Semester" ||
+        _weight.text=='' || _total.text=='' || _grade.text=='' || _name.text==''
     ){
       _showDialog();
       return;
     }
 
-    if(grade==''){
-      grade = 'CURR';
-    }
 
-    print(dropdownValueSem);
-    Navigator.pop(context, [_addCourse.text,  dropdownValueSem,_addYear.text, grade]);
+    print(dropdownValueTask);
+    Navigator.pop(context, [dropdownValueTask.toLowerCase(),  _name.text, _weight.text,_total.text, _grade.text]);
   }
 
   void _showDialog() {
@@ -71,25 +68,32 @@ class CourseInputState extends State<CourseInputPage>{
           centerTitle: true,
           backgroundColor: Color(0x00000000),
           elevation: 0,
-          title: Text('INPUT COURSE')
+          title: Text('INPUT TASK')
       ),
       body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text("Course Name"),
-              new SizedBox( child: TextField(controller: _addCourse,
+              Text("Task name"),
+              new SizedBox( child: TextField(controller: _name,
                 decoration: new InputDecoration(),
               )),
-              Text("Course Year"),
-              new SizedBox(child: TextField(controller: _addYear,
+              Text("Task grade"),
+              new SizedBox(child: TextField(controller: _grade,
                   decoration: new InputDecoration(),keyboardType: TextInputType.number
               )),
-              Text("Course Semester"),
+              Text("Task total marks"),
+              new SizedBox(child: TextField(controller: _total,
+                  decoration: new InputDecoration(),keyboardType: TextInputType.number
+              )),
+              Text("Task total weight"),
+              new SizedBox(child: TextField(controller: _weight,
+                  decoration: new InputDecoration(),keyboardType: TextInputType.number
+              )),
+              Text("Task type"),
               DropdownButton<String>(
-                isExpanded: true,
-                value: dropdownValueSem,
+                value: dropdownValueTask,
                 icon: Icon(Icons.arrow_downward),
                 iconSize: 24,
                 elevation: 16,
@@ -102,10 +106,10 @@ class CourseInputState extends State<CourseInputPage>{
                 ),
                 onChanged: (String newValue) {
                   setState(() {
-                    dropdownValueSem = newValue;
+                    dropdownValueTask = newValue;
                   });
                 },
-                items: <String>["Semester","Fall", "Winter", "Summer"]
+                items: tasks
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -114,13 +118,6 @@ class CourseInputState extends State<CourseInputPage>{
                 })
                     .toList(),
               ),
-
-              Text("Grade (Leave blank for CURR)"),
-              new SizedBox(child: TextField(controller: _addGrade,
-                  decoration: new InputDecoration(hintText: "0-100%"),keyboardType: TextInputType.number
-              )),
-
-
 
               RaisedButton(
                 child: Text('Add course'),
@@ -135,4 +132,6 @@ class CourseInputState extends State<CourseInputPage>{
       ),
     );
   }
+
+
 }
