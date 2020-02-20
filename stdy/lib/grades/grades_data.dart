@@ -254,6 +254,24 @@ class GradeData {
 
   }
 
+  Future <bool> updateProgressandDaily(String id, String course, String done) async{
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    DocumentReference docRef = db.collection("users").document(uid).collection("Grades").document(course).collection("Tasks").document(id);
+    var before = await docRef.get();
+    int totalBefore = before["toDo"];
+    double totalAfter = ((totalBefore)-double.parse(done));
+    if (totalAfter<0) totalAfter = 0;
+    var days = before["dates"];
+    var progress = before["progress"];
+    if (progress == null) progress = new List<String>();
+    progress.add(done);
+    docRef.updateData({"progress": progress});
+    docRef.updateData({"toDo": totalAfter});
+    docRef.updateData({"daily": (totalAfter/days.length).toString()});
+    return true;
+  }
+
   Future <List<DocumentSnapshot>> getCourseData() async {
     if(letterGPA==null) {
       print("letter is null");

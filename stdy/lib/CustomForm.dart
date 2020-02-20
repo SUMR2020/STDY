@@ -7,6 +7,17 @@ import 'home_widget.dart';
 
 Future<bool> _CoursesLoaded;
 
+bool isNumeric(String s) {
+  if(s == null) {
+    return false;
+  }
+
+  // TODO according to DartDoc num.parse() includes both (double.parse and int.parse)
+  return double.parse(s, (e) => null) != null ||
+      int.parse(s, onError: (e) => null) != null;
+}
+
+
 class TaskPage extends StatefulWidget {
   String taskType;
   int index;
@@ -94,13 +105,6 @@ class _TaskPageState extends State<TaskPage> {
     return true;
   }
 
-  bool isNumeric(String s) {
-    if (s == null) {
-      return false;
-    }
-    return double.parse(s, (e) => null) != null;
-  }
-
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   _Data _data = new _Data();
   DateTime selectedDate = DateTime.now();
@@ -165,12 +169,34 @@ class _TaskPageState extends State<TaskPage> {
         print (dates.length);
         double dailyDouble = int.parse(_data.length)/_data.dates.length;
         String daily = dailyDouble.toStringAsFixed(2);
+        if (_data.dates.length == 0){
+          String string = "Please enter valid days of the week to work on the " + taskType.toLowerCase() + ".";
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(string),
+                );
+              });
+        }
+        else {
+          grades.addTaskData(
+              _data.name,
+              _data.dropDownValue,
+              int.parse(_data.length),
+              _data.dates,
+              _data.dueDate,
+              done,
+              _data.forMarks,
+              null,
+              null,
+              taskType.toLowerCase(),
+              daily);
 
-        grades.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks, null, null, taskType.toLowerCase(), daily);
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (_) => Home()));
+        }
 
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_) => Home()));
       } else {
         print("not valid");
       }
@@ -178,10 +204,11 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Future<Null> _selectDate(BuildContext context) async {
+    DateTime today = DateTime.now();
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime(today.year, today.month, today.day),
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {
