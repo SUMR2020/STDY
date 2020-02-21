@@ -34,7 +34,7 @@ class SaveFontScale{
 
   Future<int> loadScale() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    fontScale = prefs.getInt('Size');
+    fontScale = prefs.getInt('Size') ?? 0;
     print("FONTSCALE "+fontScale.toString());
     return fontScale;
   }
