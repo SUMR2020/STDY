@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../main.dart';
+import 'package:flutter/services.dart';
 
 class CourseInputPage extends StatefulWidget {
   @override
@@ -12,32 +13,35 @@ class CourseInputPage extends StatefulWidget {
 class CourseInputState extends State<CourseInputPage>{
 
 
-  var _addYear = TextEditingController();
-  var _addCourse = TextEditingController();
-  var _addGrade = TextEditingController();
+  String _addCourse;
+  String _addYear;
+  String _addGrade;
 
   String dropdownValueSem;
 
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
   CourseInputState(){
     dropdownValueSem = "Semester";
+
   }
 
   void addCourseButton(BuildContext context){
-    String grade = _addGrade.text;
 
-    if(dropdownValueSem=="Semester" ||
-        _addCourse.text=='' || _addYear.text==''
-    ){
-      _showDialog();
-      return;
+    if (this._formKey.currentState.validate()) {
+      _formKey.currentState.save();
+
+
+      if (dropdownValueSem == "Semester") {
+        _showDialog();
+        return;
+      }
+      if(_addGrade=='')
+        _addGrade="CURR";
+
+      print("adding $_addCourse $_addYear $dropdownValueSem, $_addGrade");
+      Navigator.pop(context, [_addCourse, dropdownValueSem, _addYear, _addGrade]);
     }
-
-    if(grade==''){
-      grade = 'CURR';
-    }
-
-    print(dropdownValueSem);
-    Navigator.pop(context, [_addCourse.text,  dropdownValueSem,_addYear.text, grade]);
   }
 
   void _showDialog() {
@@ -48,7 +52,7 @@ class CourseInputState extends State<CourseInputPage>{
         // return object of type Dialog
         return AlertDialog(
           title: new Text("Error"),
-          content: new Text("One of the input fields is empty."),
+          content: new Text("Select a semester"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -63,6 +67,26 @@ class CourseInputState extends State<CourseInputPage>{
     );
   }
 
+  String _validateCourseName(String value) {
+    // If empty value, the isEmail function throw a error.
+    // So I changed this function with try and catch.
+    if (value.isEmpty) return 'Please enter a valid course name.';
+    return null;
+  }
+
+  String _validateCourseYear(String value) {
+    // If empty value, the isEmail function throw a error.
+    // So I changed this function with try and catch.
+    if (value.isEmpty) return 'Please enter a valid course year.';
+    return null;
+  }
+
+  String _validateCourseGrade(String value) {
+    // If empty value, the isEmail function throw a error.
+    // So I changed this function with try and catch.
+    //if (value.isEmpty) return 'Please enter a valid course grade.';
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,19 +97,48 @@ class CourseInputState extends State<CourseInputPage>{
           elevation: 0,
           title: Text('INPUT COURSE')
       ),
-      body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+      body: new Container(
+          padding: new EdgeInsets.all(20.0),
+
+          child: new Form(
+            key: this._formKey,
+            child: new ListView(
+
             children: <Widget>[
-              Text("Course Name"),
-              new SizedBox( child: TextField(controller: _addCourse,
-                decoration: new InputDecoration(),
-              )),
-              Text("Course Year"),
-              new SizedBox(child: TextField(controller: _addYear,
-                  decoration: new InputDecoration(),keyboardType: TextInputType.number
-              )),
+              new TextFormField(
+                  decoration: new InputDecoration(
+                    hintText: 'Enter course name here...',
+                    labelText: "Course name *",
+                  ),
+                  validator: this._validateCourseName,
+                  onSaved: (String value) {
+                    print("val is $value");
+                    _addCourse = value;
+                  }),
+
+              new TextFormField(
+                keyboardType: TextInputType.number,
+                  decoration: new InputDecoration(
+                    hintText: 'Enter course year here...',
+                    labelText: "Course year *",
+                  ),
+                  validator: this._validateCourseYear,
+                  onSaved: (String value) {
+                    print("val is $value");
+                    _addYear = value;
+                  }),
+              new TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: new InputDecoration(
+                    hintText: 'Enter course grade here...',
+                    labelText: "Course grade (Leave blank for Current)",
+                  ),
+                  validator: this._validateCourseGrade,
+                  onSaved: (String value) {
+                    print("val is $value");
+                    _addGrade = value;
+                  }),
+
               Text("Course Semester"),
               DropdownButton<String>(
                 value: dropdownValueSem,
@@ -114,13 +167,6 @@ class CourseInputState extends State<CourseInputPage>{
                     .toList(),
               ),
 
-              Text("Grade (Leave blank for CURR)"),
-              new SizedBox(child: TextField(controller: _addGrade,
-                  decoration: new InputDecoration(hintText: "0-100%"),keyboardType: TextInputType.number
-              )),
-
-
-
               RaisedButton(
                 child: Text('Add course'),
                 onPressed: (){
@@ -129,6 +175,7 @@ class CourseInputState extends State<CourseInputPage>{
               ),
 
             ],
+            )
           )
 
       ),

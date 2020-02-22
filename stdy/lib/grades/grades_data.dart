@@ -3,6 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 
+class CourseData{
+}
+
+class TaskData{
+}
 
 class GradeData {
 
@@ -20,25 +25,33 @@ class GradeData {
   }
 
 
-  double getGPA(){
+  double getGPA(bool curr){
     double gpa = 0.0;
     int size = currDocuments.length;
 
     for(int i =0; i<currDocuments.length; i++) {
+      Map<String, dynamic> doc = currDocuments[i].data;
 
-      if(currDocuments[i].data["taken"]=="CURR"){
-        size--;
+      if(doc["taken"]=="CURR"){
+        if(curr && doc.containsKey("weighted")){
+          gpa += double.parse(findNumberGPA(doc["weighted"]));
+        }
+        else{
+          size--;
+        }
       }
-      else{
-        gpa+= double.parse(findLetterGPA(currDocuments[i].data["grade"]));
 
-      }
+      gpa += double.parse(findNumberGPA(doc["grade"]));
     }
     return gpa/size;
-
-
   }
-  String findLetterGPA(double grade){
+
+  String findNumberGPA(double grade){
+    if(letterGPA==null) {
+      print("letterGPA is $letterGPA");
+    }
+
+    print("test for ${letterGPA[0]}");
 
     //List<String> letters = letterGPA.keys.toList()..sort();
     List<String> letters = new List();
@@ -55,32 +68,56 @@ class GradeData {
       curr = letters[i];
 
     }
+    print("returning value grade of $curr");
 
     return curr;
-
+  }
+  String findLetterGPA(double grade){
+    String numberGPA = findNumberGPA(grade);
+    return grades[int.parse(numberGPA)];
   }
 
   String getCourseGrade(String course){
 
-
     for(int i =0; i<currDocuments.length; i++) {
 
+
       if (currDocuments[i].documentID==course) {
+
         if(currDocuments[i].data["taken"]=="CURR"){
-          return "CURR";
+
+          if(currDocuments[i].data.containsKey("weighted")){
+            double grade = currDocuments[i].data["weighted"];
+            String numberGPA = findNumberGPA(grade);
+            return "CURR (${grades[int.parse(numberGPA)]})";
+          }
+          else{
+            return "CURR";
+          }
+
         }
-
-        double grade = currDocuments[i].data["grade"];
-        String numberGPA = findLetterGPA(grade);
-
-        return grades[int.parse(numberGPA)];
+        else{
+          double grade = currDocuments[i].data["grade"];
+          String numberGPA = findNumberGPA(grade);
+          return grades[int.parse(numberGPA)];
+        }
 
       }
 
     }
-    return 'N/A';
+    return "N/A";
   }
 
+  Future <Map<String, dynamic> > getCourse(String id) async{
+    List<DocumentSnapshot> list = await getCourseData();
+    for (int i=0; i<list.length; i++){
+      if(list[i].documentID==id){
+        return list[i].data;
+      }
+    }
+
+
+  }
 
   String calculateSemGPA(String sem, int size) {
     double gpa=0.0;
@@ -101,7 +138,7 @@ class GradeData {
           size--;
         }
         else {
-          gpa += double.parse(findLetterGPA(currDocuments[i].data["grade"]));
+          gpa += double.parse(findNumberGPA(currDocuments[i].data["grade"]));
         }
       }
 
@@ -236,13 +273,14 @@ class GradeData {
 //Future <Map<String, int>>
   void getGPATable() async {
 
+
     final QuerySnapshot result =
     await db.collection('gpa').getDocuments();
     final List<DocumentSnapshot> documents = result.documents;
 
     for(int i =0; i<documents.length; i++){
       if(documents[i].documentID==university){
-        print("We good!");
+        print("Assigned letter gpa!");
         letterGPA = documents[i].data;
       }
     }
@@ -251,11 +289,11 @@ class GradeData {
 
   Future <List<DocumentSnapshot>> getCourseData() async {
     if(letterGPA==null) {
-      print("letter is null");
+      //print("letter is null");
       getGPATable();
     }
     else{
-      print("letter isnt");
+      //print("letter isnt");
     }
 
     final FirebaseUser user = await _auth.currentUser();
@@ -273,6 +311,14 @@ class GradeData {
 
   Future <List<DocumentSnapshot>> getTasksData(String course) async {
 
+    if(letterGPA==null) {
+      //print("letter is null");
+      getGPATable();
+    }
+    else{
+      //print("letter isnt");
+    }
+
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
 
@@ -282,17 +328,22 @@ class GradeData {
 
     //documents.forEach((data) => print(data.data));
     currDocuments = documents;
-    for(int i =0; i<documents.length; i++){
-      print("task is ${documents[i].data}");
-    }
 
     return documents;
 
   }
 
-  Map<String, List<Map<String, dynamic>>> getTasksByType(List<DocumentSnapshot> documents){
+  void setCourseGrade(String course, double grade, double weighted) async{
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    course = course.replaceAll(" ", "");
 
-    print("we about to sort");
+    await db.collection("users").document(uid).collection("Grades").document((course)).updateData(
+        {"grade": grade,"weighted": weighted});
+
+  }
+
+  Map<String, List<Map<String, dynamic>>> getTasksByType(List<DocumentSnapshot> documents){
 
     /*
     documents.sort((a,b) {
@@ -310,12 +361,9 @@ class GradeData {
 
     });*/
 
-    print("we just sorted");
-
     Map<String, List<Map<String, dynamic>>> mapData = Map();
 
     for(int i =0; i<documents.length; i++) {
-      print(documents[i].documentID);
       String type = documents[i].data["type"];
       if (!mapData.containsKey(type)) {
         mapData[type] = <Map<String, dynamic>>[];
@@ -329,9 +377,7 @@ class GradeData {
   }
 
 
-  Map<String, List<String>> getCourseNameSem(List<DocumentSnapshot> documents){
-
-    print("we about to sort");
+  Map<String, List<Map<String, dynamic>>> getCourseNameSem(List<DocumentSnapshot> documents){
 
     documents.sort((a,b) {
       String aSem = a.data["semester"];
@@ -339,7 +385,7 @@ class GradeData {
       var aYear = a.data["year"];
       var bYear = b.data["year"];
       int val = bYear-aYear;
-      print("hello?");
+ ;
 
       if(val==0){
         return aSem.compareTo(bSem);
@@ -348,20 +394,18 @@ class GradeData {
 
     });
 
-    print("we just sorted");
-
-    Map<String, List<String>> mapData = Map();
+    Map<String, List<Map<String, dynamic>>> mapData = Map();
 
     for(int i =0; i<documents.length; i++) {
-      print(documents[i].documentID);
+
       String sem =  documents[i].data["semester"]+" "+documents[i].data["year"].toString();
 
       if (!mapData.containsKey(sem)) {
-        mapData[sem] = <String>[];
+        mapData[sem] = <Map<String, dynamic>>[];
 
       }
 
-      mapData[sem].add(documents[i].data["id"]);
+      mapData[sem].add(documents[i].data);
 
     }
 
