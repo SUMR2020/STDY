@@ -11,4 +11,17 @@
       actual grade (Actual grade calculated including empty grades)
       weighted grade (Actual grade, but does not include empty grades)
       letter grade (weighted grade converted to a letter grade based on university conversion table)
-   d. Made input pages look nicer and more coherent with the styling done by RC. 
+4. Feb 23 (Sun) 10:30-3:30
+   a. Made input pages look nicer and more coherent with the styling done by RC. 
+   b. Made task page to show only task data currently. Will add option to edit the following in the future:
+	i. grade
+	ii. total
+	iii. weight
+	iv. name
+	v. todo hours 
+        vi. bonus 
+   c. Added validation use case scenerio 2 where the app notifies the user that the task they're adding has a weight > 100, this can be fixed by entering a weight that makes the total <=100, or by choosing the "bonus" option which is then added on. 
+   d. Grade calculator now factors in bonus marks. 
+   
+   
+

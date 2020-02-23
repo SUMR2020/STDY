@@ -11,7 +11,6 @@ class TaskData{
 
 class GradeData {
 
-  TextEditingController _txtCtrl = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final db = Firestore.instance;
 
@@ -243,13 +242,19 @@ class GradeData {
     double weight = double.parse(data[2]);
     double total = double.parse(data[3]);
     double grade = double.parse(data[4]);
+    bool bonus = false;
+    print("bonus is ${data[5]}");
+    if(data[5]=='true'){
+      bonus = true;
+    }
+    String id = (new DateTime.now().millisecondsSinceEpoch).toString();
 
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
 
-    await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(name).setData(
+    await db.collection("users").document(uid).collection("Grades").document((course)).collection("Tasks").document(id).setData(
 
-        {"curr": false, "name": name,"course": course, "weight": weight, "grade": grade, "type": type, "total": total}
+        {"bonus": bonus, "id": id, "curr": false, "name": name,"course": course, "weight": weight, "grade": grade, "type": type, "total": total}
     );
 
   }
@@ -357,13 +362,13 @@ class GradeData {
 
   }
 
-  void setCourseGrade(String course, double grade, double weighted) async{
+  void setCourseGrade(String course, double grade, double weighted, double totalWeight) async{
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     course = course.replaceAll(" ", "");
 
     await db.collection("users").document(uid).collection("Grades").document((course)).updateData(
-        {"grade": grade,"weighted": weighted});
+        {"grade": grade,"weighted": weighted, "totalWeight": totalWeight});
 
   }
 
