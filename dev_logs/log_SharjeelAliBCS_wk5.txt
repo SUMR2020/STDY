@@ -11,7 +11,7 @@
       actual grade (Actual grade calculated including empty grades)
       weighted grade (Actual grade, but does not include empty grades)
       letter grade (weighted grade converted to a letter grade based on university conversion table)
-4. Feb 23 (Sun) 10:30-3:30
+4. Feb 23 (Sun) 10:30-3:30 (5 hours)
    a. Made input pages look nicer and more coherent with the styling done by RC. 
    b. Made task page to show only task data currently. Will add option to edit the following in the future:
 	i. grade
