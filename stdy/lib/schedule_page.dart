@@ -15,6 +15,7 @@ import 'bloc/theme.dart';
 import 'selection_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'grades/grades_data.dart';
+import 'CustomForm.dart';
 
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
@@ -23,14 +24,19 @@ Map<DateTime, List> eventCal = {};
 Future<bool> _OnStartup;
 Future<bool> _tasksLoaded;
 
-class _task {
+class Task {
   String type;
   String name;
+
   String time;
-  _task(String t, String n, String ti) {
+  String id;
+  String course;
+  Task(String t, String n, String ti, String i, String c) {
     type = t;
     name = n;
     time = ti;
+    id = i;
+    course = c;
   }
 }
 
@@ -101,7 +107,7 @@ class _MyHomePageState extends State<SchedulePage>
     _tasksLoaded = getTasks();
   }
   List<DocumentSnapshot> taskDocs;
-  List<_task> todayTasks = new List<_task>();
+  List<Task> todayTasks = new List<Task>();
   GradeData grades = new GradeData();
 
 
@@ -114,7 +120,7 @@ class _MyHomePageState extends State<SchedulePage>
 
   Future<bool> getTasks() async {
     taskDocs = await grades.getTasks();
-    for (DocumentSnapshot task in taskDocs) {;
+    for (DocumentSnapshot task in taskDocs) {
     var dates = (task.data['dates']);
     List<DateTime> datesObjs = new List<DateTime>();
 
@@ -124,7 +130,9 @@ class _MyHomePageState extends State<SchedulePage>
     }
     DateTime today = DateTime.now();
     if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
-      todayTasks.add(new _task(task.data["type"], task.data["name"],task.data["daily"]));
+      Task t = new Task(task.data["type"], task.data["name"],task.data["daily"], task.data["id"],task.data["course"]);
+      todayTasks.add(t);
+
     }
     }
     return true;
@@ -176,34 +184,80 @@ class _MyHomePageState extends State<SchedulePage>
     if (taskType == "notes") return Icons.event_note;
   }
 
+
   String getTypeString(String taskType, String time){
     if (taskType == "reading") return (time + " pages");
+
     return (time.toString() + " hours");
   }
 
   Widget _listTaskView() {
-    List<String> tasks = new List<String>();
-    List<String> taskTypes = new List<String>();
-    List<String> time = new List<String>();
-    for (_task task in todayTasks) {
-      tasks.add(task.name);
-      taskTypes.add(task.type);
-      time.add(task.time);
-    }
+    String done;
     return new Container(
         height: 260.0,
         child: new ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          itemCount: tasks.length,
+          itemCount: todayTasks.length,
           itemBuilder: (context, index) {
-            return Card( //                           <-- Card widget
+
+            return new GestureDetector(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Form(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                    onChanged: (text) {
+                                      done = text;
+                                    },
+                                    decoration: new InputDecoration(
+                                      hintText: 'How much did you complete today?',
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: RaisedButton(
+                                    child: Text("Submit"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      if (isNumeric(done)) grades.updateProgressandDaily(todayTasks[index].id,todayTasks[index].course, done);
+                                      else{
+                                        Navigator.of(context).pop();
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text('Please select a valid number.'),
+                                              );
+                                            });
+                                      }
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+                },
+            child: new Card( //                           <-- Card widget
+
               child: ListTile(
-                leading: Icon(getIcon(taskTypes[index])),
-                title: Text(tasks[index]),
-                trailing: Text(getTypeString(taskTypes[index], time[index])),
+                leading: Icon(getIcon(todayTasks[index].type)),
+                title: Text(todayTasks[index].name),
+                trailing: Text(getTypeString(todayTasks[index].type, todayTasks[index].time)),
               ),
-            );
+
+            ));
+
           },
         ));
   }
@@ -278,7 +332,9 @@ class _MyHomePageState extends State<SchedulePage>
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
       markedDatesMap: _markedDateMap,
-      height: 340.0,
+
+      height: 300.0,
+
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
       customGridViewPhysics: null,
@@ -383,7 +439,7 @@ class _MyHomePageState extends State<SchedulePage>
               children: <Widget>[
                 Expanded(
                     child: Text(
-                  _currentMonth,
+                  _currentMonth.toUpperCase(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0 + fontScale,
@@ -393,6 +449,7 @@ class _MyHomePageState extends State<SchedulePage>
               ],
             ),
           ),
+
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder(
@@ -410,6 +467,29 @@ class _MyHomePageState extends State<SchedulePage>
               //_calendarCarouselNoHeader,
               ),
           Container(
+
+            margin: EdgeInsets.only(
+              top: 30.0,
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+            ),
+            child: new Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                      "TO DO TODAY",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0 + fontScale,
+                      ),
+                    )),
+//
+              ],
+            ),
+          ),
+          Container(
+
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder(
                   future: _tasksLoaded,

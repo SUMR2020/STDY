@@ -24,6 +24,23 @@ class ThemeChanger with ChangeNotifier {
   }
 }
 
+class SaveFontScale{
+
+  Future<bool> saveSize(int selectedSize) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return prefs.setInt('Size', selectedSize);
+  }
+
+  Future<int> loadScale() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    fontScale = prefs.getInt('Size') ?? 0;
+    print("FONTSCALE "+fontScale.toString());
+    return fontScale;
+  }
+
+}
+
 enum ThemeStyle {
   Light,
   Dark,

@@ -3,8 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/main.dart';
 import 'grades/grades_data.dart';
+import 'home_widget.dart';
 
 Future<bool> _CoursesLoaded;
+
+bool isNumeric(String s) {
+  if(s == null) {
+    return false;
+  }
+
+  // TODO according to DartDoc num.parse() includes both (double.parse and int.parse)
+  return double.parse(s, (e) => null) != null ||
+      int.parse(s, onError: (e) => null) != null;
+}
+
 
 class TaskPage extends StatefulWidget {
   String taskType;
@@ -84,17 +96,13 @@ class _TaskPageState extends State<TaskPage> {
 
   Future<bool> getCourses() async {
     courses = await grades.getCourseData();
-    courses.forEach((data) => print(data.data["id"]));
-    courses.forEach((data) => courseObjs.add(new _Course(data.data["year"], data.data["id"], data.data["semester"])));
-    courseObjs.forEach((data) => courseNames.add((data.name+" " + data.semester+ " " +(data.year.toString()))));
+    for (var data in courses) {
+      if (data.data["taken"] == "CURR") {
+        courseObjs.add(new _Course(
+            data.data["year"], data.data["id"], data.data["semester"]));
+      }
+    }  courseObjs.forEach((data) => courseNames.add((data.name+" " + data.semester+ " " +(data.year.toString()))));
     return true;
-  }
-
-  bool isNumeric(String s) {
-    if (s == null) {
-      return false;
-    }
-    return double.parse(s, (e) => null) != null;
   }
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
@@ -148,7 +156,6 @@ class _TaskPageState extends State<TaskPage> {
         final daysToGenerate = _data.dueDate.difference(DateTime.now()).inDays + 2;
         var dates = List.generate(daysToGenerate, (i) => DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + (i)));
         for (DateTime date in dates){
-          print (date.toString());
 
           if ((date.weekday == 1) && (_data.monVal == true)) _data.dates.add(date);
           if ((date.weekday == 2) && (_data.tuVal == true)) _data.dates.add(date);
@@ -158,13 +165,38 @@ class _TaskPageState extends State<TaskPage> {
           if ((date.weekday == 6) && (_data.satVal == true)) _data.dates.add(date);
           if ((date.weekday == 7) && (_data.sunVal == true)) _data.dates.add(date);
         }
-        double dailyDouble = int.parse(_data.length)/dates.length;
+
+        print (dates.length);
+        double dailyDouble = int.parse(_data.length)/_data.dates.length;
         String daily = dailyDouble.toStringAsFixed(2);
+        if (_data.dates.length == 0){
+          String string = "Please enter valid days of the week to work on the " + taskType.toLowerCase() + ".";
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(string),
+                );
+              });
+        }
+        else {
+          grades.addTaskData(
+              _data.name,
+              _data.dropDownValue,
+              int.parse(_data.length),
+              _data.dates,
+              _data.dueDate,
+              done,
+              _data.forMarks,
+              null,
+              null,
+              taskType.toLowerCase(),
+              daily);
 
-        grades.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks, null, null, taskType.toLowerCase(), daily);
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (_) => Home()));
+        }
 
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_) => TaskPage(taskType, index)));
       } else {
         print("not valid");
       }
@@ -172,10 +204,11 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Future<Null> _selectDate(BuildContext context) async {
+    DateTime today = DateTime.now();
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime(today.year, today.month, today.day),
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {

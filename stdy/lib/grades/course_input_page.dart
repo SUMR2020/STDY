@@ -141,6 +141,7 @@ class CourseInputState extends State<CourseInputPage>{
 
               Text("Course Semester"),
               DropdownButton<String>(
+                isExpanded: true,
                 value: dropdownValueSem,
                 icon: Icon(Icons.arrow_downward),
                 iconSize: 24,
