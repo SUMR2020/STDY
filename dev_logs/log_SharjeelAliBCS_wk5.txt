@@ -4,3 +4,11 @@
 2. Feb 18 (Tues) 3:00-4:00 (1 hour)
    a. Added task input to database
    b. Added grade update page to update RC's current task page. 
+3. Feb 22 (Sat) 10:00-2:00 (4 hours)
+   a. Disabled option to add tasks to past courses
+   b. Added automatic current course grade calculation based on course tasks. 
+   c. Added multiple grade types for both course and total gpa: 
+      actual grade (Actual grade calculated including empty grades)
+      weighted grade (Actual grade, but does not include empty grades)
+      letter grade (weighted grade converted to a letter grade based on university conversion table)
+   d. Made input pages look nicer and more coherent with the styling done by RC. 
