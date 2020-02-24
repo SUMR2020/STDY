@@ -1,0 +1,5 @@
+February 23rd, 2020: 8:30pm to 9:30pm
+- Added values to a task, bonus marks and total
+- Deleted the day if the task is complete for that specific day, and redistributes
+- need to add array of done days, currently working on it
+- added a function to redistribute the total for if the user updates it
