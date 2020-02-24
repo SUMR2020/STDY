@@ -393,7 +393,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                   margin: new EdgeInsets.only(top: 20.0),
                 ),
-                new CheckboxListTile(
+                 CheckboxListTile(
                   title: Text("Is this worth marks?"),
                   value: _data.forMarks,
                   onChanged: (bool value) {
