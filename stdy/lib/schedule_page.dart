@@ -214,6 +214,7 @@ class _MyHomePageState extends State<SchedulePage>
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    keyboardType: TextInputType.number,
                                     onChanged: (text) {
                                       done = text;
                                     },
@@ -228,9 +229,19 @@ class _MyHomePageState extends State<SchedulePage>
                                     child: Text("Submit"),
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      if (isNumeric(done)) grades.updateProgressandDaily(todayTasks[index].id,todayTasks[index].course, done);
+                                      if (isNumeric(done)) {
+                                        grades.updateProgressandDaily(
+                                            todayTasks[index].id
+                                            , todayTasks[index].course, done);
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context){
+                                              return Home();
+                                            }
+                                          )
+                                        );
+                                      }
                                       else{
-                                        Navigator.of(context).pop();
                                         showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
