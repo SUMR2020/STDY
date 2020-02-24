@@ -257,6 +257,12 @@ class GradeData {
     double weight = double.parse(data[2]);
     double total = double.parse(data[3]);
     double grade = double.parse(data[4]);
+    bool bonus = false;
+    print("bonus is ${data[5]}");
+    if(data[5]=='true'){
+      bonus = true;
+    }
+    String id = (new DateTime.now().millisecondsSinceEpoch).toString();
 
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
@@ -277,6 +283,7 @@ class GradeData {
       "type": type,
       "total": total
     });
+
   }
 
   void addTaskData(
@@ -448,17 +455,13 @@ class GradeData {
     return documents;
   }
 
-  void setCourseGrade(String course, double grade, double weighted) async {
+  void setCourseGrade(String course, double grade, double weighted, double totalWeight) async{
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     course = course.replaceAll(" ", "");
 
-    await db
-        .collection("users")
-        .document(uid)
-        .collection("Grades")
-        .document((course))
-        .updateData({"grade": grade, "weighted": weighted});
+    await db.collection("users").document(uid).collection("Grades").document((course)).updateData(
+        {"grade": grade,"weighted": weighted, "totalWeight": totalWeight});
   }
 
   Map<String, List<Map<String, dynamic>>> getTasksByType(
