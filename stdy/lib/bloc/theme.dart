@@ -41,6 +41,21 @@ class SaveFontScale{
 
 }
 
+class LoggedInState{
+
+  Future<bool> saveLoginState(bool loginState) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    loginCheck = loginState;
+    return prefs.setBool('LoggedIn', loginState);
+  }
+
+  Future<bool> loadLoginState() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    loginCheck = prefs.getBool('LoggedIn') ?? false;
+    return loginCheck;
+  }
+}
+
 enum ThemeStyle {
   Light,
   Dark,

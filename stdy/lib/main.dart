@@ -12,6 +12,7 @@ Color stdyPink = Color(0xFFFDA3A4);
 Future<bool> _themeLoaded;
 String themeDrop;
 int fontScale = 0;
+bool loginCheck = false;
 
 Future<String> loadTheme() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -25,6 +26,7 @@ void main() {
       .then((_) {
     notifs.PushNotificationsManager().init();
     SaveFontScale().loadScale();
+    LoggedInState().loadLoginState();
     runApp(MyApp());
   });
 }
@@ -82,7 +84,10 @@ class MaterialAppWithTheme extends StatelessWidget {
       title: 'STDY',
       home: SplashScreen.navigate(
         name: 'assets/intro.flr',
-        next: (_) => LoginScreen(),
+        next: (_) {
+          if(loginCheck) return Home();
+          else return LoginScreen();
+          },
         until: () => Future.delayed(Duration(seconds: 1)),
         startAnimation: 'intro',
       ),
