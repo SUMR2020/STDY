@@ -7,6 +7,7 @@ import 'task_input_page.dart';
 import 'grade_input_page.dart';
 import '../main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'task_page.dart';
 
 class GradesPage extends StatefulWidget {
 
@@ -30,6 +31,7 @@ class GradesPageState extends State<GradesPage> {
   double grade;
   double weighted;
   String letterGrade;
+  double totalWeights;
   Future <List<DocumentSnapshot>> _futureData;
   List<DocumentSnapshot> taskData;
 
@@ -55,6 +57,10 @@ class GradesPageState extends State<GradesPage> {
     course = await firehouse.getCourse(id);
     grade = course["grade"];
     weighted = course["weighted"];
+    totalWeights = course["totalWeight"];
+    if(totalWeights==null){
+      totalWeights = 0.0;
+    }
     setState(() {
       letterGrade = firehouse.findLetterGPA(weighted);
 
@@ -67,6 +73,7 @@ class GradesPageState extends State<GradesPage> {
     print("calculating grade");
     double finalGrade = 0.0;
     double totalWeight = 0.0;
+    double bonus = 0.0;
 
     for(int i =0; i<taskData.length; i++){
       DocumentSnapshot curr = taskData[i];
@@ -74,37 +81,46 @@ class GradesPageState extends State<GradesPage> {
       if(curr["grade"]==null){
         continue;
       }
-
       double currGrade = curr["grade"];
       double currTotal = curr["total"];
       double currWeight = curr["weight"];
-      totalWeight+= currWeight;
 
-      double percentEarned = (currGrade/currTotal)*currWeight;
-      finalGrade+=percentEarned;
+
+      if(!curr.data.containsKey("bonus") || !curr["bonus"]){//replace this
+        totalWeight+= currWeight;
+        print("value is now ${curr["name"]}");
+        double percentEarned = (currGrade/currTotal)*currWeight;
+        finalGrade+=percentEarned;
+      }
+      else{
+        double percentEarned = (currGrade/currTotal)*currWeight;
+        bonus+=percentEarned;
+
+      }
+
+
       //print("$i: grade= $currGrade, weight: $currWeight, total: $currTotal for a total of $percentEarned");
 
     }
 
-
-    double weighted = double.parse(((finalGrade/totalWeight)*100).toStringAsFixed(1));
-    finalGrade = double.parse(finalGrade.toStringAsFixed(1));
+    double weighted = double.parse(((finalGrade/totalWeight)*100+bonus).toStringAsFixed(1));
+    finalGrade = double.parse((finalGrade+bonus).toStringAsFixed(1));
     //round to 2 decimals
     setState((){
+      totalWeights = totalWeight;
       grade = finalGrade;
-      firehouse.setCourseGrade(id, finalGrade, weighted);
+      firehouse.setCourseGrade(id, finalGrade, weighted, totalWeight);
     });
+    print("weight is $totalWeights");
 
   }
-
-
 
   void _addTask() async {
 
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TaskInputPage(),
+          builder: (context) => TaskInputPage(totalWeights),
         ));
 
     //await firehouse.addData(result);
@@ -194,6 +210,14 @@ class GradesPageState extends State<GradesPage> {
     return items;
   }
 
+  void _openTaskPage(Map<String, dynamic> task) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TaskInfoPage(task),
+        ));
+    setState(() {});
+  }
   Future <List<DocumentSnapshot>> _getData() async {
 
     taskData =  await firehouse.getTasksData(id);
@@ -208,7 +232,6 @@ class GradesPageState extends State<GradesPage> {
     return taskData;
 
   }
-
 
   List<Widget> _buildTasks(String type, List<Map<String, dynamic>> tasks){
     List<Widget> courseWidgets = <Widget>[];
@@ -249,9 +272,7 @@ class GradesPageState extends State<GradesPage> {
             ),
             onTap: () {
               setState(() {
-                if(tasks[i]["grade"]==null){
-                  _addGrade(tasks[i]["name"], tasks[i]["type"]);
-                }
+                _openTaskPage(tasks[i]);
               });
             }),
 
@@ -334,9 +355,10 @@ class GradesPageState extends State<GradesPage> {
                 child: Column(
                     children: <Widget>[
                       Text("Student Stats"),
+                      Text("Total weight: $totalWeights"),
                       Text("Actual grade: $grade%"),
                       Text("Current grade: $weighted%"),
-                      Text("Letter grade: $letterGrade")
+                      Text("Letter grade: $letterGrade"),
 
                     ]
                 )
