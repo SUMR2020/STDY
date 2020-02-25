@@ -4,3 +4,24 @@
 2. Feb 18 (Tues) 3:00-4:00 (1 hour)
    a. Added task input to database
    b. Added grade update page to update RC's current task page. 
+3. Feb 22 (Sat) 10:00-2:00 (4 hours)
+   a. Disabled option to add tasks to past courses
+   b. Added automatic current course grade calculation based on course tasks. 
+   c. Added multiple grade types for both course and total gpa: 
+      actual grade (Actual grade calculated including empty grades)
+      weighted grade (Actual grade, but does not include empty grades)
+      letter grade (weighted grade converted to a letter grade based on university conversion table)
+4. Feb 23 (Sun) 10:30-3:30 (5 hours)
+   a. Made input pages look nicer and more coherent with the styling done by RC. 
+   b. Made task page to show only task data currently. Will add option to edit the following in the future:
+	i. grade
+	ii. total
+	iii. weight
+	iv. name
+	v. todo hours 
+        vi. bonus 
+   c. Added validation use case scenerio 2 where the app notifies the user that the task they're adding has a weight > 100, this can be fixed by entering a weight that makes the total <=100, or by choosing the "bonus" option which is then added on. 
+   d. Grade calculator now factors in bonus marks. 
+   
+   
+

@@ -1,0 +1,15 @@
+February 23rd, 2020: 8:30pm to 9:30pm
+- Added values to a task, bonus marks and total
+- Deleted the day if the task is complete for that specific day, and redistributes
+- need to add array of done days, currently working on it
+- added a function to redistribute the total for if the user updates it
+
+February 24th, 2020: 5pm to 8:30pm
+- Added a function that updates daily value and removes the last day every time it becomes a new day
+- updated the function that takes in a  value from user and updates the database
+- added a done today tasks array that holds the tasks that were completed today (and added the necessary changes to the database to do so)
+- fixed an error in Sharjeel's code (typecasting error)
+
+February 24th, 2020: 10pm to 12pm
+- fixed the update day function
+- were errors with the database and types in code not matching up

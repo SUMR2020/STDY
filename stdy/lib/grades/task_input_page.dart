@@ -3,40 +3,47 @@ import 'package:flutter/widgets.dart';
 import '../main.dart';
 
 class TaskInputPage extends StatefulWidget {
+
+  double totalWeight;
+  TaskInputPage(this.totalWeight);
   @override
   State<StatefulWidget> createState() {
-    return TaskInputState();
+    return TaskInputState(totalWeight);
   }
 }
 
 class TaskInputState extends State<TaskInputPage>{
 
   List<String> tasks = ["Choose Task", "ASSIGNMENT", "TUTORIAL", "PARTICIPATION","PROJECT", "EXAM"];
-  var _weight = TextEditingController();
-  var _total = TextEditingController();
-  var _grade = TextEditingController();
-  var _name = TextEditingController();
+
+  String _weight;
+  String _total;
+  String _grade;
+  String _name;
+  bool _bonus = false;
+  double totalWeight;
 
   String dropdownValueTask;
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  TaskInputPage(){
+  TaskInputState(double tW){
+    totalWeight = tW;
     dropdownValueTask = "Choose Task";
   }
 
-  void addCourseButton(BuildContext context){
+  void addCourseButton(BuildContext context) {
+    if (this._formKey.currentState.validate()) {
+      _formKey.currentState.save();
 
-    if(dropdownValueTask=="Semester" ||
-        _weight.text=='' || _total.text=='' || _grade.text=='' || _name.text==''
-    ){
-      _showDialog();
-      return;
+      if (dropdownValueTask == "Semester") {
+        _showDialog();
+        return;
+      }
+
+      print(dropdownValueTask);
+      Navigator.pop(context, [dropdownValueTask.toLowerCase(),_name,_weight,_total,_grade, _bonus.toString()]);
     }
-
-
-    print(dropdownValueTask);
-    Navigator.pop(context, [dropdownValueTask.toLowerCase(),  _name.text, _weight.text,_total.text, _grade.text]);
   }
-
   void _showDialog() {
     // flutter defined function
     showDialog(
@@ -60,6 +67,30 @@ class TaskInputState extends State<TaskInputPage>{
     );
   }
 
+  String _validateTaskName(String value) {
+    if (value.isEmpty) return 'Please enter a valid task name.';
+    return null;
+  }
+
+  String _validateTaskGrade(String value) {
+    if (value.isEmpty) return 'Please enter a valid task grade.';
+    return null;
+  }
+
+  String _validateTaskTotal(String value) {
+    if (value.isEmpty) return 'Please enter a valid task total.';
+    return null;
+  }
+
+  String _validateTaskWeight(String value) {
+
+    double val = double.parse(value);
+    print("value of bonus is $_bonus and  double is $val and total is $totalWeight");
+    if(val+totalWeight>100 && !_bonus) return 'Total course weight exceeds 100. Enter weight less than ${100-totalWeight}\n or select bonus';
+    if (value.isEmpty) return 'Please enter a valid task weight.';
+    return null;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,27 +101,56 @@ class TaskInputState extends State<TaskInputPage>{
           elevation: 0,
           title: Text('INPUT TASK')
       ),
-      body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+      body: new Container(
+          padding: new EdgeInsets.all(20.0),
+          child: new Form(
+            key: this._formKey,
+            child: new ListView(
+
             children: <Widget>[
-              Text("Task name"),
-              new SizedBox( child: TextField(controller: _name,
-                decoration: new InputDecoration(),
-              )),
-              Text("Task grade"),
-              new SizedBox(child: TextField(controller: _grade,
-                  decoration: new InputDecoration(),keyboardType: TextInputType.number
-              )),
-              Text("Task total marks"),
-              new SizedBox(child: TextField(controller: _total,
-                  decoration: new InputDecoration(),keyboardType: TextInputType.number
-              )),
-              Text("Task total weight"),
-              new SizedBox(child: TextField(controller: _weight,
-                  decoration: new InputDecoration(),keyboardType: TextInputType.number
-              )),
+              new TextFormField(
+                  decoration: new InputDecoration(
+                    hintText: 'Enter task name here...',
+                    labelText: "Task name *",
+                  ),
+                  validator: this._validateTaskName,
+                  onSaved: (String value) {
+                    print("val is $value");
+                    _name = value;
+                  }),
+              new TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: new InputDecoration(
+                    hintText: 'Enter task grade here...',
+                    labelText: "Task grade *",
+                  ),
+                  validator: this._validateTaskGrade,
+                  onSaved: (String value) {
+                    print("val is $value");
+                    _grade = value;
+                  }),
+              new TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: new InputDecoration(
+                    hintText: 'Enter task total marks here...',
+                    labelText: "Task total marks *",
+                  ),
+                  validator: this._validateTaskTotal,
+                  onSaved: (String value) {
+                    print("val is $value");
+                    _total = value;
+                  }),
+              new TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: new InputDecoration(
+                    hintText: 'Enter task weight here...',
+                    labelText: "Task weight *",
+                  ),
+                  validator: this._validateTaskWeight,
+                  onSaved: (String value) {
+                    print("val is $value");
+                    _weight = value;
+                  }),
               Text("Task type"),
               DropdownButton<String>(
                 value: dropdownValueTask,
@@ -118,6 +178,17 @@ class TaskInputState extends State<TaskInputPage>{
                 })
                     .toList(),
               ),
+              new CheckboxListTile(
+
+                title: Text("Is this a bonus task?"),
+                value: _bonus,
+                onChanged: (bool value) {
+                  setState(() {
+                    _bonus = value;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
 
               RaisedButton(
                 child: Text('Add course'),
@@ -127,6 +198,7 @@ class TaskInputState extends State<TaskInputPage>{
               ),
 
             ],
+          ),
           )
 
       ),
