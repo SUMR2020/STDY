@@ -294,9 +294,10 @@ class GradeData {
     if (check == now){
       return d;
     } else{
+      print ("Die");
       var list = await getCourseData();
       for (int i = 0; i < list.length; i++) {
-        var course = list[i].data["id"] +  list[i].data["semester"] +  list[i].data["year"];
+        String course = list[i].data["id"].toString() +  list[i].data["semester"].toString() +  list[i].data["year"].toString();
         final QuerySnapshot courseTasks = await db
             .collection('users')
             .document(uid)
@@ -318,12 +319,14 @@ class GradeData {
           List<DateTime> datesObjs = new List<DateTime>();
           for (Timestamp t in dates) {
             DateTime date = (t.toDate());
-            if (date.isBefore(DateTime.now())) datesObjs.add(DateTime(date.year, date.month, date.day));
+            if (!(date.isBefore(DateTime.now()))) datesObjs.add(DateTime(date.year, date.month, date.day));
           }
           docRef.updateData({"dates": datesObjs});
-          redistributeData(doc.data["id"], course, doc.data["toDo"]);
+          redistributeData(doc.data["id"], course, doc.data["toDo"].toString());
           doc = await docRef.get();
           var daily = doc.data["daily"];
+          print (doc.data["name"]);
+          print (daily);
           docRef.updateData({"today": daily});
         }
       }
