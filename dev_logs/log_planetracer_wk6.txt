@@ -9,3 +9,7 @@ February 24th, 2020: 5pm to 8:30pm
 - updated the function that takes in a  value from user and updates the database
 - added a done today tasks array that holds the tasks that were completed today (and added the necessary changes to the database to do so)
 - fixed an error in Sharjeel's code (typecasting error)
+
+February 24th, 2020: 10pm to 12pm
+- fixed the update day function
+- were errors with the database and types in code not matching up
