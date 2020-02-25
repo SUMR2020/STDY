@@ -13,3 +13,10 @@ February 24th, 2020: 5pm to 8:30pm
 February 24th, 2020: 10pm to 12pm
 - fixed the update day function
 - were errors with the database and types in code not matching up
+
+February 25th, 2020: 10am to 5pm
+- had a meeting with the group for D2
+	- started a component diagram and saw a ta to get clarification
+	- discussed our project
+	- started working on the write up
+- updated the to do list and done list into a toggle, so there's more space
