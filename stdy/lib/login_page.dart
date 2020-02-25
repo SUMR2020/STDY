@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       splashColor: Colors.grey,
       onPressed: () {
         signInWithGoogle().whenComplete(() {
-          if (authCheck) {
+        //  if (authCheck) {
             LoggedInState().saveLoginState(true);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
             );
-          }
+       //   }
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
