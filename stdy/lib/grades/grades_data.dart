@@ -294,7 +294,6 @@ class GradeData {
     if (check == now){
       return d;
     } else{
-      print ("Die");
       var list = await getCourseData();
       for (int i = 0; i < list.length; i++) {
         String course = list[i].data["id"].toString() +  list[i].data["semester"].toString() +  list[i].data["year"].toString();

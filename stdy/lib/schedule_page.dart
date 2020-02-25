@@ -478,6 +478,7 @@ class _MyHomePageState extends State<SchedulePage>
     if (isSwitched){
       return new Container(
           margin: EdgeInsets.symmetric(horizontal: 16.0),
+          height: 300,
           child: FutureBuilder(
               future: _tasksLoaded,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -489,6 +490,7 @@ class _MyHomePageState extends State<SchedulePage>
               }));
     } else { return new Container(
         margin: EdgeInsets.symmetric(horizontal: 16.0),
+        height: 300,
         child: FutureBuilder(
             future: _doneTasksLoaded,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
