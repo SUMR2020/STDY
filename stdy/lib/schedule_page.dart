@@ -112,8 +112,7 @@ class _MyHomePageState extends State<SchedulePage>
   List<Task> todayTasks = new List<Task>();
   List<Task> todayDoneTasks = new List<Task>();
   GradeData grades = new GradeData();
-
-
+  bool isSwitched = true;
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
   String _currentMonth = DateFormat.yMMM().format(DateTime.now());
@@ -470,6 +469,40 @@ class _MyHomePageState extends State<SchedulePage>
     );
   }
 
+  String getListViewTitle(){
+    if (isSwitched) return "TO DO TODAY";
+    return "DONE TASKS";
+  }
+
+  Widget getCurrentContainer(){
+    if (isSwitched){
+      return new Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.0),
+          height: 300,
+          child: FutureBuilder(
+              future: _tasksLoaded,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return _listTaskView();
+                } else {
+                  return SizedBox.shrink();
+                }
+              }));
+    } else { return new Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.0),
+        height: 300,
+        child: FutureBuilder(
+            future: _doneTasksLoaded,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return _listDoneTaskView();
+              } else {
+                return SizedBox.shrink();
+              }
+            }));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeChanger>(context);
@@ -529,74 +562,39 @@ class _MyHomePageState extends State<SchedulePage>
                   })
               //_calendarCarouselNoHeader,
               ),
-          Container(
 
+          Container(
             margin: EdgeInsets.only(
               top: 30.0,
               bottom: 16.0,
               left: 16.0,
               right: 16.0,
             ),
+
             child: new Row(
               children: <Widget>[
                 Expanded(
                     child: Text(
-                      "TO DO TODAY",
+                      getListViewTitle(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0 + fontScale,
                       ),
                     )),
-//
+                Switch(
+                  value: isSwitched,
+                  onChanged: (value) {
+                    setState(() {
+                      isSwitched = value;
+                    });
+                  },
+                //  activeTrackColor: Colors.lightGreenAccent,
+                //  activeColor: Colors.green,
+                ),
               ],
             ),
           ),
-          Container(
-
-              margin: EdgeInsets.symmetric(horizontal: 16.0),
-              child: FutureBuilder(
-                  future: _tasksLoaded,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      return _listTaskView();
-                    } else {
-                      return SizedBox.shrink();
-                    }
-                  })),
-          Container(
-
-            margin: EdgeInsets.only(
-              top: 30.0,
-              bottom: 16.0,
-              left: 16.0,
-              right: 16.0,
-            ),
-            child: new Row(
-              children: <Widget>[
-                Expanded(
-                    child: Text(
-                      "DONE TASKS",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0 + fontScale,
-                      ),
-                    )),
-//
-              ],
-            ),
-          ),
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 16.0),
-              child: FutureBuilder(
-                  future: _doneTasksLoaded,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      return _listDoneTaskView();
-                    } else {
-                      return SizedBox.shrink();
-                    }
-                  }))
-          //
+          getCurrentContainer(),
         ],
       ),
     ));
