@@ -24,6 +24,8 @@ Map<DateTime, List> eventCal = {};
 Future<bool> _OnStartup;
 Future<bool> _tasksLoaded;
 
+int fontScale = 0;
+
 class Task {
   String type;
   String name;

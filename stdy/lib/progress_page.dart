@@ -52,8 +52,8 @@ class progressPageState extends State<progressPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TabBarView(
-        children: [
+      body: (
+       // children: [
           Padding(
             padding: EdgeInsets.all(8.0),
             child: Container(
@@ -68,7 +68,7 @@ class progressPageState extends State<progressPage>{
                     Expanded(
                       child: charts.PieChart(
                         _seriesPieData,
-                        animate : false,
+                        animate : true,
                         behaviors: [
                           new charts.DatumLegend(
                             outsideJustification: charts.OutsideJustification.endDrawArea,
@@ -83,7 +83,7 @@ class progressPageState extends State<progressPage>{
                           )
                         ],
                         defaultRenderer: new charts.ArcRendererConfig(
-                          arcWidth: 0,
+                          arcWidth: 100,
                           arcRendererDecorators: [
                             new charts.ArcLabelDecorator(
                               labelPosition: charts.ArcLabelPosition.inside)
@@ -94,7 +94,7 @@ class progressPageState extends State<progressPage>{
               )
             )
           )
-        ]
+        //]
       ),
             );
 
