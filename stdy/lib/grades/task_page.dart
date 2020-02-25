@@ -38,7 +38,7 @@ class TaskInfoState extends State<TaskInfoPage> {
 
   List<Widget> taskInfo(BuildContext context){
     String dueDate="Past";
-    int hours=0;
+    double hours=0;
     double weight=0;
     double grade=0;
     double total=0;

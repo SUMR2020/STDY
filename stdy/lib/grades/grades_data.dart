@@ -286,6 +286,51 @@ class GradeData {
 
   }
 
+  Future<DateTime> updateDay(DateTime d) async{
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    DateTime now = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    DateTime check = new DateTime(d.year, d.month, d.day);
+    if (check == now){
+      return d;
+    } else{
+      var list = await getCourseData();
+      for (int i = 0; i < list.length; i++) {
+        var course = list[i].data["id"] +  list[i].data["semester"] +  list[i].data["year"];
+        final QuerySnapshot courseTasks = await db
+            .collection('users')
+            .document(uid)
+            .collection("Grades")
+            .document(course)
+            .collection("Tasks")
+            .getDocuments();
+        final List<DocumentSnapshot> documents = courseTasks.documents;
+        for (var task in documents){
+          DocumentReference docRef = db
+              .collection("users")
+              .document(uid)
+              .collection("Grades")
+              .document(course)
+              .collection("Tasks")
+              .document(task.data["id"]);
+          var doc = await docRef.get();
+          var dates = doc.data["dates"];
+          List<DateTime> datesObjs = new List<DateTime>();
+          for (Timestamp t in dates) {
+            DateTime date = (t.toDate());
+            if (date.isBefore(DateTime.now())) datesObjs.add(DateTime(date.year, date.month, date.day));
+          }
+          docRef.updateData({"dates": datesObjs});
+          redistributeData(doc.data["id"], course, doc.data["toDo"]);
+          doc = await docRef.get();
+          var daily = doc.data["daily"];
+          docRef.updateData({"today": daily});
+        }
+      }
+      return DateTime.now();
+    }
+  }
+
   void addTaskData(
       String name,
       String course,
@@ -326,7 +371,9 @@ class GradeData {
       "daily": daily,
       "curr": true,
       "bonus": bonus,
-      "totalgrade": total
+      "totalgrade": total,
+      "today": daily,
+      "done" : new List<DateTime>(),
     });
 
 //    if (forMarks) {
@@ -366,7 +413,7 @@ class GradeData {
         .document(id);
     var before = await docRef.get();
     var days = before["dates"];
-    docRef.updateData({"daily": (double.parse(newAmount) / days.length).toString()});
+    docRef.updateData({"daily": (double.parse(newAmount) / days.length).toStringAsFixed(2)});
   }
 
   Future<bool> updateProgressandDaily(
@@ -381,7 +428,7 @@ class GradeData {
         .collection("Tasks")
         .document(id);
     var before = await docRef.get();
-    if (double.parse(done) >= double.parse(before["daily"])) {
+    if (double.parse(done) >= double.parse(before["today"])) {
       var dates = before["dates"];
       List<DateTime> datesObjs = new List<DateTime>();
       for (Timestamp t in dates) {
@@ -390,7 +437,20 @@ class GradeData {
       }
       DateTime today = DateTime.now();
       datesObjs.remove(DateTime(today.year, today.month, today.day));
+      List<DateTime> doneDatesObjs = new List<DateTime>();
+      var doneDays = before["done"];
+      for (Timestamp t in doneDays) {
+        DateTime date = (t.toDate());
+        doneDatesObjs.add(DateTime(date.year, date.month, date.day));
+      }
+      doneDatesObjs.add(DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day));
       docRef.updateData({"dates": datesObjs});
+      docRef.updateData({"done": doneDatesObjs});
+    } else{
+      print ("else");
+      var today = before["today"];
+      today = (double.parse(today) - double.parse(done)).toStringAsFixed(2);
+      docRef.updateData({"today": today});
     }
     before = await docRef.get();
     int totalBefore = before["toDo"];
@@ -402,7 +462,7 @@ class GradeData {
     progress.add(done);
     docRef.updateData({"progress": progress});
     docRef.updateData({"toDo": totalAfter});
-    docRef.updateData({"daily": (totalAfter / days.length).toString()});
+    docRef.updateData({"daily": (totalAfter / days.length).toStringAsFixed(2)});
     return true;
   }
 

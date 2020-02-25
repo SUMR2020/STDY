@@ -19,11 +19,12 @@ import 'CustomForm.dart';
 
 DateTime start = new DateTime.now().subtract(new Duration(days: 30));
 DateTime end = new DateTime.now().add(new Duration(days: 30));
+DateTime today = new DateTime.now();
 Map<DateTime, List> eventCal = {};
 
 Future<bool> _OnStartup;
 Future<bool> _tasksLoaded;
-
+Future<bool> _doneTasksLoaded;
 class Task {
   String type;
   String name;
@@ -105,9 +106,11 @@ class _MyHomePageState extends State<SchedulePage>
   _MyHomePageState() {
     _OnStartup = loadEvents();
     _tasksLoaded = getTasks();
+    _doneTasksLoaded = getDoneTasks();
   }
   List<DocumentSnapshot> taskDocs;
   List<Task> todayTasks = new List<Task>();
+  List<Task> todayDoneTasks = new List<Task>();
   GradeData grades = new GradeData();
 
 
@@ -130,7 +133,7 @@ class _MyHomePageState extends State<SchedulePage>
     }
     DateTime today = DateTime.now();
     if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
-      Task t = new Task(task.data["type"], task.data["name"],task.data["daily"], task.data["id"],task.data["course"]);
+      Task t = new Task(task.data["type"], task.data["name"],task.data["today"], task.data["id"],task.data["course"]);
       todayTasks.add(t);
 
     }
@@ -138,6 +141,24 @@ class _MyHomePageState extends State<SchedulePage>
     return true;
   }
 
+  Future<bool> getDoneTasks() async {
+    taskDocs = await grades.getTasks();
+    for (DocumentSnapshot task in taskDocs) {
+      var dates = (task.data['done']);
+      List<DateTime> datesObjs = new List<DateTime>();
+      for (Timestamp t in dates){
+        DateTime date = (t.toDate());
+        datesObjs.add(DateTime(date.year, date.month, date.day));
+      }
+      DateTime today = DateTime.now();
+      if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
+        Task t = new Task(task.data["type"], task.data["name"],task.data["today"], task.data["id"],task.data["course"]);
+        todayDoneTasks.add(t);
+
+      }
+    }
+    return true;
+  }
 
   bool contains(Event i) {
     List events = _markedDateMap.getEvents(i.date);
@@ -184,6 +205,10 @@ class _MyHomePageState extends State<SchedulePage>
     if (taskType == "notes") return Icons.event_note;
   }
 
+  void updatingCurrentDay() async{
+    today = await grades.updateDay(today);
+  }
+
 
   String getTypeString(String taskType, String time){
     if (taskType == "reading") return (time + " pages");
@@ -191,10 +216,36 @@ class _MyHomePageState extends State<SchedulePage>
     return (time.toString() + " hours");
   }
 
+  Widget _listDoneTaskView() {
+    print (todayDoneTasks.length);
+    return new Container(
+        height: 100.0,
+        child: new ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: todayDoneTasks.length,
+          itemBuilder: (context, index) {
+
+            return new GestureDetector(
+                onTap: () {
+                },
+                child: new Card( //                           <-- Card widget
+
+                  child: ListTile(
+                    leading: Icon(getIcon(todayDoneTasks[index].type)),
+                    title: Text(todayDoneTasks[index].name),
+                  ),
+
+                ));
+
+          },
+        ));
+  }
+
   Widget _listTaskView() {
     String done;
     return new Container(
-        height: 260.0,
+        height: 100.0,
         child: new ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
@@ -422,6 +473,7 @@ class _MyHomePageState extends State<SchedulePage>
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeChanger>(context);
+    updatingCurrentDay();
     return new Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -453,7 +505,7 @@ class _MyHomePageState extends State<SchedulePage>
                   _currentMonth.toUpperCase(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 24.0 + fontScale,
+                    fontSize: 16.0 + fontScale,
                   ),
                 )),
 //
@@ -492,7 +544,7 @@ class _MyHomePageState extends State<SchedulePage>
                       "TO DO TODAY",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 24.0 + fontScale,
+                        fontSize: 16.0 + fontScale,
                       ),
                     )),
 //
@@ -507,6 +559,39 @@ class _MyHomePageState extends State<SchedulePage>
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       return _listTaskView();
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  })),
+          Container(
+
+            margin: EdgeInsets.only(
+              top: 30.0,
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+            ),
+            child: new Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                      "DONE TASKS",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0 + fontScale,
+                      ),
+                    )),
+//
+              ],
+            ),
+          ),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              child: FutureBuilder(
+                  future: _doneTasksLoaded,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return _listDoneTaskView();
                     } else {
                       return SizedBox.shrink();
                     }
