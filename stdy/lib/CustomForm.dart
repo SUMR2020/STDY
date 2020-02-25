@@ -8,13 +8,10 @@ import 'home_widget.dart';
 Future<bool> _CoursesLoaded;
 
 bool isNumeric(String s) {
-  if(s == null) {
+  if (s == null) {
     return false;
   }
-
-  // TODO according to DartDoc num.parse() includes both (double.parse and int.parse)
-  return double.parse(s, (e) => null) != null ||
-      int.parse(s, onError: (e) => null) != null;
+  return double.tryParse(s) != null;
 }
 
 
@@ -47,6 +44,7 @@ class _Data {
   String semester;
   int year;
   bool forMarks = false;
+  bool bonus = false;
   List<DateTime> dates = List<DateTime>();
   String dropDownValue;
   bool monVal = false;
@@ -191,7 +189,8 @@ class _TaskPageState extends State<TaskPage> {
               null,
               null,
               taskType.toLowerCase(),
-              daily);
+              daily,
+          _data.bonus, null);
 
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (_) => Home()));
@@ -287,6 +286,7 @@ class _TaskPageState extends State<TaskPage> {
                       this._data.name = value;
                     }),
                 new TextFormField(
+                    keyboardType: TextInputType.number,
                     decoration: new InputDecoration(
                       hintText: "Please enter " + tasks[index],
                       labelText: tasks1[index],
@@ -393,12 +393,24 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                   margin: new EdgeInsets.only(top: 20.0),
                 ),
-                new CheckboxListTile(
+                 CheckboxListTile(
                   title: Text("Is this worth marks?"),
+                  activeColor: stdyPink,
                   value: _data.forMarks,
                   onChanged: (bool value) {
                     setState(() {
                       _data.forMarks = value;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+                new CheckboxListTile(
+                  title: Text("Is this worth bonus marks?"),
+                  value: _data.bonus,
+                  activeColor: stdyPink,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _data.bonus = value;
                     });
                   },
                   controlAffinity: ListTileControlAffinity.leading,

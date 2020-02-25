@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:study/bloc/theme.dart';
+import 'package:study/main.dart';
 import 'home_widget.dart';
 
 bool authCheck = false;
@@ -26,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () {
         signInWithGoogle().whenComplete(() {
           if (authCheck) {
+            LoggedInState().saveLoginState(true);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) {
@@ -33,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
             );
-          }
+         }
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),

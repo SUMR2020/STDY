@@ -114,6 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             RaisedButton(
               child: Text('Sign Out'),
               onPressed: () {
+                LoggedInState().saveLoginState(false);
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {

@@ -23,23 +23,20 @@ class GradesYearPageState extends State<GradesYearPage> {
   GradeData firehouse;
 
   int marks;
-  String _finalGradeText;
-  List<Item> _data; /*= <Item> [
-    Item(headerValue: "test1", expandedValue: "IT WORKED", isExpanded: false)
-  ];*/
-  //String get grade => _grade.text;
-  static Widget _expansionPane;
+
+  List<Item> _data;
+
   List<DocumentSnapshot> courseData;
 
   Future <List<DocumentSnapshot>> _futureData;
-  String gpaPageVal;
+  String actualGPA;
+  String currentGPA;
 
 
 
   GradesYearPageState(){
     firehouse = new GradeData();
 
-    _finalGradeText = '';
     marks = 0;
 
     _futureData = _getData();
@@ -47,11 +44,8 @@ class GradesYearPageState extends State<GradesYearPage> {
   }
 
 
-  List<Item> generateItems(Map<String, List<String>> data) {
+  List<Item> generateItems(Map<String, List<Map<String, dynamic>>> data) {
     List<Item> items = <Item>[];
-
-    //List<String> sortedKeys = new List();
-    //data.forEach((k, v) => sortedKeys.add(k));
 
     List<String> sortedKeys = data.keys.toList();
 
@@ -109,15 +103,47 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   }
 
-  void _openCoursePage(String course, String sem) async {
-    final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GradesPage(course, sem),
-        ));
+  void _openCoursePage(Map<String, dynamic> course) async {
+    //print("grade is $grade");
+    if(course["taken"]=="CURR"){
+      final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GradesPage(course),
+          ));
+      setState(() {});
+
+    }
+
+    else {
+      _showDialog("Error", "Cannot add assignments to past course.");
+    }
 
 
 
+  }
+
+  void _showDialog(String title, String content) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(content),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _addData() async {
@@ -128,6 +154,7 @@ class GradesYearPageState extends State<GradesYearPage> {
           builder: (context) => CourseInputPage(),
         ));
 
+    print(result);
     await firehouse.addData(result);
 
     await _getData();
@@ -139,9 +166,10 @@ class GradesYearPageState extends State<GradesYearPage> {
 
     courseData =  await firehouse.getCourseData();
 
-    Map<String, List<String>> courseByYear = firehouse.getCourseNameSem(courseData);
-    gpaPageVal = firehouse.getGPA().toStringAsFixed(2);
-    print("gpa is now $gpaPageVal");
+    Map<String, List<Map<String, dynamic>>> courseByYear = firehouse.getCourseNameSem(courseData);
+    actualGPA = firehouse.getGPA(false).toStringAsFixed(2);
+    currentGPA = firehouse.getGPA(true).toStringAsFixed(2);
+    print("gpa is now $actualGPA");
     _data = generateItems(courseByYear);
     setState(() {
     });
@@ -151,26 +179,26 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   }
 
-  List<Widget> _buildCourses(String semester, List<String> courses){
+  List<Widget> _buildCourses(String semester, List<Map<String, dynamic>> courses){
     List<Widget> courseWidgets = <Widget>[];
 
     for(int i =0; i<courses.length; i++){
-      String grade = firehouse.getCourseGrade((courses[i]+semester).replaceAll(' ',''));
+      String grade = firehouse.getCourseGrade((courses[i]["id"]+semester).replaceAll(' ',''));
       print(grade);
 
       courseWidgets.add(
         ListTile(
-            title: Text(courses[i]),
+            title: Text(courses[i]["id"]),
             subtitle: Text('Grade: $grade'),
             trailing: IconButton(
               icon: Icon(Icons.delete),
               tooltip: 'Increase volume by 10',
               onPressed: () {
-                _removeData(courses[i], semester);
+                _removeData(courses[i]["id"], semester);
               },
             ),
             onTap: () {
-              _openCoursePage(courses[i], semester);
+              _openCoursePage(courses[i]);
               setState(() {
                 print("course opened");
               });
@@ -249,7 +277,8 @@ class GradesYearPageState extends State<GradesYearPage> {
               child: Column(
                 children: <Widget>[
                   Text("Student Stats"),
-                  Text("GPA: $gpaPageVal"),
+                  Text("Actual GPA: $actualGPA"),
+                  Text("Current GPA: $currentGPA"),
 
                 ]
               )
@@ -275,7 +304,7 @@ class Item {
 
   String expandedValue;
   String headerValue;
-  List<String> expandedText;
+  List<Map<String, dynamic>> expandedText;
   bool isExpanded;
   String semGPA;
 }

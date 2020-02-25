@@ -34,11 +34,26 @@ class SaveFontScale{
 
   Future<int> loadScale() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    fontScale = prefs.getInt('Size');
+    fontScale = prefs.getInt('Size') ?? 0;
     print("FONTSCALE "+fontScale.toString());
     return fontScale;
   }
 
+}
+
+class LoggedInState{
+
+  Future<bool> saveLoginState(bool loginState) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    loginCheck = loginState;
+    return prefs.setBool('LoggedIn', loginState);
+  }
+
+  Future<bool> loadLoginState() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    loginCheck = prefs.getBool('LoggedIn') ?? false;
+    return loginCheck;
+  }
 }
 
 enum ThemeStyle {
