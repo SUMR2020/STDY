@@ -1,0 +1,11 @@
+1. Feb 25 (Mon) 11:30-2:30 (3 hours)
+   a. Discussed diagram and d2 with group
+   b. Made grades pages more seemline with the rest of the app
+   c. fixed gpa calculator glitch 
+2. Feb 25 (Mon)  6:00-8:30 (3 hours)
+   a. Fixed glitch where gpa doesn't update after changing course tasks value. 
+   b. Added letter/percentage form and refined input course page (Still need to calculate this) 
+   c. Fixed issue where deleting course didn't delete its tasks and data. 
+
+   
+

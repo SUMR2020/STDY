@@ -29,8 +29,8 @@ class GradesYearPageState extends State<GradesYearPage> {
   List<DocumentSnapshot> courseData;
 
   Future <List<DocumentSnapshot>> _futureData;
-  String actualGPA;
-  String currentGPA;
+  double actualGPA;
+  double currentGPA;
 
 
 
@@ -66,10 +66,6 @@ class GradesYearPageState extends State<GradesYearPage> {
   }
 
 
-  void _setPageStats(){
-  }
-
-
   void _removeData(String course, String semester) async {
     showDialog(
       context: context,
@@ -84,6 +80,8 @@ class GradesYearPageState extends State<GradesYearPage> {
               child: new Text("Yes"),
               onPressed: () async{
                 await firehouse.remove_course((course + semester).replaceAll(' ', ''));
+                await _getData();
+                firehouse.calculateGPA(courseData);
                 await _getData();
                 setState(() {});
 
@@ -101,6 +99,8 @@ class GradesYearPageState extends State<GradesYearPage> {
       },
     );
 
+
+
   }
 
   void _openCoursePage(Map<String, dynamic> course) async {
@@ -111,6 +111,11 @@ class GradesYearPageState extends State<GradesYearPage> {
           MaterialPageRoute(
             builder: (context) => GradesPage(course),
           ));
+
+      print("course data with size of ${courseData.length}");
+      _getData();
+
+
       setState(() {});
 
     }
@@ -118,8 +123,6 @@ class GradesYearPageState extends State<GradesYearPage> {
     else {
       _showDialog("Error", "Cannot add assignments to past course.");
     }
-
-
 
   }
 
@@ -158,33 +161,40 @@ class GradesYearPageState extends State<GradesYearPage> {
     await firehouse.addData(result);
 
     await _getData();
+    firehouse.calculateGPA(courseData);
+    await _getData();
     setState(() {});
 
   }
+  double t;
 
   Future <List<DocumentSnapshot>> _getData() async {
 
     courseData =  await firehouse.getCourseData();
+    actualGPA =  await firehouse.getGPA(false);
+    currentGPA = await firehouse.getGPA(true);
+
+    actualGPA = double.parse(actualGPA.toStringAsFixed(2));
+    currentGPA = double.parse(currentGPA.toStringAsFixed(2));
+    print("future 1 done");
 
     Map<String, List<Map<String, dynamic>>> courseByYear = firehouse.getCourseNameSem(courseData);
-    actualGPA = firehouse.getGPA(false).toStringAsFixed(2);
-    currentGPA = firehouse.getGPA(true).toStringAsFixed(2);
-    print("gpa is now $actualGPA");
+
+    print("gpa is now $t, $currentGPA");
     _data = generateItems(courseByYear);
     setState(() {
     });
 
-
     return courseData;
-
   }
+
+
 
   List<Widget> _buildCourses(String semester, List<Map<String, dynamic>> courses){
     List<Widget> courseWidgets = <Widget>[];
 
     for(int i =0; i<courses.length; i++){
       String grade = firehouse.getCourseGrade((courses[i]["id"]+semester).replaceAll(' ',''));
-      print(grade);
 
       courseWidgets.add(
         ListTile(
@@ -262,17 +272,19 @@ class GradesYearPageState extends State<GradesYearPage> {
   Widget build(BuildContext context) {
     print('in build');
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _addData();
+        },
+        child: Icon(Icons.add),
+        backgroundColor: stdyPink,
+        shape: CircleBorder(),
+      ),
       body: SingleChildScrollView(
 
         child: Column(
           children: <Widget>[
 
-            RaisedButton(
-              child: Text('Add new course'),
-              onPressed: (){
-                _addData();
-              },
-            ),
             Container(
               child: Column(
                 children: <Widget>[
