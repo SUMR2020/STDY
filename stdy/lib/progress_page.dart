@@ -61,7 +61,7 @@ class progressPageState extends State<progressPage>{
                 child: Column(
                   children: <Widget>[
                     Text(
-                      'Time spent on you tasks',
+                      'Time spent on your tasks',
                       style: TextStyle(fontSize: 14.0),
                     ),
                     SizedBox(height: 10.0),
@@ -77,7 +77,6 @@ class progressPageState extends State<progressPage>{
                             cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
                             entryTextStyle: charts.TextStyleSpec(
                               color: charts.MaterialPalette.pink.shadeDefault,
-                              fontFamily: 'Georgia',
                               fontSize: 14
                             ),
                           )
