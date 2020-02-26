@@ -24,8 +24,14 @@ Map<DateTime, List> eventCal = {};
 
 Future<bool> _OnStartup;
 Future<bool> _tasksLoaded;
+<<<<<<< HEAD
 
 Future<bool> _doneTasksLoaded;
+=======
+
+Future<bool> _doneTasksLoaded;
+
+>>>>>>> 7cc165cdeb3da5b20c642fe11774a5c196924ea2
 class Task {
   String type;
   String name;
