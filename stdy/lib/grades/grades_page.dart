@@ -32,8 +32,11 @@ class GradesPageState extends State<GradesPage> {
   double weighted;
   String letterGrade;
   double totalWeights;
+  String gradePred;
+
   Future <List<DocumentSnapshot>> _futureData;
   List<DocumentSnapshot> taskData;
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   List<Item> _data;
 
@@ -305,6 +308,44 @@ class GradesPageState extends State<GradesPage> {
     return courseWidgets;
 
   }
+  void _gradePredictor(){
+
+  }
+
+  String _validateGradePredict(String value) {
+    if (value.isEmpty) return 'Please enter a valid grade.';
+    return null;
+  }
+
+  Widget _buildForm(BuildContext context){
+    return new Form(
+        key: this._formKey,
+        child: new ListView(
+          shrinkWrap: true,
+
+          children: <Widget>[
+            new TextFormField(
+                keyboardType: TextInputType.number,
+                decoration: new InputDecoration(
+                  hintText: 'Enter course name here...',
+                  labelText: "Course name *",
+                ),
+                validator: this._validateGradePredict,
+                onSaved: (String value) {
+                  print("val is $value");
+                  gradePred = value;
+                }),
+            RaisedButton(
+              child: Text('Add course'),
+              onPressed: (){
+                _gradePredictor();
+              },
+            ),
+
+          ],
+        )
+    );
+  }
 
   Widget _buildPanel()  {
 
@@ -389,6 +430,10 @@ class GradesPageState extends State<GradesPage> {
                 )
             ),
             Container(child: projectWidget()),
+            /*
+            SizedBox(height: 30),
+            _buildForm(context),
+            Text("mark needed is %$gradePred"),*/
           ],
 
         ),

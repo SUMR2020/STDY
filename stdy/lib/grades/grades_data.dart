@@ -31,6 +31,21 @@ class GradeData {
   String university = "Carleton";
   Map<String, dynamic> letterGPA;
 
+
+  Future<String> convertLetterToDouble(String strVal) async {
+    if (letterGPA == null) {
+      await getGPATable();
+    }
+    if(grades.contains(strVal)){
+      String index = grades.indexOf(strVal).toString().padLeft(2,'0');
+      letterGPA.forEach((k,v) => print('${k}: ${v}'));
+      return letterGPA[index].toString();
+
+    }
+
+    return null;
+  }
+
   GradesData() {
     print("started grades");
   }
