@@ -32,8 +32,11 @@ class GradesPageState extends State<GradesPage> {
   double weighted;
   String letterGrade;
   double totalWeights;
+  String gradePred;
+
   Future <List<DocumentSnapshot>> _futureData;
   List<DocumentSnapshot> taskData;
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   List<Item> _data;
 
@@ -62,7 +65,9 @@ class GradesPageState extends State<GradesPage> {
       totalWeights = 0.0;
     }
     setState(() {
-      letterGrade = firehouse.findLetterGPA(weighted);
+      if(weighted !=null) {
+        letterGrade = firehouse.findLetterGPA(weighted);
+      }
 
     });
 
@@ -77,16 +82,16 @@ class GradesPageState extends State<GradesPage> {
 
     for(int i =0; i<taskData.length; i++){
       DocumentSnapshot curr = taskData[i];
-
+      print(curr["name"]);
       if(curr["grade"]==null){
         continue;
       }
       double currGrade = curr["grade"];
-      double currTotal = curr["total"];
+      int currTotal = curr["totalgrade"];
       double currWeight = curr["weight"];
 
 
-      if(!curr.data.containsKey("bonus") || !curr["bonus"]){//replace this
+      if(!curr["bonus"]){//replace this
         totalWeight+= currWeight;
         print("value is now ${curr["name"]}");
         double percentEarned = (currGrade/currTotal)*currWeight;
@@ -97,9 +102,6 @@ class GradesPageState extends State<GradesPage> {
         bonus+=percentEarned;
 
       }
-
-
-      //print("$i: grade= $currGrade, weight: $currWeight, total: $currTotal for a total of $percentEarned");
 
     }
 
@@ -113,6 +115,8 @@ class GradesPageState extends State<GradesPage> {
     });
     print("weight is $totalWeights");
 
+    firehouse.calculateGPA(null);
+
   }
 
   void _addTask() async {
@@ -122,11 +126,32 @@ class GradesPageState extends State<GradesPage> {
         MaterialPageRoute(
           builder: (context) => TaskInputPage(totalWeights),
         ));
+    String type = result[0];
+    String name = result[1];
+    double weight = double.parse(result[2]);
+    int total = int.parse(result[3]);
+    double grade = double.parse(result[4]);
+    bool bonus = false;
+    print("bonus is ${result[5]}");
+    if(result[5]=='true'){
+      bonus = true;
+    }
 
-    //await firehouse.addData(result);
-    //await firehouse.addTaskData(_data.name, _data.dropDownValue, int.parse(_data.length), _data.dates, _data.dueDate, done, _data.forMarks, null, null, null,taskType.toLowerCase());
-    await firehouse.addPastTaskData(id, result);
-    //await _getData();
+    await firehouse.addTaskData(
+        name,
+        id,
+        0,
+        null,
+        null,
+        null,
+        true,
+        weight,
+        grade,
+        type,
+        null,
+        bonus,
+        total);
+
     print(result);
 
     await _getData();
@@ -250,12 +275,12 @@ class GradesPageState extends State<GradesPage> {
 
       else {
 
-        double percent = tasks[i]["grade"] / tasks[i]["total"];
+        double percent = tasks[i]["grade"] / tasks[i]["totalgrade"];
         double gradeWeighted =  percent* tasks[i]["weight"];
         gradeWeighted = double.parse(gradeWeighted.toStringAsFixed(1));
         percent = double.parse((percent*100).toStringAsFixed(1));
 
-        gradeInfo = 'Earned: ${tasks[i]["grade"]}/${tasks[i]["total"]}     Weighted: $gradeWeighted/${tasks[i]["weight"]}';
+        gradeInfo = 'Earned: ${tasks[i]["grade"]}/${tasks[i]["totalgrade"]}     Weighted: $gradeWeighted/${tasks[i]["weight"]}';
         title += " ($percent%)";
       }
 
@@ -267,7 +292,7 @@ class GradesPageState extends State<GradesPage> {
               icon: Icon(Icons.delete),
               tooltip: 'Increase volume by 10',
               onPressed: () {
-                _removeData(tasks[i]["name"]);
+                _removeData(tasks[i]["id"]);
               },
             ),
             onTap: () {
@@ -282,6 +307,44 @@ class GradesPageState extends State<GradesPage> {
 
     return courseWidgets;
 
+  }
+  void _gradePredictor(){
+
+  }
+
+  String _validateGradePredict(String value) {
+    if (value.isEmpty) return 'Please enter a valid grade.';
+    return null;
+  }
+
+  Widget _buildForm(BuildContext context){
+    return new Form(
+        key: this._formKey,
+        child: new ListView(
+          shrinkWrap: true,
+
+          children: <Widget>[
+            new TextFormField(
+                keyboardType: TextInputType.number,
+                decoration: new InputDecoration(
+                  hintText: 'Enter course name here...',
+                  labelText: "Course name *",
+                ),
+                validator: this._validateGradePredict,
+                onSaved: (String value) {
+                  print("val is $value");
+                  gradePred = value;
+                }),
+            RaisedButton(
+              child: Text('Add course'),
+              onPressed: (){
+                _gradePredictor();
+              },
+            ),
+
+          ],
+        )
+    );
   }
 
   Widget _buildPanel()  {
@@ -340,17 +403,20 @@ class GradesPageState extends State<GradesPage> {
           title: Text('$courseName $sem')
       ),
 
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _addTask();
+        },
+        child: Icon(Icons.add),
+        backgroundColor: stdyPink,
+        shape: CircleBorder(),
+      ),
+
       body: SingleChildScrollView(
 
         child: Column(
           children: <Widget>[
 
-            RaisedButton(
-              child: Text('Add new task'),
-              onPressed: (){
-                _addTask();
-              },
-            ),
             Container(
                 child: Column(
                     children: <Widget>[
@@ -364,6 +430,10 @@ class GradesPageState extends State<GradesPage> {
                 )
             ),
             Container(child: projectWidget()),
+            /*
+            SizedBox(height: 30),
+            _buildForm(context),
+            Text("mark needed is %$gradePred"),*/
           ],
 
         ),

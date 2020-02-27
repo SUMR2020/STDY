@@ -14,7 +14,7 @@ class TaskInputPage extends StatefulWidget {
 
 class TaskInputState extends State<TaskInputPage>{
 
-  List<String> tasks = ["Choose Task", "ASSIGNMENT", "TUTORIAL", "PARTICIPATION","PROJECT", "EXAM"];
+  List<String> tasks = ["ASSIGNMENT", "TUTORIAL", "PARTICIPATION","PROJECT", "EXAM"];
 
   String _weight;
   String _total;
@@ -28,14 +28,13 @@ class TaskInputState extends State<TaskInputPage>{
 
   TaskInputState(double tW){
     totalWeight = tW;
-    dropdownValueTask = "Choose Task";
   }
 
   void addCourseButton(BuildContext context) {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      if (dropdownValueTask == "Semester") {
+      if (dropdownValueTask == null) {
         _showDialog();
         return;
       }
@@ -153,6 +152,7 @@ class TaskInputState extends State<TaskInputPage>{
                   }),
               Text("Task type"),
               DropdownButton<String>(
+                hint: Text("Choose task type"),
                 value: dropdownValueTask,
                 icon: Icon(Icons.arrow_downward),
                 iconSize: 24,

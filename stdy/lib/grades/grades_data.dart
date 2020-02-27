@@ -31,36 +31,95 @@ class GradeData {
   String university = "Carleton";
   Map<String, dynamic> letterGPA;
 
+
+  Future<String> convertLetterToDouble(String strVal) async {
+    if (letterGPA == null) {
+      await getGPATable();
+    }
+    if(grades.contains(strVal)){
+      String index = grades.indexOf(strVal).toString().padLeft(2,'0');
+      letterGPA.forEach((k,v) => print('${k}: ${v}'));
+      return letterGPA[index].toString();
+
+    }
+
+    return null;
+  }
+
   GradesData() {
     print("started grades");
   }
 
-  double getGPA(bool curr) {
+  double calculateCurrGPA(bool curr, List<DocumentSnapshot> courseData) {
     double gpa = 0.0;
-    int size = currDocuments.length;
+    int size = courseData.length;
 
-    for (int i = 0; i < currDocuments.length; i++) {
-      Map<String, dynamic> doc = currDocuments[i].data;
+    for (int i = 0; i < courseData.length; i++) {
+      Map<String, dynamic> doc = courseData[i].data;
+      double temp;
 
       if (doc["taken"] == "CURR") {
+
         if (curr && doc.containsKey("weighted")) {
-          gpa += double.parse(findNumberGPA(doc["weighted"]));
+          gpa+= double.parse(findNumberGPA(doc["weighted"]));
         } else {
           size--;
         }
+      }else {
+        gpa+= double.parse(findNumberGPA(doc["grade"]));
       }
 
-      gpa += double.parse(findNumberGPA(doc["grade"]));
     }
+
     return gpa / size;
   }
 
-  String findNumberGPA(double grade) {
-    if (letterGPA == null) {
-      print("letterGPA is $letterGPA");
+  void calculateGPA(List<DocumentSnapshot> courseData) async{
+    if(courseData==null){
+      courseData = await getCourseData();
     }
 
-    print("test for ${letterGPA[0]}");
+    double grade = calculateCurrGPA(false, courseData);
+    double currGrade = calculateCurrGPA(true, courseData);
+
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+
+    await db.collection("users").document(uid).setData({"gpa": grade, "currGpa": currGrade});
+
+  }
+
+  Future<double>  getGPA(bool curr) async{
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    double val;
+    await Firestore.instance
+        .collection('users')
+        .document(uid)
+        .get()
+        .then((DocumentSnapshot ds) {
+      if(curr) {
+        val= double.parse(ds.data["currGpa"].toString());
+      }
+      else{
+        print (ds.data["gpa"]);
+        val= double.parse(ds.data["gpa"].toString());
+      }
+
+      // use ds as a snapshot
+    });
+
+    print("returned $val");
+
+    return val;
+
+
+
+
+
+  }
+
+  String findNumberGPA(double grade) {
 
     //List<String> letters = letterGPA.keys.toList()..sort();
     List<String> letters = new List();
@@ -76,8 +135,6 @@ class GradeData {
       }
       curr = letters[i];
     }
-    print("returning value grade of $curr");
-
     return curr;
   }
 
@@ -142,8 +199,6 @@ class GradeData {
     gpa = gpa / size;
 
     if (gpa.isNaN) {
-      print("gpa is nana $gpa");
-
       return "CURR";
     }
 
@@ -157,6 +212,11 @@ class GradeData {
   void remove_course(String id) async {
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
+    List<DocumentSnapshot> tasks = await getTasks();
+    for(int i =0; i<tasks.length; i++){
+      remove_task(tasks[i].documentID, id);
+    }
+
     db
         .collection("users")
         .document(uid)
@@ -167,6 +227,7 @@ class GradeData {
   }
 
   void remove_task(String id, String course) async {
+    print("removing task $id for course$course");
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     db
@@ -211,7 +272,7 @@ class GradeData {
     });
 
     if (!exists) {
-      await db.collection("users").document(uid).setData({"gpa": -1});
+      await db.collection("users").document(uid).setData({"gpa": -1, "currGpa": -1});
     }
     await db
         .collection("users")
@@ -246,7 +307,7 @@ class GradeData {
         .document((course))
         .collection("Tasks")
         .document(name)
-        .updateData({"weight": weight, "total": total, "grade": grade});
+        .updateData({"weight": weight, "totalgrade": total, "grade": grade});
 
     print("added data to $uid");
   }
@@ -470,10 +531,7 @@ class GradeData {
 
   Future<List<DocumentSnapshot>> getCourseData() async {
     if (letterGPA == null) {
-      //print("letter is null");
       getGPATable();
-    } else {
-      //print("letter isnt");
     }
 
     final FirebaseUser user = await _auth.currentUser();
@@ -587,6 +645,7 @@ class GradeData {
 
       mapData[sem].add(documents[i].data);
     }
+    print("returned map data");
 
     return mapData;
   }

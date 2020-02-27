@@ -18,8 +18,10 @@ class TaskInfoState extends State<TaskInfoPage> {
   Map<String, dynamic> task;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
+  bool _bonus;
   TaskInfoState(Map<String, dynamic> t){
     task = t;
+    _bonus = task["bonus"];
 
   }
 
@@ -41,23 +43,18 @@ class TaskInfoState extends State<TaskInfoPage> {
     double hours=0;
     double weight=0;
     double grade=0;
-    double total=0;
+    int total=0;
     
     String earned='N/A';
     String weighted='N/A';
     double percent;
-    bool bonus = false;
-
-    if(task.containsKey("bonus")){
-      bonus = task["bonus"];
-    }
 
     String temp;
 
     if(task["grade"]!=null){
       weight = task["weight"];
       grade = task["grade"];
-      total = task["total"];
+      total = task["totalgrade"];
 
       percent = grade / total;
       double gradeWeighted =  percent* weight;
@@ -69,10 +66,10 @@ class TaskInfoState extends State<TaskInfoPage> {
 
     }
     
-    if(task.containsKey("due")){
+    if(task["due"]!=null){
       print("timestamp is ${task["due"]}");
       dueDate = formatTimestamp(task["due"].seconds);
-      hours = task["toDo"];
+      hours = double.parse(task["toDo"].toString());
     }
 
     List<Widget> tasks = <Widget>[
@@ -89,6 +86,7 @@ class TaskInfoState extends State<TaskInfoPage> {
           decoration: new InputDecoration(
             labelText: "Task grade",
           ),
+          keyboardType: TextInputType.number,
           initialValue: grade.toString(),
           validator: this._validateCourseName,
           onSaved: (String value) {
@@ -98,6 +96,7 @@ class TaskInfoState extends State<TaskInfoPage> {
           decoration: new InputDecoration(
             labelText: "Task total marks",
           ),
+          keyboardType: TextInputType.number,
           initialValue: total.toString(),
           validator: this._validateCourseName,
           onSaved: (String value) {
@@ -107,6 +106,7 @@ class TaskInfoState extends State<TaskInfoPage> {
           decoration: new InputDecoration(
             labelText: "Task weight",
           ),
+          keyboardType: TextInputType.number,
           initialValue: weight.toString(),
           validator: this._validateCourseName,
           onSaved: (String value) {
@@ -116,6 +116,7 @@ class TaskInfoState extends State<TaskInfoPage> {
           decoration: new InputDecoration(
             labelText: "Task hours left",
           ),
+          keyboardType: TextInputType.number,
           initialValue: hours.toString(),
           validator: this._validateCourseName,
           onSaved: (String value) {
@@ -127,12 +128,13 @@ class TaskInfoState extends State<TaskInfoPage> {
       Text("Percent: $percent"),
       Text("Type: ${task["type"]}"),
       Text("Due date: $dueDate"),
+
       new CheckboxListTile(
         title: Text("Bonus task"),
-        value: bonus,
+        value: _bonus,
         onChanged: (bool value) {
           setState(() {
-            bonus = value;
+            _bonus = value;
           });
         },
         controlAffinity: ListTileControlAffinity.leading,
