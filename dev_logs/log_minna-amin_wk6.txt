@@ -1,0 +1,8 @@
+Feb 25th
+6:10 - 8:00 = making pie chart and fixing indentation errors
+
+
+Feb 26th
+11:30 to 2:30 team meeting
+4:00 - 5:00 Discussing D2 and component diagram with team and TA
+8:30-9:00 looking at pulling data from db into the chart
