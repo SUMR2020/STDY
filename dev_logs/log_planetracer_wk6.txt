@@ -20,3 +20,8 @@ February 25th, 2020: 10am to 5pm
 	- discussed our project
 	- started working on the write up
 - updated the to do list and done list into a toggle, so there's more space
+
+
+February 27th, 2020: 11:30am to 2pm
+- Updated the schedule log in to work with firebase 
+- worked on the component diagram for D2

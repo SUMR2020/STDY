@@ -10,6 +10,7 @@ import "package:http/http.dart" as http;
 import "package:googleapis_auth/auth_io.dart" as auth;
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'login_page.dart' as login;
 
 final GoogleSignIn _googleSignIn =
 new GoogleSignIn(scopes: [calendar.CalendarApi.CalendarScope]);
@@ -17,19 +18,8 @@ new GoogleSignIn(scopes: [calendar.CalendarApi.CalendarScope]);
 final scopes = [calendar.CalendarApi.CalendarScope];
 
 Future<calendar.CalendarApi> gettingCalendar() async {
-  final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-
-  final GoogleSignInAuthentication googleAuth =
-  await googleUser.authentication;
-
-  auth.AccessToken token = auth.AccessToken("Bearer", googleAuth.accessToken,
-      DateTime.now().add(Duration(days: 1)).toUtc());
-  auth.AccessCredentials(token, googleUser.id, scopes);
-  http.BaseClient _client = http.Client();
-  auth.AuthClient _authClient = auth.authenticatedClient(
-      _client, auth.AccessCredentials(token, googleUser.id, scopes));
   calendar.CalendarApi calendarApi;
-  calendarApi = new calendar.CalendarApi(_authClient);
+  calendarApi = new calendar.CalendarApi(login.authClient);
   return calendarApi;
 }
 
