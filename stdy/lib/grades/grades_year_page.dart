@@ -170,10 +170,14 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   Future <List<DocumentSnapshot>> _getData() async {
 
-    courseData =  await firehouse.getCourseData();
-    actualGPA =  await firehouse.getGPA(false);
-    currentGPA = await firehouse.getGPA(true);
+    print ("poopy");
 
+    courseData =  await firehouse.getCourseData();
+    print ("After get course data");
+    actualGPA =  await firehouse.getGPA(false);
+    print ("After currGPA data");
+    currentGPA = await firehouse.getGPA(true);
+    print ("After actualGPA data");
     actualGPA = double.parse(actualGPA.toStringAsFixed(2));
     currentGPA = double.parse(currentGPA.toStringAsFixed(2));
     print("future 1 done");
@@ -255,7 +259,7 @@ class GradesYearPageState extends State<GradesYearPage> {
     return FutureBuilder(
       builder: (context, projectSnap) {
         if (!projectSnap.hasData) {
-          //print('project snapshot data is: ${projectSnap.data}');
+          print('project snapshot data is: ${projectSnap.data}');
           return CircularProgressIndicator(
             valueColor: new AlwaysStoppedAnimation<Color>(stdyPink),
           );

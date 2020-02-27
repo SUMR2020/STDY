@@ -93,18 +93,17 @@ class GradeData {
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     double val;
-
     await Firestore.instance
         .collection('users')
         .document(uid)
         .get()
         .then((DocumentSnapshot ds) {
       if(curr) {
-        val= ds.data["currGpa"];
+        val= double.parse(ds.data["currGpa"].toString());
       }
       else{
-
-        val= ds.data["gpa"];
+        print (ds.data["gpa"]);
+        val= double.parse(ds.data["gpa"].toString());
       }
 
       // use ds as a snapshot
