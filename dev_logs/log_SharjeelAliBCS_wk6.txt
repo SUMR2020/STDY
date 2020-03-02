@@ -8,8 +8,9 @@
    c. Fixed issue where deleting course didn't delete its tasks and data. 
 3. Feb 26 (Wed) 12:30- 2:30(2 hours)
    a. Added letter grade input for courses input page. 
-4. Feb 26 (Wd) 5:00 - 6:30 (1.5 hour)
+4. Feb 26 (Wed) 5:00 - 6:30 (1.5 hour)
    a. Made course input page more visually pleasing. 
    b. Plotted out few grade predictor design ideas. 
-   
+5. Mar 1 (Sun) 9:00- 9:30 (0.5 hours)
+   a. added setting font styles 
 

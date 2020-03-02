@@ -116,11 +116,13 @@ class CourseInputState extends State<CourseInputPage>{
         iconSize: 24,
         elevation: 16,
         style: TextStyle(
-            color: stdyPink
+            color: stdyPink,
+          fontSize: 16.0+fontScale,
         ),
         underline: Container(
           height: 2,
           color: stdyPink,
+
         ),
         onChanged: (String newValue) {
           setState(() {
@@ -162,6 +164,9 @@ class CourseInputState extends State<CourseInputPage>{
 
           children: <Widget>[
             new TextFormField(
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),
                 decoration: new InputDecoration(
                   hintText: 'Enter course name here...',
                   labelText: "Course name *",
@@ -173,6 +178,9 @@ class CourseInputState extends State<CourseInputPage>{
                 }),
 
             new TextFormField(
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),
                 keyboardType: TextInputType.number,
                 decoration: new InputDecoration(
                   hintText: 'Enter course year here...',
@@ -184,6 +192,7 @@ class CourseInputState extends State<CourseInputPage>{
                   _addYear = value;
                 }),
             DropdownButton<String>(
+
               isExpanded: true,
               hint: Text("Semester"),
               value: dropdownValueSem,
@@ -191,6 +200,7 @@ class CourseInputState extends State<CourseInputPage>{
               iconSize: 24,
               elevation: 16,
               style: TextStyle(
+                  fontSize: 16.0 + fontScale,
                   color: stdyPink
               ),
               underline: Container(
@@ -213,7 +223,10 @@ class CourseInputState extends State<CourseInputPage>{
             ),
             new CheckboxListTile(
 
-              title: Text("Is this a current course?"),
+              title: Text("Is this a current course?",
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),),
               value: _curr,
               onChanged: (bool value) {
                 setState(() {
@@ -234,7 +247,8 @@ class CourseInputState extends State<CourseInputPage>{
                         iconSize: 24,
                         elevation: 16,
                         style: TextStyle(
-                            color: stdyPink
+                            color: stdyPink,
+                            fontSize: 16.0+fontScale,
                         ),
                         underline: Container(
                           height: 2,

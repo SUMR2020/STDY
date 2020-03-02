@@ -108,6 +108,9 @@ class TaskInputState extends State<TaskInputPage>{
 
             children: <Widget>[
               new TextFormField(
+                  style: TextStyle(
+                    fontSize: 16.0 + fontScale,
+                  ),
                   decoration: new InputDecoration(
                     hintText: 'Enter task name here...',
                     labelText: "Task name *",
@@ -118,6 +121,9 @@ class TaskInputState extends State<TaskInputPage>{
                     _name = value;
                   }),
               new TextFormField(
+                  style: TextStyle(
+                    fontSize: 16.0 + fontScale,
+                  ),
                   keyboardType: TextInputType.number,
                   decoration: new InputDecoration(
                     hintText: 'Enter task grade here...',
@@ -129,6 +135,9 @@ class TaskInputState extends State<TaskInputPage>{
                     _grade = value;
                   }),
               new TextFormField(
+                  style: TextStyle(
+                    fontSize: 16.0 + fontScale,
+                  ),
                   keyboardType: TextInputType.number,
                   decoration: new InputDecoration(
                     hintText: 'Enter task total marks here...',
@@ -140,6 +149,9 @@ class TaskInputState extends State<TaskInputPage>{
                     _total = value;
                   }),
               new TextFormField(
+                  style: TextStyle(
+                    fontSize: 16.0 + fontScale,
+                  ),
                   keyboardType: TextInputType.number,
                   decoration: new InputDecoration(
                     hintText: 'Enter task weight here...',
@@ -152,13 +164,15 @@ class TaskInputState extends State<TaskInputPage>{
                   }),
               Text("Task type"),
               DropdownButton<String>(
+
                 hint: Text("Choose task type"),
                 value: dropdownValueTask,
                 icon: Icon(Icons.arrow_downward),
                 iconSize: 24,
                 elevation: 16,
                 style: TextStyle(
-                    color: stdyPink
+                    color: stdyPink,
+                    fontSize: 16.0+ fontScale,
                 ),
                 underline: Container(
                   height: 2,
@@ -180,7 +194,10 @@ class TaskInputState extends State<TaskInputPage>{
               ),
               new CheckboxListTile(
 
-                title: Text("Is this a bonus task?"),
+                title: Text("Is this a bonus task?",
+                  style: TextStyle(
+                    fontSize: 16.0 + fontScale,
+                  ),),
                 value: _bonus,
                 onChanged: (bool value) {
                   setState(() {
@@ -191,7 +208,10 @@ class TaskInputState extends State<TaskInputPage>{
               ),
 
               RaisedButton(
-                child: Text('Add course'),
+                child: Text('Add course',
+                  style: TextStyle(
+                    fontSize: 16.0 + fontScale,
+                  ),),
                 onPressed: (){
                   addCourseButton(context);
                 },
