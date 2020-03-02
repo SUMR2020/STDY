@@ -34,8 +34,8 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     SchedulePage(),
-    progressPage(),
     GradesYearPage(),
+    progressPage(),
     SettingsScreen()
   ];
 
@@ -64,12 +64,12 @@ class _HomeState extends State<Home> {
             title: Text('Schedule'),
           ),
           new BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart),
-            title: Text('Progress'),
+              icon: Icon(Icons.school),
+              title: Text('Courses')
           ),
           new BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              title: Text('Grade Calculator')
+            icon: Icon(Icons.pie_chart),
+            title: Text('Progress'),
           ),
           new BottomNavigationBarItem(
               icon: Icon(Icons.settings),
