@@ -208,7 +208,7 @@ class TaskInputState extends State<TaskInputPage>{
               ),
 
               RaisedButton(
-                child: Text('Add course',
+                child: Text('Add task',
                   style: TextStyle(
                     fontSize: 16.0 + fontScale,
                   ),),
