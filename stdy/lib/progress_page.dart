@@ -47,7 +47,7 @@ class progressPageState extends State<progressPage>{
     _generateData();
   }
 
-  progressPageState(){}
+ // progressPageState(){}
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +60,11 @@ class progressPageState extends State<progressPage>{
               child: Center(
                 child: Column(
                   children: <Widget>[
-                    Text(
-                      'Time spent on you tasks',
-                      style: TextStyle(fontSize: 14.0),
-                    ),
-                    SizedBox(height: 10.0),
+                   // Text(
+                     // 'Time spent on you tasks',
+                      //style: TextStyle(fontSize: 14.0),
+                  //  ),
+                   // SizedBox(height: 10.0),
                     Expanded(
                       child: charts.PieChart(
                         _seriesPieData,
@@ -77,8 +77,7 @@ class progressPageState extends State<progressPage>{
                             cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
                             entryTextStyle: charts.TextStyleSpec(
                               color: charts.MaterialPalette.pink.shadeDefault,
-                              fontFamily: 'Georgia',
-                              fontSize: 14
+                              fontSize: 14 + fontScale
                             ),
                           )
                         ],
@@ -105,7 +104,7 @@ class Task{
   String task;
   double taskvalue;
   Color colorvalue;
-
+//gonna need time as a thingy here
   Task(this.task, this.taskvalue, this.colorvalue);
 
 }
