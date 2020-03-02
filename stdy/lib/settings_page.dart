@@ -112,7 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ]),
             new Container(
-              height: 500,
+              height: 480,
             ),
             new Align(
                 alignment: Alignment.bottomCenter,
