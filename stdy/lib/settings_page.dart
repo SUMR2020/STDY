@@ -111,6 +111,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ]),
+            new Container(
+              height: 500,
+            ),
+            new Align(
+                alignment: Alignment.bottomCenter,
+              child:
             RaisedButton(
               child: Text('Sign Out'),
               onPressed: () {
@@ -125,6 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               },
             ),
+    ),
           ],
         ),
       ),
