@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _signInButton() {
     return OutlineButton(
-      splashColor: Colors.grey,
+      splashColor: Theme.of(context).accentColor,
       onPressed: () {
         signInWithGoogle().whenComplete(() {
           if (authCheck) {
@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
+      borderSide: BorderSide(color: Theme.of(context).primaryColor),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Row(
