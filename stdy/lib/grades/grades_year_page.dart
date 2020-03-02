@@ -133,12 +133,21 @@ class GradesYearPageState extends State<GradesYearPage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text(title),
-          content: new Text(content),
+          title: new Text(title,
+            style: TextStyle(
+              fontSize: 16.0 + fontScale,
+            ),),
+          content: new Text(content,
+            style: TextStyle(
+              fontSize: 16.0 + fontScale,
+            ),),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Close"),
+              child: new Text("Close",
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -202,8 +211,14 @@ class GradesYearPageState extends State<GradesYearPage> {
 
       courseWidgets.add(
         ListTile(
-            title: Text(courses[i]["id"]),
-            subtitle: Text('Grade: $grade'),
+            title: Text(courses[i]["id"],
+              style: TextStyle(
+                fontSize: 16.0 + fontScale,
+              ),),
+            subtitle: Text('Grade: $grade',
+              style: TextStyle(
+                fontSize: 16.0 + fontScale,
+              ),),
             trailing: IconButton(
               icon: Icon(Icons.delete),
               tooltip: 'Increase volume by 10',
@@ -238,8 +253,14 @@ class GradesYearPageState extends State<GradesYearPage> {
         return ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
-              title: Text(item.headerValue),
-              subtitle: Text('GPA: ${item.semGPA}'),
+              title: Text(item.headerValue,
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),),
+              subtitle: Text('GPA: ${item.semGPA}',
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),),
             );
           },
           body: Container(
@@ -292,9 +313,21 @@ class GradesYearPageState extends State<GradesYearPage> {
             Container(
               child: Column(
                 children: <Widget>[
-                  Text("Student Stats"),
-                  Text("Actual GPA: $actualGPA"),
-                  Text("Current GPA: $currentGPA"),
+                  Text("Student Stats",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0 + fontScale,
+                    ),),
+                  Text("Actual GPA: $actualGPA",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0 + fontScale,
+                    ),),
+                  Text("Current GPA: $currentGPA",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0 + fontScale,
+                    ),),
 
                 ]
               )

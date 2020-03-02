@@ -183,12 +183,21 @@ class GradesPageState extends State<GradesPage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Confirm"),
-          content: new Text("Are you sure you want to delete task $task?"),
+          title: new Text("Confirm",
+            style: TextStyle(
+              fontSize: 16.0 + fontScale,
+            ),),
+          content: new Text("Are you sure you want to delete task $task?",
+            style: TextStyle(
+              fontSize: 16.0 + fontScale,
+            ),),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Yes"),
+              child: new Text("Yes",
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),),
               onPressed: () async{
                 print("removed coure");
                 await firehouse.remove_task(task, id);
@@ -200,7 +209,10 @@ class GradesPageState extends State<GradesPage> {
               },
             ),
             new FlatButton(
-              child: new Text("No"),
+              child: new Text("No",
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -286,8 +298,14 @@ class GradesPageState extends State<GradesPage> {
 
       courseWidgets.add(
         ListTile(
-            title: Text(title),
-            subtitle: Text(gradeInfo),
+            title: Text(title,
+              style: TextStyle(
+                fontSize: 16.0 + fontScale,
+              ),),
+            subtitle: Text(gradeInfo,
+              style: TextStyle(
+                fontSize: 16.0 + fontScale,
+              ),),
             trailing: IconButton(
               icon: Icon(Icons.delete),
               tooltip: 'Increase volume by 10',
@@ -336,7 +354,10 @@ class GradesPageState extends State<GradesPage> {
                   gradePred = value;
                 }),
             RaisedButton(
-              child: Text('Add course'),
+              child: Text('Add course',
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),),
               onPressed: (){
                 _gradePredictor();
               },
@@ -359,7 +380,10 @@ class GradesPageState extends State<GradesPage> {
         return ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
-              title: Text("${item.headerValue}s"),
+              title: Text("${item.headerValue}s",
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),),
             );
           },
           body: Container(
@@ -400,7 +424,8 @@ class GradesPageState extends State<GradesPage> {
           centerTitle: true,
           backgroundColor: Color(0x00000000),
           elevation: 0,
-          title: Text('$courseName $sem')
+          title: Text('$courseName $sem',
+            )
       ),
 
       floatingActionButton: FloatingActionButton(
@@ -420,11 +445,27 @@ class GradesPageState extends State<GradesPage> {
             Container(
                 child: Column(
                     children: <Widget>[
-                      Text("Student Stats"),
-                      Text("Total weight: $totalWeights"),
-                      Text("Actual grade: $grade%"),
-                      Text("Current grade: $weighted%"),
-                      Text("Letter grade: $letterGrade"),
+                      Text("Student Stats",
+                        style: TextStyle(
+                          fontSize: 16.0 + fontScale,
+                        ),
+                      ),
+                      Text("Total weight: $totalWeights",
+                        style: TextStyle(
+                          fontSize: 16.0 + fontScale,
+                        ),),
+                      Text("Actual grade: $grade%",
+                        style: TextStyle(
+                          fontSize: 16.0 + fontScale,
+                        ),),
+                      Text("Current grade: $weighted%",
+                        style: TextStyle(
+                          fontSize: 16.0 + fontScale,
+                        ),),
+                      Text("Letter grade: $letterGrade",
+                        style: TextStyle(
+                          fontSize: 16.0 + fontScale,
+                        ),),
 
                     ]
                 )

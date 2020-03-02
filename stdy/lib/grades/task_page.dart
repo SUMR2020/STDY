@@ -74,6 +74,9 @@ class TaskInfoState extends State<TaskInfoPage> {
 
     List<Widget> tasks = <Widget>[
       new TextFormField(
+          style: TextStyle(
+            fontSize: 16.0 + fontScale,
+          ),
           decoration: new InputDecoration(
             labelText: "Task name",
           ),
@@ -82,7 +85,10 @@ class TaskInfoState extends State<TaskInfoPage> {
           onSaved: (String value) {
             temp = value;
           }),
-      new TextFormField(//remove decimal if its 0. 
+      new TextFormField(//remove decimal if its 0.
+          style: TextStyle(
+            fontSize: 16.0 + fontScale,
+          ),
           decoration: new InputDecoration(
             labelText: "Task grade",
           ),
@@ -93,6 +99,9 @@ class TaskInfoState extends State<TaskInfoPage> {
             temp = value;
           }),
       new TextFormField(
+          style: TextStyle(
+            fontSize: 16.0 + fontScale,
+          ),
           decoration: new InputDecoration(
             labelText: "Task total marks",
           ),
@@ -103,6 +112,9 @@ class TaskInfoState extends State<TaskInfoPage> {
             temp = value;
           }),
       new TextFormField(
+          style: TextStyle(
+            fontSize: 16.0 + fontScale,
+          ),
           decoration: new InputDecoration(
             labelText: "Task weight",
           ),
@@ -113,6 +125,9 @@ class TaskInfoState extends State<TaskInfoPage> {
             temp = value;
           }),
       new TextFormField(
+          style: TextStyle(
+            fontSize: 16.0 + fontScale,
+          ),
           decoration: new InputDecoration(
             labelText: "Task hours left",
           ),
@@ -123,14 +138,32 @@ class TaskInfoState extends State<TaskInfoPage> {
             temp = value;
           }),
 
-      Text("Earned: $earned"),
-      Text("Weighted: $weighted"),
-      Text("Percent: $percent"),
-      Text("Type: ${task["type"]}"),
-      Text("Due date: $dueDate"),
+      Text("Earned: $earned",
+        style: TextStyle(
+          fontSize: 16.0 + fontScale,
+        ),),
+      Text("Weighted: $weighted",
+        style: TextStyle(
+          fontSize: 16.0 + fontScale,
+        ),),
+      Text("Percent: $percent",
+        style: TextStyle(
+          fontSize: 16.0 + fontScale,
+        ),),
+      Text("Type: ${task["type"]}",
+        style: TextStyle(
+          fontSize: 16.0 + fontScale,
+        ),),
+      Text("Due date: $dueDate",
+        style: TextStyle(
+          fontSize: 16.0 + fontScale,
+        ),),
 
       new CheckboxListTile(
-        title: Text("Bonus task"),
+        title: Text("Bonus task",
+          style: TextStyle(
+            fontSize: 16.0 + fontScale,
+          ),),
         value: _bonus,
         onChanged: (bool value) {
           setState(() {
