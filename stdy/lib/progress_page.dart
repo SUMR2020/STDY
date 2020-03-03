@@ -16,14 +16,24 @@ class progressPage extends StatefulWidget {
 class progressPageState extends State<progressPage>{
 
   List<charts.Series<Task,String>> _seriesPieData;
+  List<charts.Series<Task,String>> _seriesPieDataB;
+
     _generateData(){
 
       var pieData=[
         new Task('Assignment 1', 25.0, stdyPink ),
         new Task('Assignment 2', 25.0, Color(0xFFF06292) ),
-        new Task('reading', 50.0 , Color(0xFFE91E63)),
+        new Task('Assignment 3', 50.0 , Color(0xFFE91E63)),
 
       ];
+
+      var pieDataB=[
+        new Task('Project 1', 15.0, stdyPink ),
+        new Task('Project 2', 40.0, Color(0xFFF06292) ),
+        new Task('Project 3', 45.0 , Color(0xFFE91E63)),
+
+      ];
+
 
       _seriesPieData.add(
         charts.Series(
@@ -32,7 +42,20 @@ class progressPageState extends State<progressPage>{
           measureFn: (Task task,_)=>task.taskvalue,
           colorFn: (Task task,_)=>
               charts.ColorUtil.fromDartColor(task.colorvalue),
-              id: 'Daily  Task',
+              id: 'Daily Task',
+          labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
+
+        ),
+      );
+
+      _seriesPieDataB.add(
+        charts.Series(
+          data: pieDataB,
+          domainFn: (Task task,_)=>task.task,
+          measureFn: (Task task,_)=>task.taskvalue,
+          colorFn: (Task task,_)=>
+              charts.ColorUtil.fromDartColor(task.colorvalue),
+          id: 'Daily Task B',
           labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
 
         ),
@@ -44,6 +67,7 @@ class progressPageState extends State<progressPage>{
   void initState(){
     super.initState();
     _seriesPieData = List<charts.Series<Task,String>>();
+    _seriesPieDataB = List<charts.Series<Task,String>>();
     _generateData();
   }
 
@@ -60,18 +84,13 @@ class progressPageState extends State<progressPage>{
               child: Center(
                 child: Column(
                   children: <Widget>[
-                   // Text(
-                     // 'Time spent on you tasks',
-                      //style: TextStyle(fontSize: 14.0),
-                  //  ),
-                   // SizedBox(height: 10.0),
                     Expanded(
                       child: charts.PieChart(
                         _seriesPieData,
                         animate : true,
                         behaviors: [
                           new charts.DatumLegend(
-                            outsideJustification: charts.OutsideJustification.endDrawArea,
+                            outsideJustification: charts.OutsideJustification.start,
                             horizontalFirst: false,
                             desiredMaxRows: 1,
                             cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
@@ -87,6 +106,30 @@ class progressPageState extends State<progressPage>{
                             new charts.ArcLabelDecorator(
                               labelPosition: charts.ArcLabelPosition.inside)
                           ])),
+                    ),
+
+                    Expanded(
+                      child: charts.PieChart(
+                          _seriesPieDataB,
+                          animate : true,
+                          behaviors: [
+                            new charts.DatumLegend(
+                              outsideJustification: charts.OutsideJustification.start,
+                              horizontalFirst: false,
+                              desiredMaxRows: 1,
+                              cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
+                              entryTextStyle: charts.TextStyleSpec(
+                                  color: charts.MaterialPalette.pink.shadeDefault,
+                                  fontSize: 14 + fontScale
+                              ),
+                            )
+                          ],
+                          defaultRenderer: new charts.ArcRendererConfig(
+                              arcWidth: 100,
+                              arcRendererDecorators: [
+                                new charts.ArcLabelDecorator(
+                                    labelPosition: charts.ArcLabelPosition.inside)
+                              ])),
                     )
                   ],
                 )
