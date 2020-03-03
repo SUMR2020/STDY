@@ -484,7 +484,6 @@ class GradeData {
     var days = before["dates"];
     docRef.updateData({"daily": (double.parse(newAmount) / days.length).toStringAsFixed(2)});
   }
-
   Future<bool> updateProgressandDaily(
       String id, String course, String done) async {
     final FirebaseUser user = await _auth.currentUser();
@@ -498,6 +497,12 @@ class GradeData {
         .document(id);
     var before = await docRef.get();
     if (double.parse(done) >= double.parse(before["today"])) {
+      print ("In if");
+      docRef.updateData({"today": 0});
+      int totalBefore = before["toDo"];
+      double totalAfter = ((totalBefore) - double.parse(done));
+      if (totalAfter < 0) totalAfter = 0;
+      docRef.updateData({"toDo": totalAfter});
       var dates = before["dates"];
       List<DateTime> datesObjs = new List<DateTime>();
       for (Timestamp t in dates) {
@@ -506,34 +511,88 @@ class GradeData {
       }
       DateTime today = DateTime.now();
       datesObjs.remove(DateTime(today.year, today.month, today.day));
-      List<DateTime> doneDatesObjs = new List<DateTime>();
-      var doneDays = before["done"];
-      for (Timestamp t in doneDays) {
-        DateTime date = (t.toDate());
-        doneDatesObjs.add(DateTime(date.year, date.month, date.day));
-      }
-      doneDatesObjs.add(DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day));
       docRef.updateData({"dates": datesObjs});
-      docRef.updateData({"done": doneDatesObjs});
-    } else{
-      print ("else");
+    }
+    else{
+      print ("In else");
       var today = before["today"];
       today = (double.parse(today) - double.parse(done)).toStringAsFixed(2);
       docRef.updateData({"today": today});
+      print ("after today");
+
     }
-    before = await docRef.get();
-    int totalBefore = before["toDo"];
-    double totalAfter = ((totalBefore) - double.parse(done));
-    if (totalAfter < 0) totalAfter = 0;
-    var days = before["dates"];
+    print ("out");
     var progress = before["progress"];
     if (progress == null) progress = new List<String>();
     progress.add(done);
     docRef.updateData({"progress": progress});
+    print ("after prog");
+    List<DateTime> doneDatesObjs = new List<DateTime>();
+    var doneDays = before["done"];
+    for (Timestamp t in doneDays) {
+      DateTime date = (t.toDate());
+      doneDatesObjs.add(DateTime(date.year, date.month, date.day));
+    }
+    int totalBefore = before["toDo"];
+    double totalAfter = ((totalBefore) - double.parse(done));
+    if (totalAfter < 0) totalAfter = 0;
     docRef.updateData({"toDo": totalAfter});
+    doneDatesObjs.add(DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day));
+    docRef.updateData({"dates": doneDatesObjs});
+    var days = before["dates"];
     docRef.updateData({"daily": (totalAfter / days.length).toStringAsFixed(2)});
     return true;
   }
+
+//  Future<bool> updateProgressandDaily(
+//      String id, String course, String done) async {
+//    final FirebaseUser user = await _auth.currentUser();
+//    final uid = user.uid;
+//    DocumentReference docRef = db
+//        .collection("users")
+//        .document(uid)
+//        .collection("Grades")
+//        .document(course)
+//        .collection("Tasks")
+//        .document(id);
+//    var before = await docRef.get();
+//    if (double.parse(done) >= double.parse(before["today"])) {
+//      var dates = before["dates"];
+//      List<DateTime> datesObjs = new List<DateTime>();
+//      for (Timestamp t in dates) {
+//        DateTime date = (t.toDate());
+//        datesObjs.add(DateTime(date.year, date.month, date.day));
+//      }
+//      DateTime today = DateTime.now();
+//      datesObjs.remove(DateTime(today.year, today.month, today.day));
+//      List<DateTime> doneDatesObjs = new List<DateTime>();
+//      var doneDays = before["done"];
+//      for (Timestamp t in doneDays) {
+//        DateTime date = (t.toDate());
+//        doneDatesObjs.add(DateTime(date.year, date.month, date.day));
+//      }
+//      doneDatesObjs.add(DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day));
+//      docRef.updateData({"dates": datesObjs});
+//      docRef.updateData({"done": doneDatesObjs});
+//    } else{
+//      print ("else");
+//      var today = before["today"];
+//      today = (double.parse(today) - double.parse(done)).toStringAsFixed(2);
+//      docRef.updateData({"today": today});
+//    }
+//    before = await docRef.get();
+//    int totalBefore = before["toDo"];
+//    double totalAfter = ((totalBefore) - double.parse(done));
+//    if (totalAfter < 0) totalAfter = 0;
+//    var days = before["dates"];
+//    var progress = before["progress"];
+//    if (progress == null) progress = new List<String>();
+//    progress.add(done);
+//    docRef.updateData({"progress": progress});
+//    docRef.updateData({"toDo": totalAfter});
+//    docRef.updateData({"daily": (totalAfter / days.length).toStringAsFixed(2)});
+//    return true;
+//  }
 
   Future<List<DocumentSnapshot>> getCourseData() async {
     if (letterGPA == null) {
