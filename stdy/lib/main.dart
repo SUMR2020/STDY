@@ -13,6 +13,7 @@ Future<bool> _themeLoaded;
 String themeDrop;
 int fontScale = 0;
 bool loginCheck = false;
+String name = "";
 
 Future<String> loadTheme() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -53,7 +53,7 @@ class _HomeState extends State<Home> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-                padding: const EdgeInsets.all(8.0), child: Text('Welcome ') + "name"),
+                padding: const EdgeInsets.all(8.0), child: Text('Welcome ' + name+"!")),
         Image.asset(
               'assets/appbar.png',
               fit: BoxFit.contain,
