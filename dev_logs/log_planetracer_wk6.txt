@@ -25,7 +25,3 @@ February 25th, 2020: 10am to 5pm
 February 27th, 2020: 11:30am to 2pm
 - Updated the schedule log in to work with firebase 
 - worked on the component diagram for D2
-
-March 2nd, 2020 10am to 12pm
-- updating the logo for the app with Uzair, took a while to understand Android adaptive icon
-- updated the sign out button to be lower on the screen

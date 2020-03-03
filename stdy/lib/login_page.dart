@@ -105,6 +105,7 @@ Future<bool> signInWithGoogle() async {
   print("SUCCESS");
 
   authCheck = true;
+  name = user.displayName;
   return true;
 }
 
