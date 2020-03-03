@@ -178,6 +178,12 @@ class _TaskPageState extends State<TaskPage> {
               });
         }
         else {
+          String str = _data.dropDownValue;
+          String start = "";
+          String end = " ";
+          final startIndex = str.indexOf(start);
+          final endIndex = str.indexOf(end, startIndex + start.length);
+
           grades.addTaskData(
               _data.name,
               _data.dropDownValue,
@@ -190,7 +196,7 @@ class _TaskPageState extends State<TaskPage> {
               null,
               taskType.toLowerCase(),
               daily,
-          _data.bonus, null);
+          _data.bonus, null, (str.substring(startIndex + start.length, endIndex)));
 
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (_) => Home()));

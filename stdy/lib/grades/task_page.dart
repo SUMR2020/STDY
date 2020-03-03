@@ -186,7 +186,7 @@ class TaskInfoState extends State<TaskInfoPage> {
           centerTitle: true,
           backgroundColor: Color(0x00000000),
           elevation: 0,
-          title: Text('Task Info')
+          title: Text('TASK INFO')
       ),
       body: new Container(
           padding: new EdgeInsets.all(20.0),
