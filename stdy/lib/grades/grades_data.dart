@@ -407,7 +407,8 @@ class GradeData {
       String type,
       String daily,
       bool bonus,
-      int total) async {
+      int total,
+      String onlyC) async {
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     String id = (new DateTime.now().millisecondsSinceEpoch).toString();
@@ -437,6 +438,7 @@ class GradeData {
       "totalgrade": total,
       "today": daily,
       "done" : new List<DateTime>(),
+      "onlyCourse" : onlyC
     });
 
 //    if (forMarks) {

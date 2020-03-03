@@ -30,16 +30,17 @@ Future<bool> _doneTasksLoaded;
 class Task {
   String type;
   String name;
-
   String time;
   String id;
   String course;
-  Task(String t, String n, String ti, String i, String c) {
+  String onlyCourse;
+  Task(String t, String n, String ti, String i, String c, String oc) {
     type = t;
     name = n;
     time = ti;
     id = i;
     course = c;
+    onlyCourse = oc;
   }
 }
 
@@ -134,7 +135,7 @@ class _MyHomePageState extends State<SchedulePage>
     }
     DateTime today = DateTime.now();
     if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
-      Task t = new Task(task.data["type"], task.data["name"],task.data["today"], task.data["id"],task.data["course"]);
+      Task t = new Task(task.data["type"], task.data["name"],task.data["today"], task.data["id"],task.data["course"],task.data["onlyCourse"]);
       todayTasks.add(t);
 
     }
@@ -153,7 +154,7 @@ class _MyHomePageState extends State<SchedulePage>
       }
       DateTime today = DateTime.now();
       if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
-        Task t = new Task(task.data["type"], task.data["name"],task.data["today"], task.data["id"],task.data["course"]);
+        Task t = new Task(task.data["type"], task.data["name"],task.data["today"], task.data["id"],task.data["course"], task.data["onlyCourse"]);
         todayDoneTasks.add(t);
 
       }
@@ -234,7 +235,7 @@ class _MyHomePageState extends State<SchedulePage>
 
                   child: ListTile(
                     leading: Icon(getIcon(todayDoneTasks[index].type)),
-                    title: Text(todayDoneTasks[index].name),
+                    title: Text(todayDoneTasks[index].onlyCourse+": "+todayDoneTasks[index].name),
                   ),
 
                 ));
@@ -315,7 +316,7 @@ class _MyHomePageState extends State<SchedulePage>
 
               child: ListTile(
                 leading: Icon(getIcon(todayTasks[index].type)),
-                title: Text(todayTasks[index].name),
+                title: Text(todayTasks[index].onlyCourse+ ": "+todayTasks[index].name),
                 trailing: Text(getTypeString(todayTasks[index].type, todayTasks[index].time)),
               ),
 
@@ -584,14 +585,13 @@ class _MyHomePageState extends State<SchedulePage>
                       ),
                     )),
                 Switch(
+                  activeColor: Theme.of(context).primaryColor,
                   value: isSwitched,
                   onChanged: (value) {
                     setState(() {
                       isSwitched = value;
                     });
                   },
-                //  activeTrackColor: Colors.lightGreenAccent,
-                //  activeColor: Colors.green,
                 ),
               ],
             ),

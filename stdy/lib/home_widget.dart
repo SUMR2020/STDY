@@ -47,10 +47,21 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         backgroundColor: Color(0x00000000),
         elevation: 0,
-        title: Text('STDY'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+                padding: const EdgeInsets.all(8.0), child: Text('Welcome ') + "name"),
+        Image.asset(
+              'assets/appbar.png',
+              fit: BoxFit.contain,
+              height: 110,
+            ),
+
+          ],
+        ),
       ),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
