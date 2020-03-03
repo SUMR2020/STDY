@@ -17,6 +17,7 @@ class progressPageState extends State<progressPage>{
 
   List<charts.Series<Task,String>> _seriesPieData;
   List<charts.Series<Task,String>> _seriesPieDataB;
+  List<charts.Series<Hours,int>> _seriesLineData;
 
     _generateData(){
 
@@ -31,6 +32,14 @@ class progressPageState extends State<progressPage>{
         new Task('Project 1', 15.0, stdyPink ),
         new Task('Project 2', 40.0, Color(0xFFF06292) ),
         new Task('Project 3', 45.0 , Color(0xFFE91E63)),
+
+      ];
+
+      var lineData=[
+        new Hours(1,1),
+        new Hours(3,7),
+        new Hours(5,2),
+        new Hours(9,4),
 
       ];
 
@@ -61,6 +70,18 @@ class progressPageState extends State<progressPage>{
         ),
       );
 
+      _seriesLineData.add(
+        charts.Series(
+          data: lineData,
+          domainFn: (Hours hours,_)=>hours.hours,
+          measureFn: (Hours hours,_)=>hours.days,
+          colorFn: (Hours hours,_)=>
+              charts.ColorUtil.fromDartColor(stdyPink),
+          id: 'Hours',
+
+        ),
+      );
+
     }
 
   @override
@@ -68,6 +89,7 @@ class progressPageState extends State<progressPage>{
     super.initState();
     _seriesPieData = List<charts.Series<Task,String>>();
     _seriesPieDataB = List<charts.Series<Task,String>>();
+    _seriesLineData = List<charts.Series<Hours,int>> ();
     _generateData();
   }
 
@@ -101,7 +123,7 @@ class progressPageState extends State<progressPage>{
                           )
                         ],
                         defaultRenderer: new charts.ArcRendererConfig(
-                          arcWidth: 100,
+                          arcWidth: 50,
                           arcRendererDecorators: [
                             new charts.ArcLabelDecorator(
                               labelPosition: charts.ArcLabelPosition.inside)
@@ -125,11 +147,18 @@ class progressPageState extends State<progressPage>{
                             )
                           ],
                           defaultRenderer: new charts.ArcRendererConfig(
-                              arcWidth: 100,
+                              arcWidth: 50,
                               arcRendererDecorators: [
                                 new charts.ArcLabelDecorator(
                                     labelPosition: charts.ArcLabelPosition.inside)
                               ])),
+                    ),
+
+                    Expanded(
+                      child: charts.LineChart(
+                          _seriesLineData,
+                          animate : false,
+                    )
                     )
                   ],
                 )
@@ -152,3 +181,9 @@ class Task{
 
 }
 
+class Hours{
+  int hours;
+  int days;
+
+  Hours(this.hours, this.days);
+}
