@@ -205,7 +205,7 @@ class GradesPageState extends State<GradesPage> {
                 await firehouse.remove_task(task, id);
                 await _getData();
                 _calculateGrades();
-                setState(() {});
+                setState(() {_getData();});
 
                 Navigator.of(context).pop();
               },
