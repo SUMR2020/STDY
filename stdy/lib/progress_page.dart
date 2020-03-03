@@ -6,6 +6,7 @@ import 'home_widget.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
+
 class progressPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -97,77 +98,183 @@ class progressPageState extends State<progressPage>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: (
-       // children: [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Container(
-              child: Center(
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: charts.PieChart(
-                        _seriesPieData,
-                        animate : true,
-                        behaviors: [
-                          new charts.DatumLegend(
-                            outsideJustification: charts.OutsideJustification.start,
-                            horizontalFirst: false,
-                            desiredMaxRows: 1,
-                            cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
-                            entryTextStyle: charts.TextStyleSpec(
-                              color: charts.MaterialPalette.pink.shadeDefault,
-                              fontSize: 14 + fontScale
-                            ),
-                          )
-                        ],
-                        defaultRenderer: new charts.ArcRendererConfig(
-                          arcWidth: 50,
-                          arcRendererDecorators: [
-                            new charts.ArcLabelDecorator(
-                              labelPosition: charts.ArcLabelPosition.inside)
-                          ])),
-                    ),
+    return DefaultTabController(
+        length: 3,
+        child:Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0x00000000),
+            elevation: 0,
 
-                    Expanded(
-                      child: charts.PieChart(
-                          _seriesPieDataB,
-                          animate : true,
-                          behaviors: [
-                            new charts.DatumLegend(
-                              outsideJustification: charts.OutsideJustification.start,
-                              horizontalFirst: false,
-                              desiredMaxRows: 1,
-                              cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
-                              entryTextStyle: charts.TextStyleSpec(
+            bottom: TabBar(
+              indicatorColor: stdyPink,
+              tabs: [
+                Tab(icon: Icon(Icons.book,
+                color: Theme.of(context).accentColor,)
+                ),
+                Tab(icon: Icon(Icons.assignment,
+                  color: Theme.of(context).accentColor,)),
+                Tab(icon: Icon(Icons.note,
+                  color: Theme.of(context).accentColor,)),
+              ],
+            ),
+
+          ),
+
+          body: TabBarView(
+            children: [
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: charts.PieChart(
+                                    _seriesPieData,
+                                    animate : true,
+                                    behaviors: [
+                                      new charts.DatumLegend(
+                                        outsideJustification: charts.OutsideJustification.start,
+                                        horizontalFirst: false,
+                                        desiredMaxRows: 1,
+                                        cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
+                                        entryTextStyle: charts.TextStyleSpec(
+                                            color: charts.MaterialPalette.pink.shadeDefault,
+                                            fontSize: 14 + fontScale
+                                        ),
+                                      )
+                                    ],
+                                    defaultRenderer: new charts.ArcRendererConfig(
+                                        arcWidth: 50,
+                                        arcRendererDecorators: [
+                                          new charts.ArcLabelDecorator(
+                                              labelPosition: charts.ArcLabelPosition.inside)
+                                        ])),
+                              ),
+
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: charts.PieChart(
+                                    _seriesPieDataB,
+                                    animate : true,
+                                    behaviors: [
+                                      new charts.DatumLegend(
+                                        outsideJustification: charts.OutsideJustification.start,
+                                        horizontalFirst: false,
+                                        desiredMaxRows: 1,
+                                        cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
+                                        entryTextStyle: charts.TextStyleSpec(
+                                            color: charts.MaterialPalette.pink.shadeDefault,
+                                            fontSize: 14 + fontScale
+                                        ),
+                                      )
+                                    ],
+                                    defaultRenderer: new charts.ArcRendererConfig(
+                                        arcWidth: 50,
+                                        arcRendererDecorators: [
+                                          new charts.ArcLabelDecorator(
+                                              labelPosition: charts.ArcLabelPosition.inside)
+                                        ])),
+                              ),
+
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Container(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: charts.PieChart(
+                            _seriesPieData,
+                            animate : true,
+                            behaviors: [
+                              new charts.DatumLegend(
+                                outsideJustification: charts.OutsideJustification.start,
+                                horizontalFirst: false,
+                                desiredMaxRows: 1,
+                                cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
+                                entryTextStyle: charts.TextStyleSpec(
                                   color: charts.MaterialPalette.pink.shadeDefault,
                                   fontSize: 14 + fontScale
-                              ),
-                            )
-                          ],
-                          defaultRenderer: new charts.ArcRendererConfig(
+                                ),
+                              )
+                            ],
+                            defaultRenderer: new charts.ArcRendererConfig(
                               arcWidth: 50,
                               arcRendererDecorators: [
                                 new charts.ArcLabelDecorator(
-                                    labelPosition: charts.ArcLabelPosition.inside)
+                                  labelPosition: charts.ArcLabelPosition.inside)
                               ])),
-                    ),
+                        ),
 
-                    Expanded(
-                      child: charts.LineChart(
-                          _seriesLineData,
-                          animate : false,
+                        Expanded(
+                          child: charts.PieChart(
+                              _seriesPieDataB,
+                              animate : true,
+                              behaviors: [
+                                new charts.DatumLegend(
+                                  outsideJustification: charts.OutsideJustification.start,
+                                  horizontalFirst: false,
+                                  desiredMaxRows: 1,
+                                  cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
+                                  entryTextStyle: charts.TextStyleSpec(
+                                      color: charts.MaterialPalette.pink.shadeDefault,
+                                      fontSize: 14 + fontScale
+                                  ),
+                                )
+                              ],
+                              defaultRenderer: new charts.ArcRendererConfig(
+                                  arcWidth: 50,
+                                  arcRendererDecorators: [
+                                    new charts.ArcLabelDecorator(
+                                        labelPosition: charts.ArcLabelPosition.inside)
+                                  ])),
+                        ),
+
+                        Expanded(
+                          child: charts.LineChart(
+                              _seriesLineData,
+                              animate : false,
+                        )
+                        )
+                      ],
                     )
-                    )
-                  ],
+                  )
                 )
-              )
-            )
-          )
-        //]
-      ),
-            );
+              ),
+            ]
+           ),
+        ),
+    );
 
   }
 }
