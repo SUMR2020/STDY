@@ -120,7 +120,7 @@ class GradeData {
   }
 
   String findNumberGPA(double grade) {
-
+    print("grade is $grade");
     //List<String> letters = letterGPA.keys.toList()..sort();
     List<String> letters = new List();
     letterGPA.forEach((k, v) => letters.add(k));
@@ -139,7 +139,11 @@ class GradeData {
   }
 
   String findLetterGPA(double grade) {
+    if (grade.isNaN) {
+      return "N/A";
+    }
     String numberGPA = findNumberGPA(grade);
+
     return grades[int.parse(numberGPA)];
   }
 
