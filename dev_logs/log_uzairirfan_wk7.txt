@@ -1,1 +1,3 @@
 Spent 2 hours with RC implementing the logo into the app bar and the name with a welcome message.
+
+Spent 2 hours with RC figuring out how to skip login page if already logged in and get calendar to work again.
