@@ -5,3 +5,13 @@ March 2nd, 2020 10am to 12pm
 March 2nd, 2020 6pm to 7pm
 - Worked with Uzair to add the logo to the appbar
 - Included a welcome statement with the user's display name
+
+March 3rd, 2020 11am to 4pm
+- Worked with team to figure out a algorithm for determining a user's progress
+- Worked with Uzair or getting autentication when app reopens, and user hasn't signed out
+- Checking why the to do list breaks when inputting tasks on Sharjeel's page
+- Working on updating data in the database to be easily used by the progress page
+
+March 4th, 2020 12pm to 3pm
+- Fixed errors with adding progress
+- Researched design patterns that flutter works well with
