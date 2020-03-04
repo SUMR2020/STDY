@@ -15,3 +15,4 @@ March 3rd, 2020 11am to 4pm
 March 4th, 2020 12pm to 3pm
 - Fixed errors with adding progress
 - Researched design patterns that flutter works well with
+- Updated appbar in progress page

@@ -101,24 +101,31 @@ class progressPageState extends State<progressPage>{
     return DefaultTabController(
         length: 3,
         child:Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0x00000000),
-            elevation: 0,
-
-            bottom: TabBar(
-              indicatorColor: stdyPink,
-              tabs: [
-                Tab(icon: Icon(Icons.book,
-                color: Theme.of(context).accentColor,)
+            appBar: new PreferredSize(
+              preferredSize: Size.fromHeight(kToolbarHeight),
+              child: new Container(
+                //  color: Colors.green,
+                child: new SafeArea(
+                  child: Column(
+                    children: <Widget>[
+                      new Expanded(child: new Container()),
+                      new TabBar(
+                        indicatorColor: stdyPink,
+                        tabs: [
+                          Tab(icon: Icon(Icons.book,
+                            color: Theme.of(context).accentColor,)
+                          ),
+                          Tab(icon: Icon(Icons.assignment,
+                            color: Theme.of(context).accentColor,)),
+                          Tab(icon: Icon(Icons.note,
+                            color: Theme.of(context).accentColor,)),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                Tab(icon: Icon(Icons.assignment,
-                  color: Theme.of(context).accentColor,)),
-                Tab(icon: Icon(Icons.note,
-                  color: Theme.of(context).accentColor,)),
-              ],
+              ),
             ),
-
-          ),
 
           body: TabBarView(
             children: [
