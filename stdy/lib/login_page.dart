@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:study/bloc/theme.dart';
 import 'package:study/main.dart';
 import 'home_widget.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
@@ -9,6 +8,8 @@ import "package:googleapis_auth/auth_io.dart" as auth;
 import "package:http/http.dart" as http;
 
 bool authCheck = false;
+final scopes = [calendar.CalendarApi.CalendarScope];
+
 
 class LoginScreen extends StatefulWidget {
   @override

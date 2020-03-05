@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:study/CustomForm.dart';
+import 'package:study/Schedule/CustomForm.dart';
 import 'package:study/main.dart';
 import 'CustomForm.dart';
 
