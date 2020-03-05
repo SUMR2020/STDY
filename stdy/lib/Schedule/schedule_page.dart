@@ -2,49 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'home_widget.dart';
+import '../home_widget.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'main.dart';
+import '../main.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'bloc/theme.dart';
+import '../bloc/theme.dart';
 import 'selection_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'grades/grades_data.dart';
+import '../grades/grades_data.dart';
 import 'CustomForm.dart';
+import 'task.dart';
+import 'calendar_api.dart';
 
-DateTime start = new DateTime.now().subtract(new Duration(days: 30));
-DateTime end = new DateTime.now().add(new Duration(days: 30));
 DateTime today = new DateTime.now();
-Map<DateTime, List> eventCal = {};
-
-Future<bool> _OnStartup;
-Future<bool> _tasksLoaded;
-
-Future<bool> _doneTasksLoaded;
-
-class Task {
-  String type;
-  String name;
-  String time;
-  String id;
-  String course;
-  String onlyCourse;
-  Task(String t, String n, String ti, String i, String c, String oc) {
-    type = t;
-    name = n;
-    time = ti;
-    id = i;
-    course = c;
-    onlyCourse = oc;
-  }
-}
 
 Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
+  DateTime start = new DateTime.now().subtract(new Duration(days: 30));
+  DateTime end = new DateTime.now().add(new Duration(days: 30));
+  Map<DateTime, List> eventCal = {};
   var calEvents = events.events.list("primary",
       timeMin: start.toUtc(),
       timeMax: end.toUtc(),
@@ -106,8 +86,12 @@ class SchedulePage extends StatefulWidget {
 
 class _MyHomePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
+  Future<bool> _onStartup;
+  Future<bool> _tasksLoaded;
+  Future<bool> _doneTasksLoaded;
+
   _MyHomePageState() {
-    _OnStartup = loadEvents();
+    _onStartup = loadEvents();
     _tasksLoaded = getTasks();
     _doneTasksLoaded = getDoneTasks();
   }
@@ -183,7 +167,7 @@ class _MyHomePageState extends State<SchedulePage>
         Event x = new Event(
           date: date,
           title: eventCal[date][i],
-          icon: _eventIcon,
+          icon: null,
         );
         if (!contains(x)) {
           _markedDateMap.add(
@@ -191,7 +175,7 @@ class _MyHomePageState extends State<SchedulePage>
               new Event(
                 date: date,
                 title: eventCal[date][i],
-                icon: _eventIcon,
+                icon: null,
               ));
         }
       }
@@ -326,25 +310,9 @@ class _MyHomePageState extends State<SchedulePage>
         ));
   }
 
-  static Widget _eventIcon = new Container(
-    decoration: new BoxDecoration(
-        color: stdyPink,
-        borderRadius: BorderRadius.all(Radius.circular(1000)),
-        border: Border.all(color: stdyPink, width: 2.0)),
-    child: new Icon(
-      Icons.person,
-      color: stdyPink,
-    ),
-  );
-
   EventList<Event> _markedDateMap = new EventList<Event>();
-
   CalendarCarousel  _calendarCarouselNoHeader;
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   void createCalendar(ThemeChanger theme) {
     var colour;
@@ -552,7 +520,7 @@ class _MyHomePageState extends State<SchedulePage>
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder(
-                  future: _OnStartup,
+                  future: _onStartup,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       createCalendar(theme);
