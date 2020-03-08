@@ -1,10 +1,59 @@
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:study/login_page.dart' as login;
 
-//class CalendarApi
+class CalendarBuilder {
+  // function to retrieve a user's primary calendar data, using the authorization from the auth scree
+  Future<calendar.CalendarApi> gettingCalendar() async {
+    calendar.CalendarApi calendarApi;
+    calendarApi = new calendar.CalendarApi(login.authClient);
+    return calendarApi;
+  }
 
-Future<calendar.CalendarApi> gettingCalendar() async {
-  calendar.CalendarApi calendarApi;
-  calendarApi = new calendar.CalendarApi(login.authClient);
-  return calendarApi;
+  // function to retrieve the last 30, and next 30 days in a user's calendar, using calendar data
+  Future<calendar.Events> getEvents(calendar.CalendarApi events) async {
+    DateTime start = new DateTime.now().subtract(new Duration(days: 30));
+    DateTime end = new DateTime.now().add(new Duration(days: 30));
+    var calEvents = events.events.list("primary",
+        timeMin: start.toUtc(),
+        timeMax: end.toUtc(),
+        orderBy: 'startTime',
+        singleEvents: true);
+    return calEvents;
+  }
+
+  // returning and parsing events in a map, so that each day has the events associated with it
+  Future<Map<DateTime, List>> getEventMap(calendar.CalendarApi events) async {
+    // creating a map
+     Map<DateTime, List> eventCal = {};
+     //getting events
+    var _events = await getEvents(events);
+    // for each event, if the day is already in the map, add it to the list, otherwise create a new entry
+    _events.items.forEach((_event) {
+      DateTime eventTime = DateTime(_event.start.dateTime.year,
+          _event.start.dateTime.month, _event.start.dateTime.day);
+      var summary = ("[" +
+          _event.start.dateTime.hour.toString().padLeft(2, "0") +
+          ":" +
+          _event.start.dateTime.minute.toString().padLeft(2, "0") +
+          "] " +
+          _event.summary);
+      if (eventCal.containsKey(eventTime)) {
+        List<String> DayEvents = (eventCal[DateTime(
+          _event.start.dateTime.year,
+          _event.start.dateTime.month,
+          _event.start.dateTime.day,
+        )]);
+        if ((DayEvents.contains(_event.summary)) == false) {
+          DayEvents.add(summary);
+          eventCal[eventTime] = DayEvents;
+        }
+      } else {
+        List<String> DayEvents = [summary];
+        eventCal[(eventTime)] = DayEvents;
+      }
+    });
+    return eventCal;
+  }
+
 }
+
