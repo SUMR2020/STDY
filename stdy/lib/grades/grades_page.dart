@@ -8,6 +8,8 @@ import 'grade_input_page.dart';
 import '../main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'task_page.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'grade_predictor_page.dart';
 
 class GradesPage extends StatefulWidget {
 
@@ -328,7 +330,13 @@ class GradesPageState extends State<GradesPage> {
     return courseWidgets;
 
   }
-  void _gradePredictor(){
+  void _openGradePredictor() async{
+
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GradePredictorPage(course),
+        ));
 
   }
 
@@ -361,7 +369,7 @@ class GradesPageState extends State<GradesPage> {
                   fontSize: 16.0 + fontScale,
                 ),),
               onPressed: (){
-                _gradePredictor();
+
               },
             ),
 
@@ -417,7 +425,6 @@ class GradesPageState extends State<GradesPage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     print("building course");
@@ -430,13 +437,29 @@ class GradesPageState extends State<GradesPage> {
             )
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _addTask();
-        },
-        child: Icon(Icons.add),
-        backgroundColor: stdyPink,
-        shape: CircleBorder(),
+
+      floatingActionButton: SpeedDial(
+        child: Icon(Icons.plus_one),
+        children: [
+
+          SpeedDialChild(
+              child: Icon(Icons.add),
+              backgroundColor: stdyPink,
+              shape: CircleBorder(),
+              label: 'New Task',
+              labelStyle: TextStyle(fontSize: 18.0),
+              onTap: () => _addTask(),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.brush),
+            backgroundColor: stdyPink,
+            label: 'Predictor',
+            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () => _openGradePredictor(),
+          ),
+
+        ],
+
       ),
 
       body: SingleChildScrollView(

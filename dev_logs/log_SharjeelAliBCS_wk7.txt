@@ -1,0 +1,4 @@
+1. Mar (Tues) 11:30-2:30 (2.5 hours)
+   a. Discussed progress page with group
+   b. Fixed bug fixes with grades page
+ 
