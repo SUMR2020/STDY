@@ -1,7 +1,14 @@
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:study/Settings/Authentication.dart';
+import 'package:flutter_calendar_carousel/classes/event_list.dart';
+import 'package:flutter_calendar_carousel/classes/event.dart';
+
 
 class CalendarBuilder {
+  EventList<Event> markedDateMap = new EventList<Event>();
+  Map<DateTime, List> eventCal;
+  calendar.CalendarApi events;
+
   // function to retrieve a user's primary calendar data, using the authorization from the auth scree
   Future<calendar.CalendarApi> gettingCalendar() async {
   calendar.CalendarApi calendarApi;
@@ -56,6 +63,43 @@ class CalendarBuilder {
     return eventCal;
   }
 
+  Future<bool> loadEvents() async {
+    events = await gettingCalendar();
+    eventCal = await getEventMap(events);
+    var dates = eventCal.keys;
+    var date;
+    for (int i = 0; i < dates.length; i++) {
+      date = dates.elementAt(i);
+      for (var i = 0; i < eventCal[date].length; i++) {
+        Event x = new Event(
+          date: date,
+          title: eventCal[date][i],
+          icon: null,
+        );
+        if (!contains(x)) {
+          markedDateMap.add(
+              date,
+              new Event(
+                date: date,
+                title: eventCal[date][i],
+                icon: null,
+              ));
+        }
+      }
+    }
+    return (true);
+  }
+
+
+  bool contains(Event i) {
+    List events = markedDateMap.getEvents(i.date);
+    for (Event e in events) {
+      if (e == i) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 

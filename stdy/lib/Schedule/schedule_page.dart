@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:study/Schedule/calendar_api.dart';
 import 'package:study/Schedule/task_manager.dart';
 import '../home_widget.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
@@ -21,10 +22,11 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
   _SchedulePageState() {
-    _onStartup = taskManager.loadEvents();
+    _onStartup = calendarManager.loadEvents();
     _tasksLoaded = taskManager.getTasks();
     _doneTasksLoaded = taskManager.getDoneTasks();
   }
+  CalendarBuilder calendarManager = new CalendarBuilder();
   TaskManager taskManager = new TaskManager();
   Future<bool> _onStartup;
   Future<bool> _tasksLoaded;
@@ -51,7 +53,6 @@ class _SchedulePageState extends State<SchedulePage>
 
   String getTypeString(String taskType, String time){
     if (taskType == "reading") return (time + " pages");
-
     return (time.toString() + " hours");
   }
 
@@ -215,7 +216,7 @@ class _SchedulePageState extends State<SchedulePage>
       ),
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
-      markedDatesMap: taskManager.markedDateMap,
+      markedDatesMap: calendarManager.markedDateMap,
 
       height: 300.0,
 
@@ -256,7 +257,7 @@ class _SchedulePageState extends State<SchedulePage>
         });
       },
       onDayLongPressed: (DateTime date) {
-        var events = taskManager.markedDateMap.getEvents(date);
+        var events = calendarManager.markedDateMap.getEvents(date);
         this.setState(() => _currentDate2 = date);
         events.forEach((event) => print(event.title));
         String formatDate(DateTime date) =>
