@@ -1,10 +1,11 @@
 import 'package:googleapis/calendar/v3.dart' as calendar;
-import 'package:study/login_page.dart' as login;
+import 'package:study/Settings/Authentication.dart';
 
 //class CalendarApi
 
 Future<calendar.CalendarApi> gettingCalendar() async {
   calendar.CalendarApi calendarApi;
-  calendarApi = new calendar.CalendarApi(login.authClient);
+  Authentication auth = new Authentication();
+  calendarApi = new calendar.CalendarApi(auth.authClient);
   return calendarApi;
 }

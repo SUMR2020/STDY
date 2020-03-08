@@ -179,8 +179,6 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   Future <List<DocumentSnapshot>> _getData() async {
 
-    print ("poopy");
-
     courseData =  await firehouse.getCourseData();
     print ("After get course data");
     actualGPA =  await firehouse.getGPA(false);

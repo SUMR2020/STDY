@@ -3,7 +3,7 @@ import 'package:study/main.dart';
 import 'package:study/progress_page.dart';
 import 'grades/grades_year_page.dart';
 import 'Schedule/schedule_page.dart';
-import 'settings_page.dart';
+import 'Settings/settings_page.dart';
 
 class Home extends StatefulWidget {
   @override

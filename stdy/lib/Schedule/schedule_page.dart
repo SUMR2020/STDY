@@ -11,7 +11,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import '../main.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../bloc/theme.dart';
+import '../Settings/theme.dart';
 import 'selection_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../grades/grades_data.dart';
