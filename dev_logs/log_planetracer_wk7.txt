@@ -19,3 +19,7 @@ March 4th, 2020 12pm to 3pm
 
 March 5th, 2020 10am to 12pm
 - Refactoring my code
+
+March 8th, 202 4pm to 6pm
+- Refactored my code into seperate classes
+- Did research on design patterns that would suit my code
