@@ -1,12 +1,13 @@
 import 'package:googleapis/calendar/v3.dart' as calendar;
-import 'package:study/login_page.dart' as login;
+import 'package:study/Settings/Authentication.dart';
 
 class CalendarBuilder {
   // function to retrieve a user's primary calendar data, using the authorization from the auth scree
   Future<calendar.CalendarApi> gettingCalendar() async {
-    calendar.CalendarApi calendarApi;
-    calendarApi = new calendar.CalendarApi(login.authClient);
-    return calendarApi;
+  calendar.CalendarApi calendarApi;
+  Authentication auth = new Authentication();
+  calendarApi = new calendar.CalendarApi(auth.authClient);
+  return calendarApi;
   }
 
   // function to retrieve the last 30, and next 30 days in a user's calendar, using calendar data
@@ -56,4 +57,5 @@ class CalendarBuilder {
   }
 
 }
+
 

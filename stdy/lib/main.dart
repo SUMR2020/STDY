@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import 'Settings/Authentication.dart';
 import 'package:provider/provider.dart';
-import 'bloc/theme.dart';
+import 'Settings/theme.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'push_notifictions.dart' as notifs;
 
