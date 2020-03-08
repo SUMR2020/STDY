@@ -1,0 +1,18 @@
+March 2nd:
+Added another pie chart for projects
+
+March 3rd:
+Added line graph
+Team meeting from 11:30 to 2:30
+2 hours making tabbarview
+
+March 5th:
+Meeting with ta
+Meeting with team to discuss design patterns
+Worked on d3 document write up
+
+March 8th:
+refactoring code
+Added 3 more tabs to make 6 total
+Looked more into design patterns
+Worked on d3 doc write up
