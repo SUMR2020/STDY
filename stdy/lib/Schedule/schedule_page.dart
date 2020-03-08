@@ -1,187 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:study/Schedule/task_manager.dart';
 import '../home_widget.dart';
-import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
-import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../main.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../Settings/theme.dart';
 import 'selection_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../grades/grades_data.dart';
 import 'CustomForm.dart';
-import 'task.dart';
-import 'calendar_api.dart';
 
 DateTime today = new DateTime.now();
 
-Future<Map<DateTime, List>> getEvents(calendar.CalendarApi events) async {
-  DateTime start = new DateTime.now().subtract(new Duration(days: 30));
-  DateTime end = new DateTime.now().add(new Duration(days: 30));
-  Map<DateTime, List> eventCal = {};
-  var calEvents = events.events.list("primary",
-      timeMin: start.toUtc(),
-      timeMax: end.toUtc(),
-      orderBy: 'startTime',
-      singleEvents: true);
-  var _events = await calEvents;
-
-  _events.items.forEach((_event) {
-    DateTime eventTime = DateTime(_event.start.dateTime.year,
-        _event.start.dateTime.month, _event.start.dateTime.day);
-    var summary = ("[" +
-        _event.start.dateTime.hour.toString().padLeft(2, "0") +
-        ":" +
-        _event.start.dateTime.minute.toString().padLeft(2, "0") +
-        "] " +
-        _event.summary);
-    if (eventCal.containsKey(eventTime)) {
-      List<String> DayEvents = (eventCal[DateTime(
-        _event.start.dateTime.year,
-        _event.start.dateTime.month,
-        _event.start.dateTime.day,
-      )]);
-      if ((DayEvents.contains(_event.summary)) == false) {
-        DayEvents.add(summary);
-        print("Added: " + summary);
-        eventCal[eventTime] = DayEvents;
-      }
-    } else {
-      print("Added: " + summary);
-      List<String> DayEvents = [summary];
-      eventCal[(eventTime)] = DayEvents;
-    }
-  });
-  return eventCal;
-}
-
 class SchedulePage extends StatefulWidget {
-  SchedulePage({Key key, @required this.onSubmit}) : super(key: key);
-
-  final VoidCallback onSubmit;
-  static final TextEditingController _grade = new TextEditingController();
-
-  String get grade => _grade.text;
-
-  @override
-  Widget build(BuildContext context) {
-    return new Column(
-      children: <Widget>[
-        new TextField(
-          controller: _grade,
-          decoration: new InputDecoration(hintText: "Schedule"),
-        ),
-      ],
-    );
-  }
-
-  _MyHomePageState createState() => new _MyHomePageState();
+  _SchedulePageState createState() => new _SchedulePageState();
 }
 
-class _MyHomePageState extends State<SchedulePage>
+class _SchedulePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
+  _SchedulePageState() {
+    _onStartup = taskManager.loadEvents();
+    _tasksLoaded = taskManager.getTasks();
+    _doneTasksLoaded = taskManager.getDoneTasks();
+  }
+  TaskManager taskManager = new TaskManager();
   Future<bool> _onStartup;
   Future<bool> _tasksLoaded;
   Future<bool> _doneTasksLoaded;
-
-  _MyHomePageState() {
-    _onStartup = loadEvents();
-    _tasksLoaded = getTasks();
-    _doneTasksLoaded = getDoneTasks();
-  }
-  List<DocumentSnapshot> taskDocs;
-  List<Task> todayTasks = new List<Task>();
-  List<Task> todayDoneTasks = new List<Task>();
-  GradeData grades = new GradeData();
   bool isSwitched = true;
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
   String _currentMonth = DateFormat.yMMM().format(DateTime.now());
   DateTime _targetDateTime = DateTime.now();
-  Map<DateTime, List> eventCal;
-  calendar.CalendarApi events;
-
-  Future<bool> getTasks() async {
-    taskDocs = await grades.getTasks();
-    for (DocumentSnapshot task in taskDocs) {
-    var dates = (task.data['dates']);
-    List<DateTime> datesObjs = new List<DateTime>();
-
-    for (Timestamp t in dates){
-      DateTime date = (t.toDate());
-      datesObjs.add(DateTime(date.year, date.month, date.day));
-    }
-    DateTime today = DateTime.now();
-    if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
-      Task t = new Task(task.data["type"], task.data["name"],task.data["today"], task.data["id"],task.data["course"],task.data["onlyCourse"]);
-      todayTasks.add(t);
-
-    }
-    }
-    return true;
-  }
-
-  Future<bool> getDoneTasks() async {
-    taskDocs = await grades.getTasks();
-    for (DocumentSnapshot task in taskDocs) {
-      var dates = (task.data['done']);
-      List<DateTime> datesObjs = new List<DateTime>();
-      for (Timestamp t in dates){
-        DateTime date = (t.toDate());
-        datesObjs.add(DateTime(date.year, date.month, date.day));
-      }
-      DateTime today = DateTime.now();
-      if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
-        Task t = new Task(task.data["type"], task.data["name"],task.data["today"], task.data["id"],task.data["course"], task.data["onlyCourse"]);
-        todayDoneTasks.add(t);
-
-      }
-    }
-    return true;
-  }
-
-  bool contains(Event i) {
-    List events = _markedDateMap.getEvents(i.date);
-    for (Event e in events) {
-      if (e == i) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  Future<bool> loadEvents() async {
-    events = await gettingCalendar();
-    eventCal = await getEvents(events);
-    var dates = eventCal.keys;
-    var date;
-    for (int i = 0; i < dates.length; i++) {
-      date = dates.elementAt(i);
-      for (var i = 0; i < eventCal[date].length; i++) {
-        Event x = new Event(
-          date: date,
-          title: eventCal[date][i],
-          icon: null,
-        );
-        if (!contains(x)) {
-          _markedDateMap.add(
-              date,
-              new Event(
-                date: date,
-                title: eventCal[date][i],
-                icon: null,
-              ));
-        }
-      }
-    }
-    return (true);
-  }
 
   IconData getIcon(String taskType) {
     if (taskType == "reading") return Icons.book;
@@ -189,10 +41,11 @@ class _MyHomePageState extends State<SchedulePage>
     if (taskType == "project") return Icons.subtitles;
     if (taskType == "lectures") return Icons.ondemand_video;
     if (taskType == "notes") return Icons.event_note;
+    return null;
   }
 
   void updatingCurrentDay() async{
-    today = await grades.updateDay(today);
+    today = await taskManager.grades.updateDay(today);
   }
 
 
@@ -203,13 +56,13 @@ class _MyHomePageState extends State<SchedulePage>
   }
 
   Widget _listDoneTaskView() {
-    print (todayDoneTasks.length);
+    print (taskManager.todayDoneTasks.length);
     return new Container(
         height: 100.0,
         child: new ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          itemCount: todayDoneTasks.length,
+          itemCount: taskManager.todayDoneTasks.length,
           itemBuilder: (context, index) {
 
             return new GestureDetector(
@@ -218,8 +71,8 @@ class _MyHomePageState extends State<SchedulePage>
                 child: new Card( //                           <-- Card widget
 
                   child: ListTile(
-                    leading: Icon(getIcon(todayDoneTasks[index].type)),
-                    title: Text(todayDoneTasks[index].onlyCourse+": "+todayDoneTasks[index].name),
+                    leading: Icon(getIcon(taskManager.todayDoneTasks[index].type)),
+                    title: Text(taskManager.todayDoneTasks[index].onlyCourse+": "+taskManager.todayDoneTasks[index].name),
                   ),
 
                 ));
@@ -228,6 +81,8 @@ class _MyHomePageState extends State<SchedulePage>
         ));
   }
 
+  CalendarCarousel  _calendarCarouselNoHeader;
+
   Widget _listTaskView() {
     String done;
     return new Container(
@@ -235,7 +90,7 @@ class _MyHomePageState extends State<SchedulePage>
         child: new ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          itemCount: todayTasks.length,
+          itemCount: taskManager.todayTasks.length,
           itemBuilder: (context, index) {
 
             return new GestureDetector(
@@ -267,9 +122,9 @@ class _MyHomePageState extends State<SchedulePage>
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       if (isNumeric(done)) {
-                                        grades.updateProgressandDaily(
-                                            todayTasks[index].id
-                                            , todayTasks[index].course, done);
+                                        taskManager.grades.updateProgressandDaily(
+                                            taskManager.todayTasks[index].id
+                                            , taskManager.todayTasks[index].course, done);
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (context){
@@ -299,9 +154,9 @@ class _MyHomePageState extends State<SchedulePage>
             child: new Card( //                           <-- Card widget
 
               child: ListTile(
-                leading: Icon(getIcon(todayTasks[index].type)),
-                title: Text(todayTasks[index].onlyCourse+ ": "+todayTasks[index].name),
-                trailing: Text(getTypeString(todayTasks[index].type, todayTasks[index].time)),
+                leading: Icon(getIcon(taskManager.todayTasks[index].type)),
+                title: Text(taskManager.todayTasks[index].onlyCourse+ ": "+taskManager.todayTasks[index].name),
+                trailing: Text(getTypeString(taskManager.todayTasks[index].type, taskManager.todayTasks[index].time)),
               ),
 
             ));
@@ -309,9 +164,6 @@ class _MyHomePageState extends State<SchedulePage>
           },
         ));
   }
-
-  EventList<Event> _markedDateMap = new EventList<Event>();
-  CalendarCarousel  _calendarCarouselNoHeader;
 
 
   void createCalendar(ThemeChanger theme) {
@@ -363,7 +215,7 @@ class _MyHomePageState extends State<SchedulePage>
       ),
       thisMonthDayBorderColor: Colors.grey,
       weekFormat: false,
-      markedDatesMap: _markedDateMap,
+      markedDatesMap: taskManager.markedDateMap,
 
       height: 300.0,
 
@@ -404,7 +256,7 @@ class _MyHomePageState extends State<SchedulePage>
         });
       },
       onDayLongPressed: (DateTime date) {
-        var events = _markedDateMap.getEvents(date);
+        var events = taskManager.markedDateMap.getEvents(date);
         this.setState(() => _currentDate2 = date);
         events.forEach((event) => print(event.title));
         String formatDate(DateTime date) =>
