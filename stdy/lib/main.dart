@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'home_widget.dart';
 import 'login_page.dart';
 import 'package:provider/provider.dart';
 import 'bloc/theme.dart';
@@ -14,17 +13,10 @@ String themeDrop;
 int fontScale = 0;
 String name = "";
 
-Future<bool>_authorized;
-
-Future<String> loadTheme() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('Theme') ?? "Light";
-}
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays([]);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+  SystemChrome.setEnabledSystemUIOverlays([]);//Removes the navigation bar
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])//Locks app to portrait mode
       .then((_) {
     notifs.PushNotificationsManager().init();
     SaveFontScale().loadScale();
@@ -39,7 +31,7 @@ class MyApp extends StatelessWidget {
 
 
   Future<String> getSavedTheme() async {
-    String theme = await loadTheme();
+    String theme = await ThemeChanger.loadTheme();
     return theme;
   }
 
@@ -49,7 +41,7 @@ class MyApp extends StatelessWidget {
   }
 
   Future<bool> gotTheme() async {
-    theme = await loadTheme();
+    theme = await ThemeChanger.loadTheme();
     return true;
   }
 

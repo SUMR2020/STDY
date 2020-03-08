@@ -11,6 +11,10 @@ class ThemeChanger with ChangeNotifier {
     return prefs.setString('Theme', themeName);
   }
 
+  static Future<String> loadTheme() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('Theme') ?? "Light";
+  }
 
   ThemeData _themeData;
 
