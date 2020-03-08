@@ -316,6 +316,13 @@ class GradeData {
     print("added data to $uid");
   }
 
+  void addingTokenData(String t) async{
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    DocumentReference docRef = db.collection("users").document(uid);
+    docRef.setData({"token": t}, merge: true);
+  }
+
   void addPastTaskData(String course, List<String> data) async {
     String type = data[0];
     String name = data[1];
