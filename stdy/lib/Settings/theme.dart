@@ -3,6 +3,8 @@ import 'package:study/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
+final Color stdyPink = Color(0xFFFDA3A4);
+
 class ThemeChanger with ChangeNotifier {
 
   Future<bool> saveTheme(String themeName) async {

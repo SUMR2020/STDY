@@ -8,10 +8,11 @@ import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:study/login_page.dart';
 import 'package:study/home_widget.dart';
 
-bool authCheck = false;
+
 final scopes = [calendar.CalendarApi.CalendarScope];
 
 class Authentication {
+  bool authCheck = false;
   final FirebaseAuth author = FirebaseAuth.instance;
   auth.AuthClient authClient;
   final GoogleSignIn googleSignIn =

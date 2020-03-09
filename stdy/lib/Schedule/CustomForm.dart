@@ -228,7 +228,7 @@ class _TaskPageState extends State<TaskPage> {
       children: <Widget>[
         Text(title),
         Checkbox(
-          activeColor: stdyPink,
+          activeColor: Theme.of(context).primaryColor,
           value: boolValue,
           onChanged: (bool value) {
             /// manage the state of each value
@@ -317,12 +317,12 @@ class _TaskPageState extends State<TaskPage> {
                               isExpanded: true,
                               elevation: 16,
                               style: TextStyle(
-                                color: stdyPink,
+                                color: Theme.of(context).primaryColor,
                                 fontSize: 14 + fontScale.toDouble(),
                               ),
                               underline: Container(
                                 height: 2,
-                                color: stdyPink,
+                                color: Theme.of(context).primaryColor,
                               ),
                               onChanged: (String newValue) {
                                 setState(() {
@@ -395,13 +395,13 @@ class _TaskPageState extends State<TaskPage> {
                       ),
                     ),
                     onPressed: this.submit,
-                    color: stdyPink,
+                    color: Theme.of(context).primaryColor,
                   ),
                   margin: new EdgeInsets.only(top: 20.0),
                 ),
                  CheckboxListTile(
                   title: Text("Is this worth marks?"),
-                  activeColor: stdyPink,
+                  activeColor: Theme.of(context).primaryColor,
                   value: _data.forMarks,
                   onChanged: (bool value) {
                     setState(() {
@@ -413,7 +413,7 @@ class _TaskPageState extends State<TaskPage> {
                 new CheckboxListTile(
                   title: Text("Is this worth bonus marks?"),
                   value: _data.bonus,
-                  activeColor: stdyPink,
+                  activeColor: Theme.of(context).primaryColor,
                   onChanged: (bool value) {
                     setState(() {
                       _data.bonus = value;

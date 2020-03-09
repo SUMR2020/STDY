@@ -1,0 +1,5 @@
+Spent 2 hours with RC fixing the github as we had incorrectly resolved conflicts which broke our master branch.
+
+Spent 3 hours working on setting up functions to send push notifications to send fro created tasks
+
+Spent an hour doing more refactoring

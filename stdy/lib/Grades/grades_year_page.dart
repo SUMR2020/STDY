@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import '../main.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'gpa_predictor_page.dart';
+import 'gpa_predictor_page.dart' as predict;
 import 'package:study/Grades/Model/CourseData.dart';
 
 //https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
@@ -282,7 +282,7 @@ class GradesYearPageState extends State<GradesYearPage> {
         if (!projectSnap.hasData) {
           print('project snapshot data is: ${projectSnap.data}');
           return CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(stdyPink),
+            valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           );
         }
         else {
@@ -315,8 +315,8 @@ class GradesYearPageState extends State<GradesYearPage> {
 
           SpeedDialChild(
             child: Icon(Icons.add),
-            backgroundColor: stdyPink,
-            labelBackgroundColor: stdyPink,
+            backgroundColor: Theme.of(context).primaryColor,
+            labelBackgroundColor: Theme.of(context).primaryColor,
             shape: CircleBorder(),
             label: 'New Course',
             labelStyle: TextStyle(fontSize: 18.0),
@@ -324,8 +324,8 @@ class GradesYearPageState extends State<GradesYearPage> {
           ),
           SpeedDialChild(
             child: Icon(Icons.grade),
-            backgroundColor: stdyPink,
-            labelBackgroundColor: stdyPink,
+            backgroundColor: Theme.of(context).primaryColor,
+            labelBackgroundColor: Theme.of(context).primaryColor,
             label: 'Predictor',
             labelStyle: TextStyle(fontSize: 18.0),
             onTap: () => _openCoursePredictor(),

@@ -124,12 +124,12 @@ class GPAPredictorState extends State<GPAPredictorPage> {
             iconSize: 24,
             elevation: 16,
             style: TextStyle(
-              color: stdyPink,
+              color: Theme.of(context).primaryColor,
               fontSize: 16.0+fontScale,
             ),
             underline: Container(
               height: 2,
-              color: stdyPink,
+              color: Theme.of(context).primaryColor,
 
             ),
             onChanged: (String newValue) {
@@ -202,12 +202,12 @@ class GPAPredictorState extends State<GPAPredictorPage> {
                   iconSize: 24,
                   elevation: 16,
                   style: TextStyle(
-                    color: stdyPink,
+                    color: Theme.of(context).primaryColor,
                     fontSize: 16.0 + fontScale,
                   ),
                   underline: Container(
                     height: 2,
-                    color: stdyPink,
+                    color: Theme.of(context).primaryColor,
                   ),
                   onChanged: (String newValue) =>
                       setState(() => addedCourseData[i]["gradeOption"] = newValue),
@@ -231,7 +231,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
 
                 IconButton(
                   icon: Icon(Icons.delete),
-                  color: stdyPink,
+                  color: Theme.of(context).primaryColor,
                   tooltip: 'Increase volume by 10',
                   onPressed: () {
                      _removeCurrentCourse(addedCourseData[i]);
@@ -281,8 +281,8 @@ class GPAPredictorState extends State<GPAPredictorPage> {
         courseButtons.add(
           SpeedDialChild(
             child: Icon(Icons.add),
-            backgroundColor: stdyPink,
-            labelBackgroundColor: stdyPink,
+            backgroundColor: Theme.of(context).primaryColor,
+            labelBackgroundColor: Theme.of(context).primaryColor,
             shape: CircleBorder(),
             label: 'Grade $id',
 

@@ -68,14 +68,14 @@ class progressPageState extends State<progressPage>{
     _generateData(){
 
       var pieData=[
-        new Task('Assignment 1', 25.0, stdyPink ),
+        new Task('Assignment 1', 25.0, Color(0xFFFDA3A4) ),
         new Task('Assignment 2', 25.0, Color(0xFFF06292) ),
         new Task('Assignment 3', 50.0 , Color(0xFFE91E63)),
 
       ];
 
       var pieDataB=[
-        new Task('Project 1', 15.0, stdyPink ),
+        new Task('Project 1', 15.0, Color(0xFFFDA3A4) ),
         new Task('Project 2', 40.0, Color(0xFFF06292) ),
         new Task('Project 3', 45.0 , Color(0xFFE91E63)),
 
@@ -122,7 +122,7 @@ class progressPageState extends State<progressPage>{
           domainFn: (Hours hours,_)=>hours.hours,
           measureFn: (Hours hours,_)=>hours.days,
           colorFn: (Hours hours,_)=>
-              charts.ColorUtil.fromDartColor(stdyPink),
+              charts.ColorUtil.fromDartColor(Color(0xFFFDA3A4)),
           id: 'Hours',
 
         ),
@@ -158,7 +158,7 @@ class progressPageState extends State<progressPage>{
                     children: <Widget>[
                       new Expanded(child: new Container()),
                       new TabBar(
-                        indicatorColor: stdyPink,
+                        indicatorColor: Theme.of(context).accentColor,
                         tabs: [
                           Tab(icon: Icon(Icons.book,
                             color: Theme.of(context).accentColor,)

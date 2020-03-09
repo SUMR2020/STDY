@@ -148,12 +148,12 @@ class CourseInputState extends State<CourseInputPage>{
         iconSize: 24,
         elevation: 16,
         style: TextStyle(
-            color: stdyPink,
+            color: Theme.of(context).primaryColor,
           fontSize: 16.0+fontScale,
         ),
         underline: Container(
           height: 2,
-          color: stdyPink,
+          color: Theme.of(context).primaryColor,
 
         ),
         onChanged: (String newValue) {
@@ -259,11 +259,11 @@ class CourseInputState extends State<CourseInputPage>{
                     elevation: 16,
                     style: TextStyle(
                         fontSize: 16.0 + fontScale,
-                        color: stdyPink
+                        color: Theme.of(context).primaryColor
                     ),
                     underline: Container(
                       height: 2,
-                      color: stdyPink,
+                      color: Theme.of(context).primaryColor,
                     ),
                     onChanged: (String newValue) {
                       setState(() {
@@ -287,12 +287,12 @@ class CourseInputState extends State<CourseInputPage>{
                           iconSize: 24,
                           elevation: 16,
                           style: TextStyle(
-                            color: stdyPink,
+                            color: Theme.of(context).primaryColor,
                             fontSize: 16.0+fontScale,
                           ),
                           underline: Container(
                             height: 2,
-                            color: stdyPink,
+                            color: Theme.of(context).primaryColor,
                           ),
                           onChanged: !_curr ? (String newValue) => setState(() => dropdownValueGrade = newValue) : null,
                           /*_curr? (String newValue) {
