@@ -29,7 +29,6 @@ dependencies:
   googleapis_auth: any
   firebase_auth: ^0.15.4
   firebase_database: ^3.0.4
-  flutter_speed_dial: ^1.2.5
   firebase_core: ^0.4.0+6
   google_sign_in: ^4.1.1
   cloud_firestore: ^0.13.0+1

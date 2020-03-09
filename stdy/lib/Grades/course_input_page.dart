@@ -3,9 +3,6 @@ import 'package:flutter/widgets.dart';
 import '../main.dart';
 import 'package:flutter/services.dart';
 import 'grades_data.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
 
 //https://stackoverflow.com/questions/57300552/flutter-row-inside-listview
 
@@ -27,8 +24,6 @@ class CourseInputState extends State<CourseInputPage>{
   String dropdownValueLetter;
   bool _curr;
   GradeData firestore;
-  List<String> semesters;
-
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
@@ -36,48 +31,28 @@ class CourseInputState extends State<CourseInputPage>{
     _curr = false;
     dropdownValueGrade = "Letter";
     firestore = GradeData();
-    semesters = <String>["Fall", "Winter", "Summer"];
-
-    print(semesters);
-
   }
 
   void addCourseButton(BuildContext context) async{
 
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
-
-      if(_curr){
-        var now = new DateTime.now();
-        _addYear = now.year.toString();
-
-        int month = now.month;
-        if(month>=1 && month <5)dropdownValueSem = semesters[1];
-        if(month>=5 && month <9)dropdownValueSem = semesters[2];
-        if(month>=9)dropdownValueSem = semesters[0];
-        _addGrade="CURR";
-
-      }
-      else{
-        if(dropdownValueGrade=="Letter" && !_curr) {
-          if(dropdownValueLetter==null){
-            _showDialog("Choose a letter grade");
-            return;
-          }
-          _addGrade = await firestore.convertLetterToDouble(dropdownValueLetter);
-        }
-        print("grade chosen is $_addGrade");
-
-
-        if (dropdownValueSem == null) {
-          _showDialog("Select a semester");
+      if(dropdownValueGrade=="Letter" && !_curr) {
+        if(dropdownValueLetter==null){
+          _showDialog("Choose a letter grade");
           return;
         }
-
-
+        _addGrade = await firestore.convertLetterToDouble(dropdownValueLetter);
       }
+      print("grade chosen is $_addGrade");
 
 
+      if (dropdownValueSem == null) {
+        _showDialog("Select a semester");
+        return;
+      }
+      if(_addGrade==null)
+        _addGrade="CURR";
 
       print("adding $_addCourse $_addYear $dropdownValueSem, $_addGrade");
       Navigator.pop(context, [_addCourse, dropdownValueSem, _addYear, _addGrade]);
@@ -111,19 +86,14 @@ class CourseInputState extends State<CourseInputPage>{
   String _validateCourseName(String value) {
     // If empty value, the isEmail function throw a error.
     // So I changed this function with try and catch.
-    if (value.isEmpty ) return 'Please enter a valid course name.';
-
+    if (value.isEmpty) return 'Please enter a valid course name.';
     return null;
   }
 
   String _validateCourseYear(String value) {
     // If empty value, the isEmail function throw a error.
     // So I changed this function with try and catch.
-    var now = new DateTime.now();
-    int year = now.year;
-
-    if (value.isEmpty && !_curr || (int.parse(value)>year) ) return 'Please enter a valid course year.';
-
+    if (value.isEmpty) return 'Please enter a valid course year.';
     return null;
   }
 
@@ -189,12 +159,68 @@ class CourseInputState extends State<CourseInputPage>{
   Widget _buildForm(BuildContext context){
     return new Form(
         key: this._formKey,
-        child: new Column(
+        child: new ListView(
+          shrinkWrap: true,
 
           children: <Widget>[
+            new TextFormField(
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),
+                decoration: new InputDecoration(
+                  hintText: 'Enter course name here...',
+                  labelText: "Course name *",
+                ),
+                validator: this._validateCourseName,
+                onSaved: (String value) {
+                  print("val is $value");
+                  _addCourse = value;
+                }),
 
+            new TextFormField(
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),
+                keyboardType: TextInputType.number,
+                decoration: new InputDecoration(
+                  hintText: 'Enter course year here...',
+                  labelText: "Course year *",
+                ),
+                validator: this._validateCourseYear,
+                onSaved: (String value) {
+                  print("val is $value");
+                  _addYear = value;
+                }),
+            DropdownButton<String>(
 
-
+              isExpanded: true,
+              hint: Text("Semester"),
+              value: dropdownValueSem,
+              icon: Icon(Icons.arrow_downward),
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                  color: stdyPink
+              ),
+              underline: Container(
+                height: 2,
+                color: stdyPink,
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  dropdownValueSem = newValue;
+                });
+              },
+              items: <String>["Fall", "Winter", "Summer", "Spring"]
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              })
+                  .toList(),
+            ),
             new CheckboxListTile(
 
               title: Text("Is this a current course?",
@@ -211,130 +237,51 @@ class CourseInputState extends State<CourseInputPage>{
               },
               controlAffinity: ListTileControlAffinity.leading,
             ),
-
-            new TextFormField(
-                style: TextStyle(
-                  fontSize: 16.0 + fontScale,
-                ),
-                decoration: new InputDecoration(
-                  hintText: 'Enter course name here...',
-                  labelText: "Course name *",
-                ),
-                validator: this._validateCourseName,
-                onSaved: (String value) {
-                  print("val is $value");
-                  _addCourse = value;
-                }),
-
             new Visibility(
               visible: !_curr,
-              child: ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-
-
-                  new TextFormField(
-                      style: TextStyle(
-                        fontSize: 16.0 + fontScale,
-                      ),
-                      keyboardType: TextInputType.number,
-                      decoration: new InputDecoration(
-                        hintText: 'Enter course year here...',
-                        labelText: "Course year *",
-                      ),
-                      validator: this._validateCourseYear,
-                      onSaved: (String value) {
-                        print("val is $value");
-                        _addYear = value;
-                      }),
-                  DropdownButton<String>(
-
-                    isExpanded: true,
-                    hint: Text("Semester"),
-                    value: dropdownValueSem,
-                    icon: Icon(Icons.arrow_downward),
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(
-                        fontSize: 16.0 + fontScale,
-                        color: stdyPink
-                    ),
-                    underline: Container(
-                      height: 2,
-                      color: stdyPink,
-                    ),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        dropdownValueSem = newValue;
-                      });
-                    },
-                    items: semesters.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    })
-                        .toList(),
-                  ),
-
-                  Row(
-                      children: <Widget>[
-                        DropdownButton<String>(
-                          value: dropdownValueGrade,
-                          icon: Icon(Icons.arrow_downward),
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(
+                child: Row(
+                    children: <Widget>[
+                      DropdownButton<String>(
+                        value: dropdownValueGrade,
+                        icon: Icon(Icons.arrow_downward),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(
                             color: stdyPink,
                             fontSize: 16.0+fontScale,
-                          ),
-                          underline: Container(
-                            height: 2,
-                            color: stdyPink,
-                          ),
-                          onChanged: !_curr ? (String newValue) => setState(() => dropdownValueGrade = newValue) : null,
-                          /*_curr? (String newValue) {
-
+                        ),
+                        underline: Container(
+                          height: 2,
+                          color: stdyPink,
+                        ),
+                        onChanged: !_curr ? (String newValue) => setState(() => dropdownValueGrade = newValue) : null,
+                        /*_curr? (String newValue) {
 
                       setState(() {
                         dropdownValueGrade = newValue;
                       });
                     }: null,*/
-
-                          items: <String>["Letter", "Percentage"]
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          })
-                              .toList(),
-                        ),
-                        SizedBox(width: 10),
-                        _buildGradeForm(context),
-
+                        items: <String>["Letter", "Percentage"]
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        })
+                            .toList(),
+                      ),
+                      SizedBox(width: 10),
+                      _buildGradeForm(context),
 
 
-                      ]
-                  ),
 
-
-                ]
-              )
-
-
+                    ]
+                )
 
             ),
 
-
-
             RaisedButton(
-              child: Text('Add course',
-                  style: TextStyle(
-                    fontSize: 16.0 + fontScale,
-                  )
-              ),
-
+              child: Text('Add course'),
               onPressed: (){
                 addCourseButton(context);
               },
