@@ -46,8 +46,12 @@ class GradeData {
     return null;
   }
 
-  GradesData() {
+  GradeData() {
     print("started grades");
+    if (letterGPA == null) {
+      getGPATable();
+    }
+    print(letterGPA);
   }
 
   double calculateCurrGPA(bool curr, List<DocumentSnapshot> courseData) {
@@ -73,6 +77,7 @@ class GradeData {
 
     return gpa / size;
   }
+
 
   void calculateGPA(List<DocumentSnapshot> courseData) async{
     if(courseData==null){
@@ -120,7 +125,7 @@ class GradeData {
   }
 
   String findNumberGPA(double grade) {
-    print("grade is $grade");
+
     //List<String> letters = letterGPA.keys.toList()..sort();
     List<String> letters = new List();
     letterGPA.forEach((k, v) => letters.add(k));
@@ -468,6 +473,7 @@ class GradeData {
         letterGPA = documents[i].data;
       }
     }
+    print("test got letter gpa");
   }
 
   Future<bool> redistributeData(String id, String course, String newAmount) async {

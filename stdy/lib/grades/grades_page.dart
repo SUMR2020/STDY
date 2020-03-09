@@ -345,38 +345,7 @@ class GradesPageState extends State<GradesPage> {
     return null;
   }
 
-  Widget _buildForm(BuildContext context){
-    return new Form(
-        key: this._formKey,
-        child: new ListView(
-          shrinkWrap: true,
 
-          children: <Widget>[
-            new TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: new InputDecoration(
-                  hintText: 'Enter course name here...',
-                  labelText: "Course name *",
-                ),
-                validator: this._validateGradePredict,
-                onSaved: (String value) {
-                  print("val is $value");
-                  gradePred = value;
-                }),
-            RaisedButton(
-              child: Text('Add course',
-                style: TextStyle(
-                  fontSize: 16.0 + fontScale,
-                ),),
-              onPressed: (){
-
-              },
-            ),
-
-          ],
-        )
-    );
-  }
 
   Widget _buildPanel()  {
 
@@ -439,20 +408,23 @@ class GradesPageState extends State<GradesPage> {
 
 
       floatingActionButton: SpeedDial(
-        child: Icon(Icons.plus_one),
+        child: Icon(Icons.open_in_new),
+        overlayOpacity: 0.0,
         children: [
 
           SpeedDialChild(
               child: Icon(Icons.add),
               backgroundColor: stdyPink,
+              labelBackgroundColor: stdyPink,
               shape: CircleBorder(),
               label: 'New Task',
               labelStyle: TextStyle(fontSize: 18.0),
               onTap: () => _addTask(),
           ),
           SpeedDialChild(
-            child: Icon(Icons.brush),
+            child: Icon(Icons.grade),
             backgroundColor: stdyPink,
+            labelBackgroundColor: stdyPink,
             label: 'Predictor',
             labelStyle: TextStyle(fontSize: 18.0),
             onTap: () => _openGradePredictor(),

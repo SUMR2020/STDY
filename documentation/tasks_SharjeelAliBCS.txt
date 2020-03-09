@@ -1,0 +1,18 @@
+New Features:
+1. Add task page to show all task info (Done)
+2. Add grade predictor for grade goal
+3. Add gpa predictor for gpa goal
+3. Add validator/checker for bonus marks (Done)
+4. Option to edit tasks
+5. Back button unsaved changes
+6. Option to add letter grade (Done)
+7. Add option to input/export JSON files for data
+8. Validation checks
+
+Refactor Changes:
+1. Change "curr" to false for taken
+2. Spelling
+
+Bonus features:
+1. Course Outline
+

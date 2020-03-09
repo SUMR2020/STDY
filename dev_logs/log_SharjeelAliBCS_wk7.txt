@@ -1,4 +1,10 @@
-1. Mar (Tues) 11:30-2:30 (2.5 hours)
+1. Mar 3 (Tues) 11:30-2:30 (2.5 hours)
    a. Discussed progress page with group
-   b. Fixed bug fixes with grades page
- 
+   b. Fixed bug fixes with grades page 
+2. Mar 8 (Sun) 3:30-9:30 (6 hours)
+   a. Added switching between floating button options
+   b. Added automatic current course semester and year selection by getting the current datetime object. 
+   c. Added gpa predictor and grade predictor pages
+   d. gpa predictor calculates grade needed for given amount of current courses
+   e. Fixed minor bugs
+    
