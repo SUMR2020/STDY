@@ -339,7 +339,7 @@ class GradesPageState extends State<GradesPage> {
         MaterialPageRoute(
           builder: (context) => GradePredictorPage(course),
         ));
-r
+
 
   }
 
