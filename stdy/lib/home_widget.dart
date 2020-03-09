@@ -2,26 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:study/main.dart';
 import 'package:study/progress_page.dart';
 import 'grades/grades_year_page.dart';
-import 'schedule_page.dart';
-import 'settings_page.dart';
-import 'dart:async';
-
-import "package:http/http.dart" as http;
-import "package:googleapis_auth/auth_io.dart" as auth;
-import 'package:googleapis/calendar/v3.dart' as calendar;
-import 'package:google_sign_in/google_sign_in.dart';
-import 'login_page.dart' as login;
-
-final GoogleSignIn _googleSignIn =
-new GoogleSignIn(scopes: [calendar.CalendarApi.CalendarScope]);
-
-final scopes = [calendar.CalendarApi.CalendarScope];
-
-Future<calendar.CalendarApi> gettingCalendar() async {
-  calendar.CalendarApi calendarApi;
-  calendarApi = new calendar.CalendarApi(login.authClient);
-  return calendarApi;
-}
+import 'Schedule/schedule_page.dart';
+import 'Settings/settings_page.dart';
 
 class Home extends StatefulWidget {
   @override

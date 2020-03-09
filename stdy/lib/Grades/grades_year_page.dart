@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart'
 import 'package:study/grades/gpa_predictor_page.dart';
 import 'grades_data.dart';
 import 'grades_page.dart';
@@ -11,6 +11,7 @@ import 'dart:convert';
 import '../main.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'gpa_predictor_page.dart';
+
 
 //https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
 class GradesYearPage extends StatefulWidget {
@@ -65,8 +66,6 @@ class GradesYearPageState extends State<GradesYearPage> {
 
     return items;
   }
-
-
 
   void _removeData(String course, String semester) async {
     showDialog(
@@ -180,8 +179,6 @@ class GradesYearPageState extends State<GradesYearPage> {
   double t;
 
   Future <List<DocumentSnapshot>> _getData() async {
-
-    print ("poopy");
 
     courseData =  await firehouse.getCourseData();
     print ("After get course data");
@@ -303,11 +300,11 @@ class GradesYearPageState extends State<GradesYearPage> {
           builder: (context) => GPAPredictorPage(courseData),
         ));
   }
-
   @override
   Widget build(BuildContext context) {
     print('in build');
     return Scaffold(
+
       floatingActionButton: SpeedDial(
         child: Icon(Icons.open_in_new),
         overlayOpacity: 0.0,

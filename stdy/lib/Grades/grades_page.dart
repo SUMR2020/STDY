@@ -8,8 +8,10 @@ import 'grade_input_page.dart';
 import '../main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'task_page.dart';
+
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'grade_predictor_page.dart';
+
 
 class GradesPage extends StatefulWidget {
 
@@ -154,6 +156,7 @@ class GradesPageState extends State<GradesPage> {
         bonus,
         total,
         id
+
     );
 
     print(result);
@@ -330,6 +333,7 @@ class GradesPageState extends State<GradesPage> {
     return courseWidgets;
 
   }
+
   void _openGradePredictor() async{
 
     final result = await Navigator.push(
@@ -337,6 +341,7 @@ class GradesPageState extends State<GradesPage> {
         MaterialPageRoute(
           builder: (context) => GradePredictorPage(course),
         ));
+
 
   }
 
@@ -394,6 +399,7 @@ class GradesPageState extends State<GradesPage> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     print("building course");
@@ -405,6 +411,7 @@ class GradesPageState extends State<GradesPage> {
           title: Text('$courseName $sem',
             )
       ),
+
 
 
       floatingActionButton: SpeedDial(
@@ -431,6 +438,7 @@ class GradesPageState extends State<GradesPage> {
           ),
 
         ],
+
 
       ),
 

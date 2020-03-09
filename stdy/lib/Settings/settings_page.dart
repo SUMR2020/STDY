@@ -1,9 +1,11 @@
-import 'package:study/bloc/theme.dart';
+import 'package:googleapis/servicecontrol/v1.dart';
+import 'package:study/Settings/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:study/login_page.dart';
-import 'main.dart';
+import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'Authentication.dart';
 
 final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
@@ -15,7 +17,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   _signOut() async {
     await _firebaseAuth.signOut();
-    signOutGoogle();
+    Authentication().signOutGoogle();
   }
 
   @override
@@ -120,7 +122,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             RaisedButton(
               child: Text('Sign Out'),
               onPressed: () {
-                LoggedInState().saveLoginState(false);
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {

@@ -46,12 +46,14 @@ class GradeData {
     return null;
   }
 
+
   GradeData() {
     print("started grades");
     if (letterGPA == null) {
       getGPATable();
     }
     print(letterGPA);
+
   }
 
   double calculateCurrGPA(bool curr, List<DocumentSnapshot> courseData) {
@@ -321,6 +323,7 @@ class GradeData {
     print("added data to $uid");
   }
 
+
   void addPastTaskData(String course, List<String> data) async {
     String type = data[0];
     String name = data[1];
@@ -473,7 +476,7 @@ class GradeData {
         letterGPA = documents[i].data;
       }
     }
-    print("test got letter gpa");
+
   }
 
   Future<bool> redistributeData(String id, String course, String newAmount) async {
@@ -504,6 +507,7 @@ class GradeData {
         .document(id);
     var before = await docRef.get();
     if (double.parse(done) >= double.parse(before["today"])) {
+
       var dates = before["dates"];
       List<DateTime> datesObjs = new List<DateTime>();
       for (Timestamp t in dates) {
@@ -512,6 +516,7 @@ class GradeData {
       }
       DateTime today = DateTime.now();
       datesObjs.remove(DateTime(today.year, today.month, today.day));
+
       List<DateTime> doneDatesObjs = new List<DateTime>();
       var doneDays = before["done"];
       for (Timestamp t in doneDays) {
@@ -537,6 +542,7 @@ class GradeData {
     progress.add(done);
     docRef.updateData({"progress": progress});
     docRef.updateData({"toDo": totalAfter});
+
     docRef.updateData({"daily": (totalAfter / days.length).toStringAsFixed(2)});
     return true;
   }

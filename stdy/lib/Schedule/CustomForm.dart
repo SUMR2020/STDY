@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/main.dart';
-import 'grades/grades_data.dart';
-import 'home_widget.dart';
+import '../grades/grades_data.dart';
+import '../home_widget.dart';
 
 Future<bool> _CoursesLoaded;
 

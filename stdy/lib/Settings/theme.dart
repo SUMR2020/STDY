@@ -11,6 +11,10 @@ class ThemeChanger with ChangeNotifier {
     return prefs.setString('Theme', themeName);
   }
 
+  static Future<String> loadTheme() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('Theme') ?? "Light";
+  }
 
   ThemeData _themeData;
 
@@ -39,21 +43,6 @@ class SaveFontScale{
     return fontScale;
   }
 
-}
-
-class LoggedInState{
-
-  Future<bool> saveLoginState(bool loginState) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    loginCheck = loginState;
-    return prefs.setBool('LoggedIn', loginState);
-  }
-
-  Future<bool> loadLoginState() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    loginCheck = prefs.getBool('LoggedIn') ?? false;
-    return loginCheck;
-  }
 }
 
 enum ThemeStyle {

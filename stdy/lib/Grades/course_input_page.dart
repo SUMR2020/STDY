@@ -6,6 +6,7 @@ import 'grades_data.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+
 //https://stackoverflow.com/questions/57300552/flutter-row-inside-listview
 
 class CourseInputPage extends StatefulWidget {
@@ -28,6 +29,7 @@ class CourseInputState extends State<CourseInputPage>{
   GradeData firestore;
   List<String> semesters;
 
+
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   CourseInputState(){
@@ -37,6 +39,7 @@ class CourseInputState extends State<CourseInputPage>{
     semesters = <String>["Fall", "Winter", "Summer"];
 
     print(semesters);
+
   }
 
   void addCourseButton(BuildContext context) async{
@@ -75,6 +78,7 @@ class CourseInputState extends State<CourseInputPage>{
       }
 
 
+
       print("adding $_addCourse $_addYear $dropdownValueSem, $_addGrade");
       Navigator.pop(context, [_addCourse, dropdownValueSem, _addYear, _addGrade]);
 
@@ -108,6 +112,7 @@ class CourseInputState extends State<CourseInputPage>{
     // If empty value, the isEmail function throw a error.
     // So I changed this function with try and catch.
     if (value.isEmpty ) return 'Please enter a valid course name.';
+
     return null;
   }
 
@@ -118,6 +123,7 @@ class CourseInputState extends State<CourseInputPage>{
     int year = now.year;
 
     if (value.isEmpty && !_curr || (int.parse(value)>year) ) return 'Please enter a valid course year.';
+
     return null;
   }
 
@@ -186,6 +192,7 @@ class CourseInputState extends State<CourseInputPage>{
         child: new Column(
 
           children: <Widget>[
+
 
 
             new CheckboxListTile(
@@ -288,10 +295,12 @@ class CourseInputState extends State<CourseInputPage>{
                           onChanged: !_curr ? (String newValue) => setState(() => dropdownValueGrade = newValue) : null,
                           /*_curr? (String newValue) {
 
+
                       setState(() {
                         dropdownValueGrade = newValue;
                       });
                     }: null,*/
+
                           items: <String>["Letter", "Percentage"]
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(

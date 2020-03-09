@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'home_widget.dart';
-import 'login_page.dart';
+import 'Settings/Authentication.dart';
 import 'package:provider/provider.dart';
-import 'bloc/theme.dart';
+import 'Settings/theme.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'push_notifictions.dart' as notifs;
 
@@ -12,22 +10,15 @@ Color stdyPink = Color(0xFFFDA3A4);
 Future<bool> _themeLoaded;
 String themeDrop;
 int fontScale = 0;
-bool loginCheck = false;
 String name = "";
-
-Future<String> loadTheme() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('Theme') ?? "Light";
-}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays([]);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+  SystemChrome.setEnabledSystemUIOverlays([]);//Removes the navigation bar
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])//Locks app to portrait mode
       .then((_) {
     notifs.PushNotificationsManager().init();
     SaveFontScale().loadScale();
-    LoggedInState().loadLoginState();
     runApp(MyApp());
   });
 }
@@ -37,17 +28,19 @@ class MyApp extends StatelessWidget {
   ThemeData loadedTheme;
   String theme;
 
+
   Future<String> getSavedTheme() async {
-    String theme = await loadTheme();
+    String theme = await ThemeChanger.loadTheme();
     return theme;
   }
 
   MyApp() {
     _themeLoaded = gotTheme();
+   // _authorized = _auth.isLoggedIn();
   }
 
   Future<bool> gotTheme() async {
-    theme = await loadTheme();
+    theme = await ThemeChanger.loadTheme();
     return true;
   }
 
@@ -75,23 +68,39 @@ class MyApp extends StatelessWidget {
   }
 }
 
+Future<bool>_loginState;
 class MaterialAppWithTheme extends StatelessWidget {
   @override
+  Auth _auth = Auth();
+  Widget login;
+  Future<bool> loginState() async{
+    login = await _auth.isLoggedIn();
+    return true;
+  }
+  MaterialAppWithTheme(){
+    _loginState = loginState();
+  }
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeChanger>(context);
-
-    return MaterialApp(
-      theme: theme.getTheme(),
-      title: 'STDY',
-      home: SplashScreen.navigate(
-        name: 'assets/intro.flr',
-        next: (_) {
-          if(loginCheck) return Home();
-          else return LoginScreen();
-          },
-        until: () => Future.delayed(Duration(seconds: 1)),
-        startAnimation: 'intro',
-      ),
-    );
+return Container(
+    child:FutureBuilder(
+        future: _loginState,
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          if(snapshot.hasData){
+          return MaterialApp(
+              theme: theme.getTheme(),
+              title: 'STDY',
+              home: SplashScreen.navigate(
+                name: 'assets/intro.flr',
+                next: (_) {
+                  return login;
+                },
+                until: () => Future.delayed(Duration(seconds: 1)),
+                startAnimation: 'intro',
+              )
+          );
+          }
+          else return Container();}
+    ));
   }
 }
