@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart'
-import 'package:study/grades/gpa_predictor_page.dart';
+import 'package:flutter/widgets.dart';
 import 'grades_data.dart';
 import 'grades_page.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +8,6 @@ import 'course_input_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import '../main.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'gpa_predictor_page.dart';
-
 
 //https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
 class GradesYearPage extends StatefulWidget {
@@ -35,6 +31,8 @@ class GradesYearPageState extends State<GradesYearPage> {
   Future <List<DocumentSnapshot>> _futureData;
   double actualGPA;
   double currentGPA;
+
+
 
   GradesYearPageState(){
     firehouse = new GradeData();
@@ -66,6 +64,7 @@ class GradesYearPageState extends State<GradesYearPage> {
 
     return items;
   }
+
 
   void _removeData(String course, String semester) async {
     showDialog(
@@ -292,46 +291,18 @@ class GradesYearPageState extends State<GradesYearPage> {
     );
   }
 
-  void _openCoursePredictor() async {
-    print("course pred opened");
-    final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GPAPredictorPage(courseData),
-        ));
-  }
   @override
   Widget build(BuildContext context) {
     print('in build');
     return Scaffold(
-
-      floatingActionButton: SpeedDial(
-        child: Icon(Icons.open_in_new),
-        overlayOpacity: 0.0,
-        children: [
-
-          SpeedDialChild(
-            child: Icon(Icons.add),
-            backgroundColor: stdyPink,
-            labelBackgroundColor: stdyPink,
-            shape: CircleBorder(),
-            label: 'New Course',
-            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => _addData(),
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.grade),
-            backgroundColor: stdyPink,
-            labelBackgroundColor: stdyPink,
-            label: 'Predictor',
-            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => _openCoursePredictor(),
-          ),
-
-        ],
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _addData();
+        },
+        child: Icon(Icons.add),
+        backgroundColor: stdyPink,
+        shape: CircleBorder(),
       ),
-
       body: SingleChildScrollView(
 
         child: Column(
