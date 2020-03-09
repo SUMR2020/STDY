@@ -1,8 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:study/grades/grades_data.dart';
+import 'package:study/Grades/Model/CourseData.dart';
 
 class PushNotificationsManager {
-
+  CourseData c = new CourseData();
   PushNotificationsManager._();
 
   factory PushNotificationsManager() => _instance;
@@ -15,8 +15,8 @@ class PushNotificationsManager {
   Future<void> init() async {
     if (!_initialized) {
       String token = await _firebaseMessaging.getToken();
+      c.addingTokenData(token);
       print("FirebaseMessaging token: $token");
-      GradeData().addingTokenData(token);
       _initialized = true;
     }
   }

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/main.dart';
-import '../grades/grades_data.dart';
+import '../Schedule/TaskData.dart';
 import '../home_widget.dart';
 
 Future<bool> _CoursesLoaded;
@@ -65,7 +65,7 @@ class _Data {
 class _TaskPageState extends State<TaskPage> {
   String taskType;
   int index;
-  GradeData grades = new GradeData();
+  TaskData grades = new TaskData();
   List<DocumentSnapshot> courses;
   List<_Course> courseObjs = List<_Course>();
   List<String> courseNames = List<String>();

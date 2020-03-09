@@ -1,0 +1,11 @@
+March 9th, 2020 12am to 2am
+- Had issues with github
+- spent time with Uzair trying to fix our github, as the pr merged incorrectly
+
+March 9th, 2020 2pm to 6pm
+- spent time refactoring code
+	- split up database manager into two:
+		- one for tasks
+		- one for courses
+	created singletons for database connection
+- fixed some bugs caused by the token addition

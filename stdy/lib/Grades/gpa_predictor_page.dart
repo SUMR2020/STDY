@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:googleapis/cloudbuild/v1.dart';
 import '../main.dart';
-import 'package:intl/intl.dart';
-import 'grades_data.dart';
+import 'package:study/Grades/Model/CourseData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
@@ -27,7 +25,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
   String sem;
   String id;
   int predictCount;
-  GradeData firehouse;
+  CourseData firehouse;
   bool submitted;
 
   String _goalGPA;
@@ -47,7 +45,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
     courseData = c;
     dropdownValueGrade = "Letter";
 
-    firehouse = new GradeData();
+    firehouse = new CourseData();
 
     for(int i =0; i<courseData.length; i++) {
       String id = courseData[i].data["id"];
