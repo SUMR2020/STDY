@@ -46,8 +46,13 @@ class GradeData {
     return null;
   }
 
-  GradesData() {
+  GradeData() {
     print("started grades");
+    if (letterGPA == null) {
+      getGPATable();
+    }
+    print(letterGPA);
+
   }
 
   double calculateCurrGPA(bool curr, List<DocumentSnapshot> courseData) {
@@ -73,6 +78,7 @@ class GradeData {
 
     return gpa / size;
   }
+
 
   void calculateGPA(List<DocumentSnapshot> courseData) async{
     if(courseData==null){
@@ -120,7 +126,7 @@ class GradeData {
   }
 
   String findNumberGPA(double grade) {
-    print("grade is $grade");
+
     //List<String> letters = letterGPA.keys.toList()..sort();
     List<String> letters = new List();
     letterGPA.forEach((k, v) => letters.add(k));
@@ -316,6 +322,7 @@ class GradeData {
     print("added data to $uid");
   }
 
+
   void addingTokenData(String t) async{
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
@@ -475,6 +482,8 @@ class GradeData {
         letterGPA = documents[i].data;
       }
     }
+
+    print("test got letter gpa");
   }
 
   Future<bool> redistributeData(String id, String course, String newAmount) async {
@@ -491,6 +500,7 @@ class GradeData {
     var days = before["dates"];
     docRef.updateData({"daily": (double.parse(newAmount) / days.length).toStringAsFixed(2)});
   }
+
   Future<bool> updateProgressandDaily(
       String id, String course, String done) async {
     final FirebaseUser user = await _auth.currentUser();
@@ -504,6 +514,7 @@ class GradeData {
         .document(id);
     var before = await docRef.get();
     if (double.parse(done) >= double.parse(before["today"])) {
+
       print ("In if");
       docRef.updateData({"today": 0});
       var totalBefore = before["toDo"];

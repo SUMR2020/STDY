@@ -8,6 +8,9 @@ import 'grade_input_page.dart';
 import '../main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'task_page.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'grade_predictor_page.dart';
+
 
 class GradesPage extends StatefulWidget {
 
@@ -151,7 +154,8 @@ class GradesPageState extends State<GradesPage> {
         null,
         bonus,
         total,
-        null
+        id
+
     );
 
     print(result);
@@ -328,7 +332,14 @@ class GradesPageState extends State<GradesPage> {
     return courseWidgets;
 
   }
-  void _gradePredictor(){
+  void _openGradePredictor() async{
+
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GradePredictorPage(course),
+        ));
+r
 
   }
 
@@ -337,38 +348,7 @@ class GradesPageState extends State<GradesPage> {
     return null;
   }
 
-  Widget _buildForm(BuildContext context){
-    return new Form(
-        key: this._formKey,
-        child: new ListView(
-          shrinkWrap: true,
 
-          children: <Widget>[
-            new TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: new InputDecoration(
-                  hintText: 'Enter course name here...',
-                  labelText: "Course name *",
-                ),
-                validator: this._validateGradePredict,
-                onSaved: (String value) {
-                  print("val is $value");
-                  gradePred = value;
-                }),
-            RaisedButton(
-              child: Text('Add course',
-                style: TextStyle(
-                  fontSize: 16.0 + fontScale,
-                ),),
-              onPressed: (){
-                _gradePredictor();
-              },
-            ),
-
-          ],
-        )
-    );
-  }
 
   Widget _buildPanel()  {
 
@@ -430,13 +410,32 @@ class GradesPageState extends State<GradesPage> {
             )
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _addTask();
-        },
-        child: Icon(Icons.add),
-        backgroundColor: stdyPink,
-        shape: CircleBorder(),
+
+      floatingActionButton: SpeedDial(
+        child: Icon(Icons.open_in_new),
+        overlayOpacity: 0.0,
+        children: [
+
+          SpeedDialChild(
+              child: Icon(Icons.add),
+              backgroundColor: stdyPink,
+              labelBackgroundColor: stdyPink,
+              shape: CircleBorder(),
+              label: 'New Task',
+              labelStyle: TextStyle(fontSize: 18.0),
+              onTap: () => _addTask(),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.grade),
+            backgroundColor: stdyPink,
+            labelBackgroundColor: stdyPink,
+            label: 'Predictor',
+            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () => _openGradePredictor(),
+          ),
+
+        ],
+
       ),
 
       body: SingleChildScrollView(
