@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import '../home_widget.dart';
-import 'grades_data.dart';
+import '../Schedule/TaskData.dart';
 import 'task_input_page.dart';
 import 'grade_input_page.dart';
 import '../main.dart';
@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'task_page.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'grade_predictor_page.dart';
+import 'package:study/Grades/Model/CourseData.dart';
 
 
 class GradesPage extends StatefulWidget {
@@ -30,7 +31,7 @@ class GradesPageState extends State<GradesPage> {
 
   String sem;
   String id;
-  GradeData firehouse;
+  CourseData firehouse;
   double grade;
   double weighted;
   String letterGrade;
@@ -44,7 +45,7 @@ class GradesPageState extends State<GradesPage> {
   List<Item> _data;
 
   GradesPageState(Map<String, dynamic> c){
-    firehouse = new GradeData();
+    firehouse = new CourseData();
 
     course = c;
     courseName = course["id"];
@@ -339,7 +340,7 @@ class GradesPageState extends State<GradesPage> {
         MaterialPageRoute(
           builder: (context) => GradePredictorPage(course),
         ));
-r
+
 
   }
 

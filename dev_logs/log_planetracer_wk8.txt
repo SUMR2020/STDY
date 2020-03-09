@@ -1,0 +1,7 @@
+March 9th, 2020 2pm to 5pm
+- spent time refactoring code
+	- split up database manager into two:
+		- one for tasks
+		- one for courses
+	created singletons for database connection
+

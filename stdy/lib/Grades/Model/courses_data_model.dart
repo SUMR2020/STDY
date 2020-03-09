@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
-import '../grades_data.dart';
+import '../../Schedule/TaskData.dart';
 
 class CoursesDataModel {
 

@@ -3,7 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:googleapis/cloudbuild/v1.dart';
 import '../main.dart';
 import 'package:intl/intl.dart';
-import 'grades_data.dart';
+import '../Schedule/TaskData.dart';
+import 'package:study/Grades/Model/CourseData.dart';
 
 class GradePredictorPage extends StatefulWidget {
 
@@ -22,13 +23,13 @@ class GradePredictorState extends State<GradePredictorPage> {
   String courseName;
   String sem;
   String id;
-  GradeData firehouse;
+  CourseData firehouse;
 
 
   GradePredictorState( Map<String, dynamic> c){
     course = c;
 
-    firehouse = new GradeData();
+    firehouse = new CourseData();
 
     courseName = course["id"];
     sem = course["semester"]+course["year"].toString();
