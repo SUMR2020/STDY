@@ -14,6 +14,51 @@ class progressPage extends StatefulWidget {
   }
 }
 
+class PieChartFactory {
+  PieChartFactory();
+
+  Widget makePieChart(List<charts.Series<Task,String>> _seriesPieData){
+    return Expanded(
+        child: charts.PieChart(
+            _seriesPieData,
+            animate : true,
+            behaviors: [
+              new charts.DatumLegend(
+                outsideJustification: charts.OutsideJustification.start,
+                horizontalFirst: false,
+                desiredMaxRows: 1,
+                cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
+                entryTextStyle: charts.TextStyleSpec(
+                    color: charts.MaterialPalette.pink.shadeDefault,
+                    fontSize: 14 + fontScale
+                ),
+              )
+            ],
+            defaultRenderer: new charts.ArcRendererConfig(
+                arcWidth: 75,
+                arcRendererDecorators: [
+                  new charts.ArcLabelDecorator(
+                      labelPosition: charts.ArcLabelPosition.inside)
+                ])),
+      );
+  }
+}
+
+//class LineChartFactory {
+//  LineChartFactory();
+//
+//  Widget makeLineChart(List<charts.Series<Hours,int>> _seriesLineData){
+//    return Expanded(
+//      child: charts.LineChart(
+//          _seriesLineData,
+//          animate : true,
+//        ),
+//    );
+//  }
+//}
+
+
+
 class progressPageState extends State<progressPage>{
 
   List<charts.Series<Task,String>> _seriesPieData;
@@ -85,6 +130,7 @@ class progressPageState extends State<progressPage>{
 
     }
 
+
   @override
   void initState(){
     super.initState();
@@ -94,12 +140,14 @@ class progressPageState extends State<progressPage>{
     _generateData();
   }
 
- // progressPageState(){}
+
 
   @override
   Widget build(BuildContext context) {
+      PieChartFactory chartFactory = new PieChartFactory();
+
     return DefaultTabController(
-        length: 3,
+        length: 6,
         child:Scaffold(
             appBar: new PreferredSize(
               preferredSize: Size.fromHeight(kToolbarHeight),
@@ -119,6 +167,15 @@ class progressPageState extends State<progressPage>{
                             color: Theme.of(context).accentColor,)),
                           Tab(icon: Icon(Icons.note,
                             color: Theme.of(context).accentColor,)),
+                          Tab(icon: Icon(Icons.event_note,
+                            color: Theme.of(context).accentColor,)
+                          ),
+                          Tab(icon: Icon(Icons.pie_chart,
+                            color: Theme.of(context).accentColor,)
+                          ),
+                          Tab(icon: Icon(Icons.blur_linear,
+                            color: Theme.of(context).accentColor,)
+                          ),
                         ],
                       ),
                     ],
@@ -135,29 +192,7 @@ class progressPageState extends State<progressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Expanded(
-                                child: charts.PieChart(
-                                    _seriesPieData,
-                                    animate : true,
-                                    behaviors: [
-                                      new charts.DatumLegend(
-                                        outsideJustification: charts.OutsideJustification.start,
-                                        horizontalFirst: false,
-                                        desiredMaxRows: 1,
-                                        cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
-                                        entryTextStyle: charts.TextStyleSpec(
-                                            color: charts.MaterialPalette.pink.shadeDefault,
-                                            fontSize: 14 + fontScale
-                                        ),
-                                      )
-                                    ],
-                                    defaultRenderer: new charts.ArcRendererConfig(
-                                        arcWidth: 50,
-                                        arcRendererDecorators: [
-                                          new charts.ArcLabelDecorator(
-                                              labelPosition: charts.ArcLabelPosition.inside)
-                                        ])),
-                              ),
+                              chartFactory.makePieChart(_seriesPieData),
 
                               Expanded(
                                   child: charts.LineChart(
@@ -177,29 +212,7 @@ class progressPageState extends State<progressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Expanded(
-                                child: charts.PieChart(
-                                    _seriesPieDataB,
-                                    animate : true,
-                                    behaviors: [
-                                      new charts.DatumLegend(
-                                        outsideJustification: charts.OutsideJustification.start,
-                                        horizontalFirst: false,
-                                        desiredMaxRows: 1,
-                                        cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
-                                        entryTextStyle: charts.TextStyleSpec(
-                                            color: charts.MaterialPalette.pink.shadeDefault,
-                                            fontSize: 14 + fontScale
-                                        ),
-                                      )
-                                    ],
-                                    defaultRenderer: new charts.ArcRendererConfig(
-                                        arcWidth: 50,
-                                        arcRendererDecorators: [
-                                          new charts.ArcLabelDecorator(
-                                              labelPosition: charts.ArcLabelPosition.inside)
-                                        ])),
-                              ),
+                              chartFactory.makePieChart(_seriesPieDataB),
 
                               Expanded(
                                   child: charts.LineChart(
@@ -219,53 +232,9 @@ class progressPageState extends State<progressPage>{
                   child: Center(
                     child: Column(
                       children: <Widget>[
-                        Expanded(
-                          child: charts.PieChart(
-                            _seriesPieData,
-                            animate : true,
-                            behaviors: [
-                              new charts.DatumLegend(
-                                outsideJustification: charts.OutsideJustification.start,
-                                horizontalFirst: false,
-                                desiredMaxRows: 1,
-                                cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
-                                entryTextStyle: charts.TextStyleSpec(
-                                  color: charts.MaterialPalette.pink.shadeDefault,
-                                  fontSize: 14 + fontScale
-                                ),
-                              )
-                            ],
-                            defaultRenderer: new charts.ArcRendererConfig(
-                              arcWidth: 50,
-                              arcRendererDecorators: [
-                                new charts.ArcLabelDecorator(
-                                  labelPosition: charts.ArcLabelPosition.inside)
-                              ])),
-                        ),
+                        chartFactory.makePieChart(_seriesPieData),
+                        chartFactory.makePieChart(_seriesPieDataB),
 
-                        Expanded(
-                          child: charts.PieChart(
-                              _seriesPieDataB,
-                              animate : true,
-                              behaviors: [
-                                new charts.DatumLegend(
-                                  outsideJustification: charts.OutsideJustification.start,
-                                  horizontalFirst: false,
-                                  desiredMaxRows: 1,
-                                  cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
-                                  entryTextStyle: charts.TextStyleSpec(
-                                      color: charts.MaterialPalette.pink.shadeDefault,
-                                      fontSize: 14 + fontScale
-                                  ),
-                                )
-                              ],
-                              defaultRenderer: new charts.ArcRendererConfig(
-                                  arcWidth: 50,
-                                  arcRendererDecorators: [
-                                    new charts.ArcLabelDecorator(
-                                        labelPosition: charts.ArcLabelPosition.inside)
-                                  ])),
-                        ),
 
                         Expanded(
                           child: charts.LineChart(
@@ -278,6 +247,73 @@ class progressPageState extends State<progressPage>{
                   )
                 )
               ),
+
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              chartFactory.makePieChart(_seriesPieData),
+                              chartFactory.makePieChart(_seriesPieDataB),
+
+
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              chartFactory.makePieChart(_seriesPieData),
+                              chartFactory.makePieChart(_seriesPieDataB),
+
+
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              chartFactory.makePieChart(_seriesPieData),
+                              chartFactory.makePieChart(_seriesPieDataB),
+
+
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
             ]
            ),
         ),
