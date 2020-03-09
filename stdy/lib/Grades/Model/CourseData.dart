@@ -243,7 +243,7 @@ void remove_course(String id) async {
     if (data == null) {
       return;
     }
-//    bool exists = true;
+    bool exists = true;
     String course = data[0];
     String semester = data[1];
     int year = int.parse(data[2]);
@@ -259,6 +259,17 @@ void remove_course(String id) async {
 
     String id = (data[0] + data[1] + data[2]).replaceAll(' ', '');
 
+    await db
+        .collection("users")
+        .document(uid)
+        .get()
+        .then((DocumentSnapshot data) {
+      exists = data.exists;
+    });
+
+    if (!exists) {
+      await db.collection("users").document(uid).setData({"gpa": -1, "currGpa": -1});
+    }
     await db
         .collection("users")
         .document(uid)
@@ -438,17 +449,7 @@ void remove_course(String id) async {
   }
 
   void addingTokenData(String t) async{
-    bool exists = true;
-    await db
-        .collection("users")
-        .document(uid)
-        .get()
-        .then((DocumentSnapshot data) {
-      exists = data.exists;
-    });
-
-    if (!exists) {
-      await db.collection("users").document(uid).setData({"gpa": -1, "currGpa": -1, "token": t});
-    }
+    DocumentReference docRef = db.collection("users").document(uid);
+    docRef.setData({"token": t}, merge: true);
   }
 }
