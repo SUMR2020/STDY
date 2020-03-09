@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'push_notifictions.dart' as notifs;
 
-Color stdyPink = Color(0xFFFDA3A4);
 Future<bool> _themeLoaded;
 String themeDrop;
 int fontScale = 0;

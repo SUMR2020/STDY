@@ -24,7 +24,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    //_testSignInWithGoogle();
   }
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,8 +48,8 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,
-        selectedItemColor: stdyPink,
-        unselectedItemColor: stdyPink,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Theme.of(context).primaryColor,
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),

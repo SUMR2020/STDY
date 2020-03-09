@@ -386,7 +386,7 @@ class GradesPageState extends State<GradesPage> {
         if (!projectSnap.hasData) {
           //print('project snapshot data is: ${projectSnap.data}');
           return CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(stdyPink),
+            valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           );
         }
         else {
@@ -418,8 +418,8 @@ class GradesPageState extends State<GradesPage> {
 
           SpeedDialChild(
               child: Icon(Icons.add),
-              backgroundColor: stdyPink,
-              labelBackgroundColor: stdyPink,
+              backgroundColor: Theme.of(context).primaryColor,
+              labelBackgroundColor: Theme.of(context).primaryColor,
               shape: CircleBorder(),
               label: 'New Task',
               labelStyle: TextStyle(fontSize: 18.0),
@@ -427,8 +427,8 @@ class GradesPageState extends State<GradesPage> {
           ),
           SpeedDialChild(
             child: Icon(Icons.grade),
-            backgroundColor: stdyPink,
-            labelBackgroundColor: stdyPink,
+            backgroundColor: Theme.of(context).primaryColor,
+            labelBackgroundColor: Theme.of(context).primaryColor,
             label: 'Predictor',
             labelStyle: TextStyle(fontSize: 18.0),
             onTap: () => _openGradePredictor(),
