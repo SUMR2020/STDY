@@ -11,6 +11,7 @@ import 'task_page.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'grade_predictor_page.dart';
 
+
 class GradesPage extends StatefulWidget {
 
   Map<String, dynamic> course;
@@ -154,6 +155,7 @@ class GradesPageState extends State<GradesPage> {
         bonus,
         total,
         id
+
     );
 
     print(result);
@@ -337,6 +339,7 @@ class GradesPageState extends State<GradesPage> {
         MaterialPageRoute(
           builder: (context) => GradePredictorPage(course),
         ));
+r
 
   }
 
@@ -393,6 +396,7 @@ class GradesPageState extends State<GradesPage> {
       future: _futureData,
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

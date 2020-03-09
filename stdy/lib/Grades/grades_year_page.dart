@@ -35,6 +35,7 @@ class GradesYearPageState extends State<GradesYearPage> {
   double actualGPA;
   double currentGPA;
 
+
   GradesYearPageState(){
     firehouse = new GradeData();
 
@@ -65,7 +66,6 @@ class GradesYearPageState extends State<GradesYearPage> {
 
     return items;
   }
-
 
 
   void _removeData(String course, String semester) async {
@@ -180,9 +180,6 @@ class GradesYearPageState extends State<GradesYearPage> {
   double t;
 
   Future <List<DocumentSnapshot>> _getData() async {
-
-    print ("poopy");
-
     courseData =  await firehouse.getCourseData();
     print ("After get course data");
     actualGPA =  await firehouse.getGPA(false);
@@ -295,6 +292,7 @@ class GradesYearPageState extends State<GradesYearPage> {
     );
   }
 
+
   void _openCoursePredictor() async {
     print("course pred opened");
     final result = await Navigator.push(
@@ -308,6 +306,7 @@ class GradesYearPageState extends State<GradesYearPage> {
   Widget build(BuildContext context) {
     print('in build');
     return Scaffold(
+
       floatingActionButton: SpeedDial(
         child: Icon(Icons.open_in_new),
         overlayOpacity: 0.0,
@@ -334,6 +333,7 @@ class GradesYearPageState extends State<GradesYearPage> {
         ],
 
       ),
+
 
       body: SingleChildScrollView(
 

@@ -6,12 +6,58 @@ import 'home_widget.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
+
 class progressPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return progressPageState();
   }
 }
+
+class PieChartFactory {
+  PieChartFactory();
+
+  Widget makePieChart(List<charts.Series<Task,String>> _seriesPieData){
+    return Expanded(
+        child: charts.PieChart(
+            _seriesPieData,
+            animate : true,
+            behaviors: [
+              new charts.DatumLegend(
+                outsideJustification: charts.OutsideJustification.start,
+                horizontalFirst: false,
+                desiredMaxRows: 1,
+                cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
+                entryTextStyle: charts.TextStyleSpec(
+                    color: charts.MaterialPalette.pink.shadeDefault,
+                    fontSize: 14 + fontScale
+                ),
+              )
+            ],
+            defaultRenderer: new charts.ArcRendererConfig(
+                arcWidth: 75,
+                arcRendererDecorators: [
+                  new charts.ArcLabelDecorator(
+                      labelPosition: charts.ArcLabelPosition.inside)
+                ])),
+      );
+  }
+}
+
+//class LineChartFactory {
+//  LineChartFactory();
+//
+//  Widget makeLineChart(List<charts.Series<Hours,int>> _seriesLineData){
+//    return Expanded(
+//      child: charts.LineChart(
+//          _seriesLineData,
+//          animate : true,
+//        ),
+//    );
+//  }
+//}
+
+
 
 class progressPageState extends State<progressPage>{
 
@@ -84,6 +130,7 @@ class progressPageState extends State<progressPage>{
 
     }
 
+
   @override
   void initState(){
     super.initState();
@@ -93,81 +140,184 @@ class progressPageState extends State<progressPage>{
     _generateData();
   }
 
- // progressPageState(){}
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: (
-       // children: [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Container(
-              child: Center(
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: charts.PieChart(
-                        _seriesPieData,
-                        animate : true,
-                        behaviors: [
-                          new charts.DatumLegend(
-                            outsideJustification: charts.OutsideJustification.start,
-                            horizontalFirst: false,
-                            desiredMaxRows: 1,
-                            cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
-                            entryTextStyle: charts.TextStyleSpec(
-                              color: charts.MaterialPalette.pink.shadeDefault,
-                              fontSize: 14 + fontScale
-                            ),
-                          )
+      PieChartFactory chartFactory = new PieChartFactory();
+
+    return DefaultTabController(
+        length: 6,
+        child:Scaffold(
+            appBar: new PreferredSize(
+              preferredSize: Size.fromHeight(kToolbarHeight),
+              child: new Container(
+                //  color: Colors.green,
+                child: new SafeArea(
+                  child: Column(
+                    children: <Widget>[
+                      new Expanded(child: new Container()),
+                      new TabBar(
+                        indicatorColor: stdyPink,
+                        tabs: [
+                          Tab(icon: Icon(Icons.book,
+                            color: Theme.of(context).accentColor,)
+                          ),
+                          Tab(icon: Icon(Icons.assignment,
+                            color: Theme.of(context).accentColor,)),
+                          Tab(icon: Icon(Icons.note,
+                            color: Theme.of(context).accentColor,)),
+                          Tab(icon: Icon(Icons.event_note,
+                            color: Theme.of(context).accentColor,)
+                          ),
+                          Tab(icon: Icon(Icons.pie_chart,
+                            color: Theme.of(context).accentColor,)
+                          ),
+                          Tab(icon: Icon(Icons.blur_linear,
+                            color: Theme.of(context).accentColor,)
+                          ),
                         ],
-                        defaultRenderer: new charts.ArcRendererConfig(
-                          arcWidth: 50,
-                          arcRendererDecorators: [
-                            new charts.ArcLabelDecorator(
-                              labelPosition: charts.ArcLabelPosition.inside)
-                          ])),
-                    ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
 
-                    Expanded(
-                      child: charts.PieChart(
-                          _seriesPieDataB,
-                          animate : true,
-                          behaviors: [
-                            new charts.DatumLegend(
-                              outsideJustification: charts.OutsideJustification.start,
-                              horizontalFirst: false,
-                              desiredMaxRows: 1,
-                              cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
-                              entryTextStyle: charts.TextStyleSpec(
-                                  color: charts.MaterialPalette.pink.shadeDefault,
-                                  fontSize: 14 + fontScale
-                              ),
-                            )
-                          ],
-                          defaultRenderer: new charts.ArcRendererConfig(
-                              arcWidth: 50,
-                              arcRendererDecorators: [
-                                new charts.ArcLabelDecorator(
-                                    labelPosition: charts.ArcLabelPosition.inside)
-                              ])),
-                    ),
+          body: TabBarView(
+            children: [
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              chartFactory.makePieChart(_seriesPieData),
 
-                    Expanded(
-                      child: charts.LineChart(
-                          _seriesLineData,
-                          animate : false,
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              chartFactory.makePieChart(_seriesPieDataB),
+
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Container(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        chartFactory.makePieChart(_seriesPieData),
+                        chartFactory.makePieChart(_seriesPieDataB),
+
+
+                        Expanded(
+                          child: charts.LineChart(
+                              _seriesLineData,
+                              animate : false,
+                        )
+                        )
+                      ],
                     )
-                    )
-                  ],
+                  )
                 )
-              )
-            )
-          )
-        //]
-      ),
-            );
+              ),
+
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              chartFactory.makePieChart(_seriesPieData),
+                              chartFactory.makePieChart(_seriesPieDataB),
+
+
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              chartFactory.makePieChart(_seriesPieData),
+                              chartFactory.makePieChart(_seriesPieDataB),
+
+
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                      child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              chartFactory.makePieChart(_seriesPieData),
+                              chartFactory.makePieChart(_seriesPieDataB),
+
+
+                              Expanded(
+                                  child: charts.LineChart(
+                                    _seriesLineData,
+                                    animate : false,
+                                  )
+                              )
+                            ],
+                          )
+                      )
+                  )
+              ),
+
+            ]
+           ),
+        ),
+    );
 
   }
 }

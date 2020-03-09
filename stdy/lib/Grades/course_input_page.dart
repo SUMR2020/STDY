@@ -28,6 +28,7 @@ class CourseInputState extends State<CourseInputPage>{
   GradeData firestore;
   List<String> semesters;
 
+
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   CourseInputState(){
@@ -37,6 +38,7 @@ class CourseInputState extends State<CourseInputPage>{
     semesters = <String>["Fall", "Winter", "Summer"];
 
     print(semesters);
+
   }
 
   void addCourseButton(BuildContext context) async{
@@ -75,6 +77,7 @@ class CourseInputState extends State<CourseInputPage>{
       }
 
 
+
       print("adding $_addCourse $_addYear $dropdownValueSem, $_addGrade");
       Navigator.pop(context, [_addCourse, dropdownValueSem, _addYear, _addGrade]);
 
@@ -107,17 +110,21 @@ class CourseInputState extends State<CourseInputPage>{
   String _validateCourseName(String value) {
     // If empty value, the isEmail function throw a error.
     // So I changed this function with try and catch.
+
     if (value.isEmpty ) return 'Please enter a valid course name.';
+
     return null;
   }
 
   String _validateCourseYear(String value) {
     // If empty value, the isEmail function throw a error.
     // So I changed this function with try and catch.
+
     var now = new DateTime.now();
     int year = now.year;
 
     if (value.isEmpty && !_curr || (int.parse(value)>year) ) return 'Please enter a valid course year.';
+
     return null;
   }
 
@@ -205,6 +212,7 @@ class CourseInputState extends State<CourseInputPage>{
               controlAffinity: ListTileControlAffinity.leading,
             ),
 
+
             new TextFormField(
                 style: TextStyle(
                   fontSize: 16.0 + fontScale,
@@ -287,6 +295,7 @@ class CourseInputState extends State<CourseInputPage>{
                           ),
                           onChanged: !_curr ? (String newValue) => setState(() => dropdownValueGrade = newValue) : null,
                           /*_curr? (String newValue) {
+
 
                       setState(() {
                         dropdownValueGrade = newValue;
