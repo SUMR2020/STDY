@@ -8,6 +8,7 @@ New Features:
 6. Option to add letter grade (Done)
 7. Add option to input/export JSON files for data
 8. Validation checks
+9. Option to bundle input tasks (i.e. assignment section has 4 assignments, can input this bundle together as one, makes 4 assignment tasks). 
 
 Refactor Changes:
 1. Change "curr" to false for taken
