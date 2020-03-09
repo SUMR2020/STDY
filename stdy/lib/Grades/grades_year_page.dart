@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/grades/gpa_predictor_page.dart';
-import 'grades_data.dart';
+import '../Schedule/TaskData.dart';
 import 'grades_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +11,7 @@ import 'dart:convert';
 import '../main.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'gpa_predictor_page.dart';
+import 'package:study/Grades/Model/CourseData.dart';
 
 //https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
 class GradesYearPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class GradesYearPage extends StatefulWidget {
 class GradesYearPageState extends State<GradesYearPage> {
 
 
-  GradeData firehouse;
+  CourseData firehouse;
 
   int marks;
 
@@ -37,7 +38,7 @@ class GradesYearPageState extends State<GradesYearPage> {
 
 
   GradesYearPageState(){
-    firehouse = new GradeData();
+    firehouse = new CourseData();
 
     marks = 0;
 

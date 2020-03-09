@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../main.dart';
 import 'package:flutter/services.dart';
-import 'grades_data.dart';
+import '../Schedule/TaskData.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:study/Grades/Model/CourseData.dart';
 
 //https://stackoverflow.com/questions/57300552/flutter-row-inside-listview
 
@@ -25,7 +26,7 @@ class CourseInputState extends State<CourseInputPage>{
   String dropdownValueGrade;
   String dropdownValueLetter;
   bool _curr;
-  GradeData firestore;
+  CourseData firestore;
   List<String> semesters;
 
 
@@ -34,7 +35,7 @@ class CourseInputState extends State<CourseInputPage>{
   CourseInputState(){
     _curr = false;
     dropdownValueGrade = "Letter";
-    firestore = GradeData();
+    firestore = CourseData();
     semesters = <String>["Fall", "Winter", "Summer"];
 
     print(semesters);

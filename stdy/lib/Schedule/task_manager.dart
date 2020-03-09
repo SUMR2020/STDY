@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../grades/grades_data.dart';
+import '../Schedule/TaskData.dart';
 import 'task.dart';
 import 'calendar_api.dart';
 
@@ -11,7 +11,7 @@ class TaskManager{
   List<DocumentSnapshot> taskDocs;
   List<Task> todayTasks = new List<Task>();
   List<Task> todayDoneTasks = new List<Task>();
-  GradeData grades = new GradeData();
+  TaskData grades = new TaskData();
 
   Future<bool> getTasks() async {
     taskDocs = await grades.getTasks();
