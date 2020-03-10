@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../main.dart';
+import '../../../main.dart';
 import 'package:flutter/services.dart';
-import '../Schedule/TaskData.dart';
+import '../../../Schedule/TaskData.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:study/Grades/Model/CourseData.dart';
+import 'package:study/Grades/Subject/CourseData.dart';
 
 //https://stackoverflow.com/questions/57300552/flutter-row-inside-listview
 

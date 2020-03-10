@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:googleapis/cloudbuild/v1.dart';
-import '../main.dart';
+import '../../../main.dart';
 import 'package:intl/intl.dart';
-import '../Schedule/TaskData.dart';
-import 'package:study/Grades/Model/CourseData.dart';
+import '../../../Schedule/TaskData.dart';
+import 'package:study/Grades/Subject/CourseData.dart';
 
 class GradePredictorPage extends StatefulWidget {
 

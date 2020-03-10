@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../main.dart';
+import '../../../main.dart';
 
 class TaskInputPage extends StatefulWidget {
 
