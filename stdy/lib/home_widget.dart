@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:study/main.dart';
 import 'package:study/progress_page.dart';
-import 'grades/grades_year_page.dart';
+import 'Grades/Observer/View/audit_page.dart';
 import 'Schedule/schedule_page.dart';
 import 'Settings/settings_page.dart';
 

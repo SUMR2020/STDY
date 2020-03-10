@@ -1,5 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:study/Grades/Model/CourseData.dart';
+import 'package:study/Grades/Subject/GradeData.dart';
 
 class PushNotificationsManager {
   CourseData c = new CourseData();

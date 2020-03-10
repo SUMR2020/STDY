@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:study/grades/gpa_predictor_page.dart';
-import '../Schedule/TaskData.dart';
-import 'grades_page.dart';
+import '../Predictor/gpa_predictor_page.dart';
+import '../../../Schedule/TaskData.dart';
+import 'course_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'course_input_page.dart';
+import '../Input/course_input_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
-import '../main.dart';
+import '../../../main.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'gpa_predictor_page.dart' as predict;
-import 'package:study/Grades/Model/CourseData.dart';
+import '../Predictor/gpa_predictor_page.dart' as predict;
+import 'package:study/Grades/Subject/GradeData.dart';
 
 //https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
 class GradesYearPage extends StatefulWidget {

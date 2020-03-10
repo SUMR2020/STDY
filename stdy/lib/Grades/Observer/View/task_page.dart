@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:googleapis/cloudbuild/v1.dart';
-import '../main.dart';
+import '../../../main.dart';
 import 'package:intl/intl.dart';
 
 class TaskInfoPage extends StatefulWidget {
@@ -165,6 +165,7 @@ class TaskInfoState extends State<TaskInfoPage> {
             fontSize: 16.0 + fontScale,
           ),),
         value: _bonus,
+        activeColor: Theme.of(context).primaryColor,
         onChanged: (bool value) {
           setState(() {
             _bonus = value;
@@ -183,6 +184,9 @@ class TaskInfoState extends State<TaskInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
+          iconTheme: IconThemeData(
+            color: Theme.of(context).primaryColor, //change your color here
+          ),
           centerTitle: true,
           backgroundColor: Color(0x00000000),
           elevation: 0,

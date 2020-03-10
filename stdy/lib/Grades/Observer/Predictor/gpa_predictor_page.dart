@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../main.dart';
-import 'package:study/Grades/Model/CourseData.dart';
+import '../../../main.dart';
+import 'package:study/Grades/Subject/GradeData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
@@ -388,6 +388,9 @@ class GPAPredictorState extends State<GPAPredictorPage> {
 
       ),
       appBar: new AppBar(
+          iconTheme: IconThemeData(
+            color: Theme.of(context).primaryColor, //change your color here
+          ),
           centerTitle: true,
           backgroundColor: Color(0x00000000),
           elevation: 0,

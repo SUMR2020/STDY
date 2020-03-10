@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
-import '../home_widget.dart';
-import '../Schedule/TaskData.dart';
-import 'task_input_page.dart';
-import 'grade_input_page.dart';
-import '../main.dart';
+import '../../../home_widget.dart';
+import '../../../Schedule/TaskData.dart';
+import '../Input/task_input_page.dart';
+import '../../../main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'task_page.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'grade_predictor_page.dart';
-import 'package:study/Grades/Model/CourseData.dart';
+import '../Predictor/grade_predictor_page.dart';
+import 'package:study/Grades/Subject/GradeData.dart';
 
 
 class GradesPage extends StatefulWidget {
@@ -167,22 +166,6 @@ class GradesPageState extends State<GradesPage> {
 
   }
 
-  void _addGrade(String task, String type) async {
-    print("Grade added");
-
-    final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GradeInputPage(),
-        ));
-    print(result);
-    await firehouse.addTaskGrade(task, id, result);
-
-    await _getData();
-    _calculateGrades();
-    //setState(() {});
-
-  }
 
   void _removeData(String task) async {
     showDialog(
@@ -404,6 +387,9 @@ class GradesPageState extends State<GradesPage> {
     print("building course");
     return Scaffold(
       appBar: new AppBar(
+          iconTheme: IconThemeData(
+            color: Theme.of(context).primaryColor, //change your color here
+          ),
           centerTitle: true,
           backgroundColor: Color(0x00000000),
           elevation: 0,

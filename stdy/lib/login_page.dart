@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
         splashColor: Theme.of(context).accentColor,
         onPressed: () {
           Authentication().signInWithGoogle().whenComplete(() {
-            if (authCheck) {
+            if (Authentication().authCheck) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) {
