@@ -1,4 +1,3 @@
-import 'package:googleapis/servicecontrol/v1.dart';
 import 'package:study/Settings/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +5,7 @@ import 'package:study/login_page.dart';
 import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'Authentication.dart';
+import 'package:study/MyApp.dart';
 
 final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 

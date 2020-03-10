@@ -2,22 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/DatabaseData.dart';
 
 class CourseData  extends DatabaseManager{
-  // creating this class as a singleton instance
-  // this is because every access of this class must have the same initialization
-  // the uid for the app must be the same, as well as the authorization
-  // this is recieved through the super class
-  static final CourseData _singleton = new CourseData._internal();
-
-
-  // factory gives us te ability to return an instance of a class, and singleton stores the
-  // first initialization of the class, thus everyone who uses it has the same instance
-  factory CourseData() {
-    return _singleton;
-  }
-
-  // setting the uid through the super, this is done in DatabaseManager
-  // this is called in internal, so everyone utilizing this class has the same uid data
-  CourseData._internal(): super(){
+  CourseData(): super(){
     print("started grades");
     if (letterGPA == null) {
       getGPATable();
