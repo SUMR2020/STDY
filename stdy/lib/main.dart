@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'Settings/Authentication.dart';
+import 'GoogleAPI/Authentication/Authentication.dart';
 import 'package:provider/provider.dart';
-import 'Settings/theme.dart';
+import 'UpdateApp/Subject/Theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
-import 'push_notifictions.dart' as notifs;
-import 'MyApp.dart';
+import 'GoogleAPI/CloudMessaging/PushNotifications.dart' as notifs;
+import 'UpdateApp/Observer/MyApp.dart';
 
 
 
