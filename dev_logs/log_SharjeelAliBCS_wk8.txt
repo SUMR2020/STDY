@@ -1,0 +1,7 @@
+1. Mar 10 (Tues) 9:00-9:30 (0.5 hours)
+   a. Updated directory hierarchy for grades directory
+   b. Updated colours for dark mode to pink (Because they weren't showing before). 
+2. Mar 10 (Tues) 11:30-2:30 (2.5 hours)
+   a. 
+
+    
