@@ -22,6 +22,7 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
   _SchedulePageState() {
+    print("opened schedule");
     _onStartup = calendarManager.loadEvents();
     _tasksLoaded = taskManager.getTasks();
     _doneTasksLoaded = taskManager.getDoneTasks();

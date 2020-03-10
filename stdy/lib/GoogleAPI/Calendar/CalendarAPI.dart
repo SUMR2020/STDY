@@ -38,30 +38,34 @@ class CalendarBuilder {
     var _events = await getEvents(events);
 
     // for each event, if the day is already in the map, add it to the list, otherwise create a new entry
-     print("befoee loo");
+
     _events.items.forEach((_event) {
-      print("getting events");
-      DateTime eventTime = DateTime(_event.start.dateTime.year,
-          _event.start.dateTime.month, _event.start.dateTime.day);
-      var summary = ("[" +
-          _event.start.dateTime.hour.toString().padLeft(2, "0") +
-          ":" +
-          _event.start.dateTime.minute.toString().padLeft(2, "0") +
-          "] " +
-          _event.summary);
-      if (eventCal.containsKey(eventTime)) {
-        List<String> DayEvents = (eventCal[DateTime(
-          _event.start.dateTime.year,
-          _event.start.dateTime.month,
-          _event.start.dateTime.day,
-        )]);
-        if ((DayEvents.contains(_event.summary)) == false) {
-          DayEvents.add(summary);
-          eventCal[eventTime] = DayEvents;
+
+      print(_event.start.dateTime);
+      if(_event.start.dateTime!=null) {
+        DateTime eventTime = DateTime(_event.start.dateTime.year,
+            _event.start.dateTime.month, _event.start.dateTime.day);
+
+        var summary = ("[" +
+            _event.start.dateTime.hour.toString().padLeft(2, "0") +
+            ":" +
+            _event.start.dateTime.minute.toString().padLeft(2, "0") +
+            "] " +
+            _event.summary);
+        if (eventCal.containsKey(eventTime)) {
+          List<String> DayEvents = (eventCal[DateTime(
+            _event.start.dateTime.year,
+            _event.start.dateTime.month,
+            _event.start.dateTime.day,
+          )]);
+          if ((DayEvents.contains(_event.summary)) == false) {
+            DayEvents.add(summary);
+            eventCal[eventTime] = DayEvents;
+          }
+        } else {
+          List<String> DayEvents = [summary];
+          eventCal[(eventTime)] = DayEvents;
         }
-      } else {
-        List<String> DayEvents = [summary];
-        eventCal[(eventTime)] = DayEvents;
       }
     });
 

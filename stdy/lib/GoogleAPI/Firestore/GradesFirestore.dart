@@ -332,7 +332,7 @@ void remove_course(String id) async {
 
     for (int i = 0; i < documents.length; i++) {
       if (documents[i].documentID == university) {
-        print("Assigned letter gpa!");
+
         letterGPA = documents[i].data;
       }
     }
