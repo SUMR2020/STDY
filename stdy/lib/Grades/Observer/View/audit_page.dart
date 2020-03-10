@@ -11,7 +11,7 @@ import 'dart:convert';
 import '../../../main.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../Predictor/gpa_predictor_page.dart' as predict;
-import 'package:study/Grades/Subject/CourseData.dart';
+import 'package:study/Grades/Subject/GradeData.dart';
 
 //https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
 class GradesYearPage extends StatefulWidget {

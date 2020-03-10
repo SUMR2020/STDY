@@ -9,7 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'task_page.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../Predictor/grade_predictor_page.dart';
-import 'package:study/Grades/Subject/CourseData.dart';
+import 'package:study/Grades/Subject/GradeData.dart';
 
 
 class GradesPage extends StatefulWidget {

@@ -4,7 +4,7 @@ import 'package:googleapis/cloudbuild/v1.dart';
 import '../../../main.dart';
 import 'package:intl/intl.dart';
 import '../../../Schedule/TaskData.dart';
-import 'package:study/Grades/Subject/CourseData.dart';
+import 'package:study/Grades/Subject/GradeData.dart';
 
 class GradePredictorPage extends StatefulWidget {
 
