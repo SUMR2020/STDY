@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MainFirestore {
+abstract class MainFirestore {
   // receiving the authorization and database instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final db = Firestore.instance;
@@ -13,6 +13,7 @@ class MainFirestore {
   void addingUid() async{
     FirebaseUser user = await _auth.currentUser();
     uid = user.uid;
+    print("UID " + uid);
   }
 
   MainFirestore(){

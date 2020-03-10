@@ -4,6 +4,7 @@ import 'package:study/GoogleAPI/Firestore/MainFirestore.dart';
 
 class TaskFireStore extends MainFirestore{
 
+  TaskFireStore(): super();
   Future<DateTime> updateDay(DateTime d) async{
 
     DateTime now = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
