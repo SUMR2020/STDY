@@ -7,6 +7,7 @@ Required Features:
 5. Back button unsaved changes
 6. Option to add letter grade (Done)
 7. Validation checks
+8. Option to set courses too "PAST"/Complete. Requires grade input. 
 
 Bonus features:
 1. Course Outline
