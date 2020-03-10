@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:study/grades/gpa_predictor_page.dart';
+import '../Predictor/gpa_predictor_page.dart';
 import '../../../Schedule/TaskData.dart';
 import 'course_page.dart';
 import 'package:flutter/material.dart';

@@ -387,6 +387,9 @@ class GradesPageState extends State<GradesPage> {
     print("building course");
     return Scaffold(
       appBar: new AppBar(
+          iconTheme: IconThemeData(
+            color: Theme.of(context).primaryColor, //change your color here
+          ),
           centerTitle: true,
           backgroundColor: Color(0x00000000),
           elevation: 0,

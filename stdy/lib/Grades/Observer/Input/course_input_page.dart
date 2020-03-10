@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:study/Settings/theme.dart';
 import '../../../main.dart';
 import 'package:flutter/services.dart';
 import '../../../Schedule/TaskData.dart';
@@ -197,12 +198,12 @@ class CourseInputState extends State<CourseInputPage>{
 
 
             new CheckboxListTile(
-
               title: Text("Is this a current course?",
                 style: TextStyle(
                   fontSize: 16.0 + fontScale,
                 ),),
               value: _curr,
+              activeColor: Theme.of(context).primaryColor,
               onChanged: (bool value) {
                 setState(() {
                   _addGrade = null;
@@ -351,6 +352,9 @@ class CourseInputState extends State<CourseInputPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
+          iconTheme: IconThemeData(
+            color: Theme.of(context).primaryColor, //change your color here
+          ),
           centerTitle: true,
           backgroundColor: Color(0x00000000),
           elevation: 0,
