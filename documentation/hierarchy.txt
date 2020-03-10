@@ -1,0 +1,57 @@
+main.dart
+Home.dart (HomePage.dart)
+
+/UpdateApp
+	/UI
+		MaterialAppWithTheme.dart (ThemedApp.dart)
+		LoginPage.dart
+		SettingsPage.dart
+	/Observer
+		MyApp.dart
+	/Subject
+		Theme.dart (SettingsData.dart)
+/Grades
+	/Observer
+		/Input
+			CourseFormPage.dart
+			PrevTaskFormPage.dart
+		/Predictor
+			GpaPredictorPage.dart
+			GradePredictorPage.dart
+		/Overview
+			AuditPage.dart
+			CoursePage.dart
+			TaskPage.dart
+	/Helper
+		Course.dart
+		PrevTask.dart
+	/Subject
+		GradesData.dart
+/Firebase
+	/Firestore
+		GradeFirestore.dart
+		TaskFirestore.dart
+		ProgressFirestore.dart
+		MainFirestore.dart
+	/Calendar
+		CalendarAPI.dart
+	/Authentication
+		Authentication.dart
+	/CloudMessaging  
+		PushNotifications.dart
+/Schedule
+	/Observer
+		CustomForm.dart (CurrTaskFormPage.dart)
+		SchedulePage.dart
+		SelectionPage.dart (TaskSelectionPage.dart)
+	/Subject
+		TaskManager.dart (TaskData.dart)
+		CalendarData.dart (Doesn't exist)
+	/Helper
+		Task.dart
+/Progress
+	/Observer
+		ProgressPage.dart
+	/Subject
+		ProgressManager.dart
+		ProgressData.dart
