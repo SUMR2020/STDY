@@ -9,3 +9,13 @@ March 9th, 2020 2pm to 6pm
 		- one for courses
 	created singletons for database connection
 - fixed some bugs caused by the token addition
+
+March 10th, 2020 10pm to 11pm
+- Spent time debugging error where uid was null
+- identified the error but did not have time to research and fix
+
+March 11th, 2020 11am to 1pm
+- Spent time researching async functions in ctor
+- spent time fixing the bug where uid was null
+	- due to async call
+

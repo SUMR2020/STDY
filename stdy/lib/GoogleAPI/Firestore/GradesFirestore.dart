@@ -225,6 +225,8 @@ void remove_course(String id) async {
   }
 
   void addData(List<String> data) async {
+    print ("ADD DATA");
+    print (uid);
     if (data == null) {
       return;
     }

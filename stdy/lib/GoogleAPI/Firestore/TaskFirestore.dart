@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/GoogleAPI/Firestore/MainFirestore.dart';
+import 'package:study/Progress/Observer/ProgressPage.dart';
 
 
 class TaskFireStore extends MainFirestore{
 
   TaskFireStore(): super();
-  Future<DateTime> updateDay(DateTime d) async{
 
+  Future<DateTime> updateDay(DateTime d) async{
     DateTime now = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime check = new DateTime(d.year, d.month, d.day);
     if (check == now){
