@@ -63,6 +63,7 @@ class MainFirestore {
       "dates": dates,
       "due": dueDate,
       "progress": done,
+      "goal": new List<int>(),
       "forMarks": forMarks,
       "weight": weight,
       "grade": grade,
