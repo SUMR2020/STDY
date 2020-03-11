@@ -7,62 +7,67 @@ class TaskFireStore extends MainFirestore{
 
   TaskFireStore(): super();
 
-  Future<DateTime> updateDay(DateTime d) async{
-    DateTime now = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    DateTime check = new DateTime(d.year, d.month, d.day);
-    if (check == now){
-      return d;
-    } else{
-      var list = await getCourseData();
-      for (int i = 0; i < list.length; i++) {
-        String course = list[i].data["id"].toString() +  list[i].data["semester"].toString() +  list[i].data["year"].toString();
-        final QuerySnapshot courseTasks = await db
-            .collection('users')
-            .document(uid)
-            .collection("Grades")
-            .document(course)
-            .collection("Tasks")
-            .getDocuments();
-        final List<DocumentSnapshot> documents = courseTasks.documents;
-        for (var task in documents){
-          DocumentReference docRef = db
-              .collection("users")
-              .document(uid)
-              .collection("Grades")
-              .document(course)
-              .collection("Tasks")
-              .document(task.data["id"]);
-          var doc = await docRef.get();
-          var dates = doc.data["dates"];
-          List<DateTime> datesObjs = new List<DateTime>();
-          for (Timestamp t in dates) {
-            DateTime date = (t.toDate());
-            if (!(date.isBefore(DateTime.now()))) datesObjs.add(DateTime(date.year, date.month, date.day));
-          }
-          docRef.updateData({"dates": datesObjs});
-          redistributeData(doc.data["id"], course, doc.data["toDo"].toString());
-          doc = await docRef.get();
-          var daily = doc.data["daily"];
-          print (doc.data["name"]);
-          print (daily);
-          docRef.updateData({"today": daily});
-        }
-      }
-      return DateTime.now();
-    }
+  String getCourse (DocumentSnapshot a){
+    return (a.data["id"].toString() +  a.data["semester"].toString() +  a.data["year"].toString());
+
   }
 
-  Future<bool> redistributeData(String id, String course, String newAmount) async {
+  Future<QuerySnapshot> getTasksForCourse(String course) async{
+    QuerySnapshot q = await db
+        .collection('users')
+        .document(uid)
+        .collection("Grades")
+        .document(course)
+        .collection("Tasks")
+        .getDocuments();
+    return q;
+  }
+
+
+  Future<DocumentReference> getTaskData(var task) async{
+    DocumentReference q = await db
+        .collection("users")
+        .document(uid)
+        .collection("Grades")
+        .document(task.data["course"])
+        .collection("Tasks")
+        .document(task.data["id"]);
+    return q;
+  }
+
+  Future<List> getDates(DocumentReference docRef) async{
+    var doc = await docRef.get();
+    var dates = doc.data["dates"];
+    return dates;
+  }
+
+  Future<List> getDoneDates(DocumentReference docRef) async{
+    var doc = await docRef.get();
+    var dates = doc.data["done"];
+    return dates;
+  }
+
+  void updateDates(DocumentReference docRef, List<DateTime> i){
+    docRef.updateData({"dates": i});
+  }
+
+  void updateDaily(DocumentReference docRef) async{
+    var  doc = await docRef.get();
+    var daily = doc.data["daily"];
+    docRef.updateData({"today": daily});
+  }
+
+  Future<bool> redistributeData(var task, String course) async {
     DocumentReference docRef = db
         .collection("users")
         .document(uid)
         .collection("Grades")
         .document(course)
         .collection("Tasks")
-        .document(id);
+        .document(task.data["id"]);
     var before = await docRef.get();
     var days = before["dates"];
-    docRef.updateData({"daily": (double.parse(newAmount) / days.length).toStringAsFixed(2)});
+    docRef.updateData({"daily": (double.parse(task.data["toDo"]) / days.length).toStringAsFixed(2)});
   }
 
   Future<bool> updateProgressandDaily(

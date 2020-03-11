@@ -1,22 +1,46 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../GoogleAPI/Firestore/TaskFirestore.dart';
 import '../Helper/Task.dart';
-import '../../GoogleAPI/Calendar/CalendarAPI.dart';
 
-// class to manage tasks
-
-class TaskManager{
-
-  // getting
+class TaskData{
   List<DocumentSnapshot> taskDocs;
   List<Task> todayTasks = new List<Task>();
   List<Task> todayDoneTasks = new List<Task>();
   TaskFireStore grades = new TaskFireStore();
+  
+  Future<DateTime> updateDay(DateTime d) async{
+    DateTime now = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    DateTime check = new DateTime(d.year, d.month, d.day);
+    if (check == now){
+      return d;
+    } else{
+      var list = await grades.getCourseData();
+      for (int i = 0; i < list.length; i++) {
+        String course = grades.getCourse(list[i]);
+        final QuerySnapshot courseTasks = await grades.getTasksForCourse(course);
+        final List<DocumentSnapshot> documents = courseTasks.documents;
+        for (var task in documents){
+          DocumentReference docRef = await grades.getTaskData(task);
+          var dates = await grades.getDates(docRef);
+          List<DateTime> datesObjs = new List<DateTime>();
+          for (Timestamp t in dates) {
+            DateTime date = (t.toDate());
+            if (!(date.isBefore(DateTime.now()))) datesObjs.add(DateTime(date.year, date.month, date.day));
+          }
+          grades.updateDates(docRef, datesObjs);
+          grades.redistributeData(task, course);
+          grades.updateDaily(docRef);
+        }
+      }
+      return DateTime.now();
+    }
+  }
 
   Future<bool> getTasks() async {
     taskDocs = await grades.getTasks();
     for (DocumentSnapshot task in taskDocs) {
-      var dates = (task.data['dates']);
+      var docRef = await grades.getTaskData(task);
+      var dates = await  grades.getDates(docRef);
       List<DateTime> datesObjs = new List<DateTime>();
       for (Timestamp t in dates){
         DateTime date = (t.toDate());
@@ -34,19 +58,21 @@ class TaskManager{
   Future<bool> getDoneTasks() async {
     taskDocs = await grades.getTasks();
     for (DocumentSnapshot task in taskDocs) {
-      var dates = (task.data['done']);
+      var docRef = await grades.getTaskData(task);
+      var dates = await grades.getDoneDates(docRef);
       List<DateTime> datesObjs = new List<DateTime>();
-      for (Timestamp t in dates){
+      for (Timestamp t in dates) {
         DateTime date = (t.toDate());
         datesObjs.add(DateTime(date.year, date.month, date.day));
       }
       DateTime today = DateTime.now();
       if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
-        Task t = new Task(task.data["type"], task.data["name"],task.data["today"].toString(), task.data["id"],task.data["course"], task.data["onlyCourse"]);
+        Task t = new Task(
+            task.data["type"], task.data["name"], task.data["today"].toString(),
+            task.data["id"], task.data["course"], task.data["onlyCourse"]);
         todayDoneTasks.add(t);
       }
     }
-    print (todayDoneTasks);
     return true;
   }
 }
