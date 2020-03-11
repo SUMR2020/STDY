@@ -75,7 +75,7 @@ class TaskFireStore extends MainFirestore{
         .collection("Tasks")
         .document(id);
     var before = await docRef.get();
-
+    var goal = before["goal"];
     if (double.parse(done) >= double.parse(before["today"])) {
       print ("In if");
       docRef.updateData({"today": 0});
@@ -120,7 +120,6 @@ class TaskFireStore extends MainFirestore{
       progress[progress.length-1] = add.toString();
     }
     else{
-      var goal = before["goal"];
       if (goal == null) goal = new List<String>();
       goal.add(before["today"]);
       doneDatesObjs.add(today);
@@ -131,7 +130,8 @@ class TaskFireStore extends MainFirestore{
     double totalAfter = ((totalBefore) - double.parse(done));
     if (totalAfter < 0) totalAfter = 0;
     docRef.updateData({"toDo": totalAfter});
-   // doneDatesObjs.add(DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day));
+    docRef.updateData({"goal": goal});
+    // doneDatesObjs.add(DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day));
     docRef.updateData({"done": doneDatesObjs});
     var days = before["dates"];
     docRef.updateData({"daily": (totalAfter / days.length).toStringAsFixed(2)});
