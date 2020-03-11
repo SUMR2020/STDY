@@ -7,17 +7,6 @@ class TaskFireStore extends MainFirestore{
 
   TaskFireStore(): super();
 
-  String _d;
-  TaskFireStore._();
-  Future<TaskFireStore> create() async {
-    var data = TaskFireStore._();
-    await data._load();
-    return data;
-  }
-  Future<void> _load() async {
-    _d = await addingUid();
-  }
-  String get value => _d;
   Future<DateTime> updateDay(DateTime d) async{
     DateTime now = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime check = new DateTime(d.year, d.month, d.day);
