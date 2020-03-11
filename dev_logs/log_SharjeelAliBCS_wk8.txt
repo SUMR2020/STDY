@@ -4,8 +4,10 @@
 2. Mar 10 (Tues) 11:30-2:30 (2.5 hours)
    a. Discussed d3
    b. Designed a hierarchy for all classes
-3. Mar 10 (Tues) 5:30-7:30 (2 hours)
+3. Mar 10 (Tues) 5:30-8:30 (3 hours)
    a. Implemented hierarchy into codebase. 
+   b. Fixed calendar not loading on Sharjeel's phone glitch. 
+   c. Investigated issue with uid and flutter not loading course info. 
 
 
     
