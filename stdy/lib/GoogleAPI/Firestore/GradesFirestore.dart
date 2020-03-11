@@ -80,7 +80,7 @@ class GradesFirestore  extends MainFirestore{
     }
     double grade = calculateCurrGPA(false, GradesFirestore);
     double currGrade = calculateCurrGPA(true, GradesFirestore);
-    await db.collection("users").document(uid).setData({"gpa": grade, "currGpa": currGrade});
+    await db.collection("users").document(uid).setData({"gpa": grade, "currGpa": currGrade}, merge: true);
   }
 
   Future<double>  getGPA(bool curr) async{
@@ -255,6 +255,7 @@ void remove_course(String id) async {
     });
 
     if (!exists) {
+      print("does not exist");
       await db.collection("users").document(uid).setData({"gpa": -1, "currGpa": -1});
     }
     await db
@@ -437,6 +438,16 @@ void remove_course(String id) async {
 
   void addingTokenData(String t) async{
     DocumentReference docRef = db.collection("users").document(uid);
-    docRef.setData({"token": t}, merge: true);
+    bool exists = false;
+    await db
+        .collection("users")
+        .document(uid)
+        .get()
+        .then((DocumentSnapshot data) {
+      exists = data.exists;
+    });
+    print ("POOP");
+    if (!exists) docRef.setData({"token": t, "gpa": -1, "currGpa": -1});
+    else docRef.setData({"token": t}, merge: true);
   }
 }
