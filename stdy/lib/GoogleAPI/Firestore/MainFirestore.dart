@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-abstract class MainFirestore {
+class MainFirestore {
   // receiving the authorization and database instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final db = Firestore.instance;
@@ -10,10 +9,9 @@ abstract class MainFirestore {
   var uid;
 
   // setting the uid, this is async, so there must be a function for it
-  void addingUid() async{
+  addingUid() async {
     FirebaseUser user = await _auth.currentUser();
     uid = user.uid;
-    print("UID " + uid);
   }
 
   MainFirestore(){
@@ -21,6 +19,7 @@ abstract class MainFirestore {
   }
 
   Future<List<DocumentSnapshot>> getCourseData() async {
+    await addingUid();
     final QuerySnapshot result = await db
         .collection('users')
         .document(uid)
@@ -46,8 +45,7 @@ abstract class MainFirestore {
       bool bonus,
       int total,
       String onlyC) async {
-    final FirebaseUser user = await _auth.currentUser();
-    final uid = user.uid;
+    await addingUid();
     String id = (new DateTime.now().millisecondsSinceEpoch).toString();
     course = course.replaceAll(" ", "");
     await db
@@ -91,6 +89,7 @@ abstract class MainFirestore {
   }
 
   Future<List<DocumentSnapshot>> getTasks() async {
+    await addingUid();
     List<DocumentSnapshot> allTasks = new List<DocumentSnapshot>();
     List<DocumentSnapshot> courses = await getCourseData();
     for (DocumentSnapshot course in courses) {
