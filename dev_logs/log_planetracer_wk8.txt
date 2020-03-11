@@ -18,4 +18,4 @@ March 11th, 2020 11am to 1pm
 - Spent time researching async functions in ctor
 - spent time fixing the bug where uid was null
 	- due to async call
-
+- updated goal field in database
