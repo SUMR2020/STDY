@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MainFirestore {
+abstract class MainFirestore {
   // receiving the authorization and database instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final db = Firestore.instance;

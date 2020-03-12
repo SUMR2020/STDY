@@ -458,7 +458,6 @@ void remove_course(String id) async {
         .then((DocumentSnapshot data) {
       exists = data.exists;
     });
-
     if (!exists) docRef.setData({"token": t, "gpa": -1, "currGpa": -1});
     else docRef.setData({"token": t}, merge: true);
   }

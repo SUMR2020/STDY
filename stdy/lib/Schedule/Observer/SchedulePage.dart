@@ -28,7 +28,7 @@ class _SchedulePageState extends State<SchedulePage>
     _doneTasksLoaded = taskManager.getDoneTasks();
   }
   CalendarBuilder calendarManager = new CalendarBuilder();
-  TaskManager taskManager = new TaskManager();
+  TaskData taskManager = new TaskData();
   Future<bool> _onStartup;
   Future<bool> _tasksLoaded;
   Future<bool> _doneTasksLoaded;
@@ -48,7 +48,7 @@ class _SchedulePageState extends State<SchedulePage>
   }
 
   void updatingCurrentDay() async{
-    today = await taskManager.grades.updateDay(today);
+    today = await taskManager.updateDay(today);
   }
 
 
