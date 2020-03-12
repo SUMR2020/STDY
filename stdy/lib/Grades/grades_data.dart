@@ -1,14 +1,16 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:study/GoogleAPI/Firestore/MainFirestore.dart';
+import 'dart:convert';
 
-class GradesFirestore  extends MainFirestore{
-  GradesFirestore(): super(){
-    print("started grades");
-    if (letterGPA == null) {
-      getGPATable();
-    }
-    print(letterGPA);
-  }
+class CourseData {}
+
+class TaskData {}
+
+class GradeData {
+  TextEditingController _txtCtrl = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final db = Firestore.instance;
 
   List<String> grades = [
     "F",
@@ -28,8 +30,9 @@ class GradesFirestore  extends MainFirestore{
   List<DocumentSnapshot> currDocuments;
   String university = "Carleton";
   Map<String, dynamic> letterGPA;
+
+
   Future<String> convertLetterToDouble(String strVal) async {
-    await addingUid();
     if (letterGPA == null) {
       await getGPATable();
     }
@@ -39,25 +42,20 @@ class GradesFirestore  extends MainFirestore{
       return letterGPA[index].toString();
 
     }
+
     return null;
   }
 
-//  GradeData() {
-//    print("started grades");
-//    if (letterGPA == null) {
-//      getGPATable();
-//    }
-//    print(letterGPA);
-//
-//  }
+  GradesData() {
+    print("started grades");
+  }
 
-  double calculateCurrGPA(bool curr, List<DocumentSnapshot> GradesFirestore) {
-
+  double calculateCurrGPA(bool curr, List<DocumentSnapshot> courseData) {
     double gpa = 0.0;
-    int size = GradesFirestore.length;
+    int size = courseData.length;
 
-    for (int i = 0; i < GradesFirestore.length; i++) {
-      Map<String, dynamic> doc = GradesFirestore[i].data;
+    for (int i = 0; i < courseData.length; i++) {
+      Map<String, dynamic> doc = courseData[i].data;
       double temp;
 
       if (doc["taken"] == "CURR") {
@@ -72,34 +70,41 @@ class GradesFirestore  extends MainFirestore{
       }
 
     }
+
     return gpa / size;
   }
 
-
-  void calculateGPA(List<DocumentSnapshot> GradesFirestore) async{
-    await addingUid();
-    if(GradesFirestore==null){
-      GradesFirestore = await getCourseData();
+  void calculateGPA(List<DocumentSnapshot> courseData) async{
+    if(courseData==null){
+      courseData = await getCourseData();
     }
-    double grade = calculateCurrGPA(false, GradesFirestore);
-    double currGrade = calculateCurrGPA(true, GradesFirestore);
-    await db.collection("users").document(uid).setData({"gpa": grade, "currGpa": currGrade}, merge: true);
+
+    double grade = calculateCurrGPA(false, courseData);
+    double currGrade = calculateCurrGPA(true, courseData);
+
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+
+    await db.collection("users").document(uid).setData({"gpa": grade, "currGpa": currGrade});
+
   }
 
   Future<double>  getGPA(bool curr) async{
-    await addingUid();
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
     double val;
+
     await Firestore.instance
         .collection('users')
         .document(uid)
         .get()
         .then((DocumentSnapshot ds) {
       if(curr) {
-        val= double.parse(ds.data["currGpa"].toString());
+        val= ds.data["currGpa"];
       }
       else{
-        print (ds.data["gpa"]);
-        val= double.parse(ds.data["gpa"].toString());
+
+        val= ds.data["gpa"];
       }
 
       // use ds as a snapshot
@@ -108,9 +113,15 @@ class GradesFirestore  extends MainFirestore{
     print("returned $val");
 
     return val;
+
+
+
+
+
   }
 
   String findNumberGPA(double grade) {
+
     //List<String> letters = letterGPA.keys.toList()..sort();
     List<String> letters = new List();
     letterGPA.forEach((k, v) => letters.add(k));
@@ -129,11 +140,7 @@ class GradesFirestore  extends MainFirestore{
   }
 
   String findLetterGPA(double grade) {
-    if (grade.isNaN) {
-      return "N/A";
-    }
     String numberGPA = findNumberGPA(grade);
-
     return grades[int.parse(numberGPA)];
   }
 
@@ -167,7 +174,6 @@ class GradesFirestore  extends MainFirestore{
     }
   }
 
-
   String calculateSemGPA(String sem, int size) {
     double gpa = 0.0;
 
@@ -200,8 +206,13 @@ class GradesFirestore  extends MainFirestore{
     return gpa.toStringAsFixed(2);
   }
 
-void remove_course(String id) async {
-  await addingUid();
+  void testing() async {
+    // here you write the codes to input the data into firestore
+  }
+
+  void remove_course(String id) async {
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
     List<DocumentSnapshot> tasks = await getTasks();
     for(int i =0; i<tasks.length; i++){
       remove_task(tasks[i].documentID, id);
@@ -217,8 +228,9 @@ void remove_course(String id) async {
   }
 
   void remove_task(String id, String course) async {
-    await addingUid();
     print("removing task $id for course$course");
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
     db
         .collection("users")
         .document(uid)
@@ -231,12 +243,11 @@ void remove_course(String id) async {
   }
 
   void addData(List<String> data) async {
-    await addingUid();
-    print ("ADD DATA");
-    print (uid);
     if (data == null) {
       return;
     }
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
     bool exists = true;
     String course = data[0];
     String semester = data[1];
@@ -262,7 +273,6 @@ void remove_course(String id) async {
     });
 
     if (!exists) {
-      print("does not exist");
       await db.collection("users").document(uid).setData({"gpa": -1, "currGpa": -1});
     }
     await db
@@ -288,6 +298,8 @@ void remove_course(String id) async {
     double total = double.parse(gradeInput[1]);
     double grade = double.parse(gradeInput[2]);
 
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
     course = course.replaceAll(" ", "");
     await db
         .collection("users")
@@ -301,9 +313,7 @@ void remove_course(String id) async {
     print("added data to $uid");
   }
 
-
   void addPastTaskData(String course, List<String> data) async {
-    await addingUid();
     String type = data[0];
     String name = data[1];
     double weight = double.parse(data[2]);
@@ -316,7 +326,8 @@ void remove_course(String id) async {
     }
     String id = (new DateTime.now().millisecondsSinceEpoch).toString();
 
-
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
 
     await db
         .collection("users")
@@ -334,6 +345,112 @@ void remove_course(String id) async {
       "type": type,
       "total": total
     });
+
+  }
+
+  Future<DateTime> updateDay(DateTime d) async{
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    DateTime now = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    DateTime check = new DateTime(d.year, d.month, d.day);
+    if (check == now){
+      return d;
+    } else{
+      print ("Die");
+      var list = await getCourseData();
+      for (int i = 0; i < list.length; i++) {
+        String course = list[i].data["id"].toString() +  list[i].data["semester"].toString() +  list[i].data["year"].toString();
+        final QuerySnapshot courseTasks = await db
+            .collection('users')
+            .document(uid)
+            .collection("Grades")
+            .document(course)
+            .collection("Tasks")
+            .getDocuments();
+        final List<DocumentSnapshot> documents = courseTasks.documents;
+        for (var task in documents){
+          DocumentReference docRef = db
+              .collection("users")
+              .document(uid)
+              .collection("Grades")
+              .document(course)
+              .collection("Tasks")
+              .document(task.data["id"]);
+          var doc = await docRef.get();
+          var dates = doc.data["dates"];
+          List<DateTime> datesObjs = new List<DateTime>();
+          for (Timestamp t in dates) {
+            DateTime date = (t.toDate());
+            if (!(date.isBefore(DateTime.now()))) datesObjs.add(DateTime(date.year, date.month, date.day));
+          }
+          docRef.updateData({"dates": datesObjs});
+          redistributeData(doc.data["id"], course, doc.data["toDo"].toString());
+          doc = await docRef.get();
+          var daily = doc.data["daily"];
+          print (doc.data["name"]);
+          print (daily);
+          docRef.updateData({"today": daily});
+        }
+      }
+      return DateTime.now();
+    }
+  }
+
+  void addTaskData(
+      String name,
+      String course,
+      int toDo,
+      List<DateTime> dates,
+      DateTime dueDate,
+      List<int> done,
+      bool forMarks,
+      double weight,
+      double grade,
+      String type,
+      String daily,
+      bool bonus,
+      int total) async {
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    String id = (new DateTime.now().millisecondsSinceEpoch).toString();
+    course = course.replaceAll(" ", "");
+    await db
+        .collection("users")
+        .document(uid)
+        .collection("Grades")
+        .document((course))
+        .collection("Tasks")
+        .document(id)
+        .setData({
+      "id": id,
+      "name": name,
+      "course": course,
+      "toDo": toDo,
+      "dates": dates,
+      "due": dueDate,
+      "progress": done,
+      "forMarks": forMarks,
+      "weight": weight,
+      "grade": grade,
+      "type": type,
+      "daily": daily,
+      "curr": true,
+      "bonus": bonus,
+      "totalgrade": total,
+      "today": daily,
+      "done" : new List<DateTime>(),
+    });
+
+//    if (forMarks) {
+//      print ("in for");
+//      var tasks = {name : -1};
+//      course = course.replaceAll(" ", "");
+//
+//      DocumentReference docRef = db.collection("users").document(uid).collection("Grades").document(course);
+//      docRef.setData({"tasks": tasks}, merge: true);
+//    }
+
+    print("added data to $uid");
   }
 
 //Future <Map<String, int>>
@@ -343,28 +460,98 @@ void remove_course(String id) async {
 
     for (int i = 0; i < documents.length; i++) {
       if (documents[i].documentID == university) {
-
+        print("Assigned letter gpa!");
         letterGPA = documents[i].data;
       }
     }
-
-    print("test got letter gpa");
   }
 
+  Future<bool> redistributeData(String id, String course, String newAmount) async {
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    DocumentReference docRef = db
+        .collection("users")
+        .document(uid)
+        .collection("Grades")
+        .document(course)
+        .collection("Tasks")
+        .document(id);
+    var before = await docRef.get();
+    var days = before["dates"];
+    docRef.updateData({"daily": (double.parse(newAmount) / days.length).toStringAsFixed(2)});
+  }
+
+  Future<bool> updateProgressandDaily(
+      String id, String course, String done) async {
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    DocumentReference docRef = db
+        .collection("users")
+        .document(uid)
+        .collection("Grades")
+        .document(course)
+        .collection("Tasks")
+        .document(id);
+    var before = await docRef.get();
+    if (double.parse(done) >= double.parse(before["today"])) {
+      var dates = before["dates"];
+      List<DateTime> datesObjs = new List<DateTime>();
+      for (Timestamp t in dates) {
+        DateTime date = (t.toDate());
+        datesObjs.add(DateTime(date.year, date.month, date.day));
+      }
+      DateTime today = DateTime.now();
+      datesObjs.remove(DateTime(today.year, today.month, today.day));
+      List<DateTime> doneDatesObjs = new List<DateTime>();
+      var doneDays = before["done"];
+      for (Timestamp t in doneDays) {
+        DateTime date = (t.toDate());
+        doneDatesObjs.add(DateTime(date.year, date.month, date.day));
+      }
+      doneDatesObjs.add(DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day));
+      docRef.updateData({"dates": datesObjs});
+      docRef.updateData({"done": doneDatesObjs});
+    } else{
+      print ("else");
+      var today = before["today"];
+      today = (double.parse(today) - double.parse(done)).toStringAsFixed(2);
+      docRef.updateData({"today": today});
+    }
+    before = await docRef.get();
+    int totalBefore = before["toDo"];
+    double totalAfter = ((totalBefore) - double.parse(done));
+    if (totalAfter < 0) totalAfter = 0;
+    var days = before["dates"];
+    var progress = before["progress"];
+    if (progress == null) progress = new List<String>();
+    progress.add(done);
+    docRef.updateData({"progress": progress});
+    docRef.updateData({"toDo": totalAfter});
+    docRef.updateData({"daily": (totalAfter / days.length).toStringAsFixed(2)});
+    return true;
+  }
 
   Future<List<DocumentSnapshot>> getCourseData() async {
-    await addingUid();
     if (letterGPA == null) {
       getGPATable();
     }
-    final List<DocumentSnapshot> documents = await super.getCourseData();
+
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+
+    final QuerySnapshot result = await db
+        .collection('users')
+        .document(uid)
+        .collection("Grades")
+        .getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+
     //documents.forEach((data) => print(data.data));
     currDocuments = documents;
     return documents;
   }
 
   Future<List<DocumentSnapshot>> getTasksData(String course) async {
-    await addingUid();
     if (letterGPA == null) {
       //print("letter is null");
       getGPATable();
@@ -372,6 +559,8 @@ void remove_course(String id) async {
       //print("letter isnt");
     }
 
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
 
     final QuerySnapshot result = await db
         .collection('users')
@@ -389,7 +578,8 @@ void remove_course(String id) async {
   }
 
   void setCourseGrade(String course, double grade, double weighted, double totalWeight) async{
-    await addingUid();
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
     course = course.replaceAll(" ", "");
 
     await db.collection("users").document(uid).collection("Grades").document((course)).updateData(
@@ -398,7 +588,22 @@ void remove_course(String id) async {
 
   Map<String, List<Map<String, dynamic>>> getTasksByType(
       List<DocumentSnapshot> documents) {
+    /*
 
+    documents.sort((a,b) {
+      String aSem = a.data["semester"];
+      String bSem = b.data["semester"];
+      var aYear = a.data["year"];
+      var bYear = b.data["year"];
+      int val = bYear-aYear;
+      print("hello?");
+
+      if(val==0){
+        return aSem.compareTo(bSem);
+      }
+      return val;
+
+    });*/
 
     Map<String, List<Map<String, dynamic>>> mapData = Map();
 
@@ -447,19 +652,25 @@ void remove_course(String id) async {
     return mapData;
   }
 
-  void addingTokenData(String t) async{
-    await addingUid();
-    DocumentReference docRef = db.collection("users").document(uid);
-    bool exists = false;
-    await db
-        .collection("users")
-        .document(uid)
-        .get()
-        .then((DocumentSnapshot data) {
-      exists = data.exists;
-    });
-
-    if (!exists) docRef.setData({"token": t, "gpa": -1, "currGpa": -1});
-    else docRef.setData({"token": t}, merge: true);
+  Future<List<DocumentSnapshot>> getTasks() async {
+    final FirebaseUser user = await _auth.currentUser();
+    final uid = user.uid;
+    List<DocumentSnapshot> allTasks = new List<DocumentSnapshot>();
+    List<DocumentSnapshot> courses = await getCourseData();
+    for (DocumentSnapshot course in courses) {
+      String name = course.data["id"] +
+          course.data["semester"] +
+          course.data["year"].toString();
+      final QuerySnapshot courseTasks = await db
+          .collection('users')
+          .document(uid)
+          .collection("Grades")
+          .document(name)
+          .collection("Tasks")
+          .getDocuments();
+      final List<DocumentSnapshot> documents = courseTasks.documents;
+      documents.forEach((data) => allTasks.add(data));
+    }
+    return allTasks;
   }
 }

@@ -20,6 +20,7 @@ class MainFirestore {
 
   Future<List<DocumentSnapshot>> getCourseData() async {
     await addingUid();
+    print("uid is $uid");
     final QuerySnapshot result = await db
         .collection('users')
         .document(uid)
