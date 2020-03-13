@@ -1,5 +1,13 @@
 @startuml
 set namespaceSeparator ::
+skinparam classAttributeIconSize 0
+hide <<Serializable>> circle
+set namespaceSeparator none
+skinparam class {
+	BackgroundColor white
+	ArrowColor pink
+	BorderColor black
+}
 
 class "study::GoogleAPI::Authentication::Authentication.dart::Authentication" {
   +List<String> scopes
