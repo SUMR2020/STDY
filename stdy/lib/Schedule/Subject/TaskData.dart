@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:study/Schedule/Helper/TaskList.dart';
 import '../../GoogleAPI/Firestore/TaskFirestore.dart';
 import '../Helper/Task.dart';
+import '../Helper/TaskList.dart';
 
 class TaskData{
   List<DocumentSnapshot> taskDocs;
-  List<Task> todayTasks = new List<Task>();
-  List<Task> todayDoneTasks = new List<Task>();
+  TaskList todayTasks = new TaskList();
+  TaskList todayDoneTasks = new TaskList();
   TaskFireStore grades = new TaskFireStore();
   
   Future<DateTime> updateDay(DateTime d) async{

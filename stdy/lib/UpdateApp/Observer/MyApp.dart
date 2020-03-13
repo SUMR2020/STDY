@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../Subject/Theme.dart';
 import '../UI/ThemedApp.dart';
 
-
 String themeDrop;
 
 class MyApp extends StatelessWidget {

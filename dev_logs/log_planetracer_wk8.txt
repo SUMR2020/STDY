@@ -19,3 +19,8 @@ March 11th, 2020 11am to 1pm
 - spent time fixing the bug where uid was null
 	- due to async call
 - updated goal field in database
+
+March 13, 2020 6pm to 9pm
+- Utilized a iterator design pattern
+- Created a list class to store task objects
+	- updated the task lists I currently have
