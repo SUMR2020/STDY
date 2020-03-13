@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 import '../Subject/Theme.dart';
 import '../UI/ThemedApp.dart';
 
-Future<bool> _themeLoaded;
 String themeDrop;
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   ThemeData loadedTheme;
   String theme;
+  Future<bool> _themeLoaded;
 
 
   Future<String> getSavedTheme() async {
