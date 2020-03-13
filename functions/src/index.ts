@@ -13,19 +13,24 @@ const fcm = admin.messaging();
 exports.useMultipleWildcard = functions.firestore
     .document('users/{uid}/Grades/{course}/Tasks/{id}')
     .onCreate(async (change, context) => {
-        const task = context.params.uid;
-        const due = change.get('due').seconds;
+        const uid = context.params.uid;
+        const name = change.get('name');
+        const type = change.get('type');
+        const course = change.get('onlyCourse');
+        let due = change.get('due').seconds;
+        // let d = new Date();
+        const unixtime = due.valueOf();
+        due = new Date(unixtime*1000);
 
-        const token = await db.collection('users').get(); // Get Single Token document
-        // const key = token.toString(); // Get Token Key
+        const token = await db.collection('users').doc(`${uid}`).get();
+        const key = await token?.data()?.token; // Get Single Token document 
 
-        console.log(token);
-        // console.log(key);
+        console.log(key);
         const payload = {
             notification: {
-                title: `New message from ${task}`,
-                body: ` Subject : ${due}`,
+                title: `You have a ${type} due today!`,
+                body: `${name} for ${course} is due today, make sure to get it done!`,
             }
         };
-        return fcm.sendToDevice('fX63zN1tyO0:APA91bGbAz-4XGjOyUw_1nHOETAm9QBMDjXgJxpRjP8HQANiEWBP7Ki3mrhsuAp6aKDy9m0BdqZqXspxuvsoo5hGQtgvHPG-FWpiVikMrekhgQV9Gl-i7xkUVzPIObM3MRpB7iWxCeIE', payload);
+        return fcm.sendToDevice(key, payload);
     });
