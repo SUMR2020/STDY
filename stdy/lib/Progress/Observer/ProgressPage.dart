@@ -44,18 +44,18 @@ class PieChartFactory {
   }
 }
 
-//class LineChartFactory {
-//  LineChartFactory();
-//
-//  Widget makeLineChart(List<charts.Series<Hours,int>> _seriesLineData){
-//    return Expanded(
-//      child: charts.LineChart(
-//          _seriesLineData,
-//          animate : true,
-//        ),
-//    );
-//  }
-//}
+class LineChartFactory {
+  LineChartFactory();
+
+  Widget makeLineChart(List<charts.Series<Hours,int>> _seriesLineData){
+    return Expanded(
+      child: charts.LineChart(
+          _seriesLineData,
+          animate : true,
+        ),
+    );
+  }
+}
 
 
 
@@ -145,6 +145,7 @@ class progressPageState extends State<progressPage>{
   @override
   Widget build(BuildContext context) {
       PieChartFactory chartFactory = new PieChartFactory();
+      LineChartFactory linechartFactory =  new  LineChartFactory();
 
     return DefaultTabController(
         length: 6,
@@ -193,13 +194,7 @@ class progressPageState extends State<progressPage>{
                           child: Column(
                             children: <Widget>[
                               chartFactory.makePieChart(_seriesPieData),
-
-                              Expanded(
-                                  child: charts.LineChart(
-                                    _seriesLineData,
-                                    animate : false,
-                                  )
-                              )
+                              linechartFactory.makeLineChart(_seriesLineData),
                             ],
                           )
                       )
@@ -213,13 +208,7 @@ class progressPageState extends State<progressPage>{
                           child: Column(
                             children: <Widget>[
                               chartFactory.makePieChart(_seriesPieDataB),
-
-                              Expanded(
-                                  child: charts.LineChart(
-                                    _seriesLineData,
-                                    animate : false,
-                                  )
-                              )
+                              linechartFactory.makeLineChart(_seriesLineData),
                             ],
                           )
                       )
@@ -234,14 +223,7 @@ class progressPageState extends State<progressPage>{
                       children: <Widget>[
                         chartFactory.makePieChart(_seriesPieData),
                         chartFactory.makePieChart(_seriesPieDataB),
-
-
-                        Expanded(
-                          child: charts.LineChart(
-                              _seriesLineData,
-                              animate : false,
-                        )
-                        )
+                        linechartFactory.makeLineChart(_seriesLineData),
                       ],
                     )
                   )
@@ -256,14 +238,7 @@ class progressPageState extends State<progressPage>{
                             children: <Widget>[
                               chartFactory.makePieChart(_seriesPieData),
                               chartFactory.makePieChart(_seriesPieDataB),
-
-
-                              Expanded(
-                                  child: charts.LineChart(
-                                    _seriesLineData,
-                                    animate : false,
-                                  )
-                              )
+                              linechartFactory.makeLineChart(_seriesLineData),
                             ],
                           )
                       )
@@ -278,14 +253,7 @@ class progressPageState extends State<progressPage>{
                             children: <Widget>[
                               chartFactory.makePieChart(_seriesPieData),
                               chartFactory.makePieChart(_seriesPieDataB),
-
-
-                              Expanded(
-                                  child: charts.LineChart(
-                                    _seriesLineData,
-                                    animate : false,
-                                  )
-                              )
+                              linechartFactory.makeLineChart(_seriesLineData),
                             ],
                           )
                       )
@@ -300,14 +268,7 @@ class progressPageState extends State<progressPage>{
                             children: <Widget>[
                               chartFactory.makePieChart(_seriesPieData),
                               chartFactory.makePieChart(_seriesPieDataB),
-
-
-                              Expanded(
-                                  child: charts.LineChart(
-                                    _seriesLineData,
-                                    animate : false,
-                                  )
-                              )
+                              linechartFactory.makeLineChart(_seriesLineData),
                             ],
                           )
                       )
