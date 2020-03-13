@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:study/main.dart';
 import '../../GoogleAPI/Firestore/TaskFirestore.dart';
 import '../../HomePage.dart';
+import '../../UpdateApp/Subject/Theme.dart';
 
-Future<bool> _CoursesLoaded;
+
 
 bool isNumeric(String s) {
   if (s == null) {
@@ -63,6 +63,7 @@ class _Data {
 }
 
 class _CurrTaskFormPageState extends State<CurrTaskFormPage> {
+  Future<bool> _CoursesLoaded;
   String taskType;
   int index;
   TaskFireStore grades = new TaskFireStore();

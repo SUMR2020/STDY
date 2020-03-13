@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/UpdateApp/Subject/Theme.dart';
-import '../../../main.dart';
 import 'package:flutter/services.dart';
-import '../../../GoogleAPI/Firestore/TaskFirestore.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
 
 //https://stackoverflow.com/questions/57300552/flutter-row-inside-listview

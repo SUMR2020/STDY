@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../Predictor/GPAPredictorPage.dart';
-import '../../../GoogleAPI/Firestore/TaskFirestore.dart';
 import 'CoursePage.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../Input/CourseFormPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:convert';
-import '../../../main.dart';
+import '../../../UpdateApp/Subject/Theme.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../Predictor/GPAPredictorPage.dart' as predict;
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';

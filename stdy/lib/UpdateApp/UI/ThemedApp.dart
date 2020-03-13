@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 import '../Subject/Theme.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 
-Future<bool>_loginState;
 
+//Creates an app with the theme
 class ThemedApp extends StatelessWidget {
   @override
+  Future<bool>_loginState;
   Auth _auth = Auth();
   Widget login;
   Future<bool> loginState() async{
@@ -27,7 +28,7 @@ return Container(
           return MaterialApp(
               theme: theme.getTheme(),
               title: 'STDY',
-              home: SplashScreen.navigate(
+              home: SplashScreen.navigate(//plays splash screen animation
                 name: 'assets/intro.flr',
                 next: (_) {
                   return login;

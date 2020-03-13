@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:study/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../main.dart';
 
-final Color stdyPink = Color(0xFFFDA3A4);
+
+int fontScale = 0;
 
 class ThemeChanger with ChangeNotifier {
 
@@ -52,7 +51,7 @@ enum ThemeStyle {
   Dark,
   DarkOLED,
 }
-
+final Color stdyPink = Color(0xFFFDA3A4);
 final themeStyleData = {
   ThemeStyle.Light: ThemeData(
     brightness: Brightness.light,

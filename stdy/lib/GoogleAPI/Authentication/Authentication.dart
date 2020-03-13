@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:study/main.dart';
 import "package:googleapis_auth/auth_io.dart" as auth;
 import "package:http/http.dart" as http;
 import 'package:googleapis/calendar/v3.dart' as calendar;
@@ -9,9 +8,9 @@ import 'package:study/UpdateApp/UI/LoginPage.dart';
 import 'package:study/HomePage.dart';
 
 
-final scopes = [calendar.CalendarApi.CalendarScope];
-
 class Authentication {
+  final scopes = [calendar.CalendarApi.CalendarScope];
+  String name;
   bool authCheck = false;
   final FirebaseAuth author = FirebaseAuth.instance;
   auth.AuthClient authClient;
@@ -65,6 +64,11 @@ class Authentication {
     }
 
     return true;
+  }
+
+  signOut() async {
+    await author.signOut();
+    Authentication().signOutGoogle();
   }
 
   void signOutGoogle() async {

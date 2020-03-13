@@ -7,20 +7,17 @@ import '../../HomePage.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
 import 'package:intl/intl.dart' show DateFormat;
-import '../../main.dart';
 import 'package:provider/provider.dart';
 import '../../UpdateApp/Subject/Theme.dart';
 import 'TaskSelectionPage.dart';
 import 'CurrTaskFormPage.dart';
 
-DateTime today = new DateTime.now();
-
 class SchedulePage extends StatefulWidget {
   _SchedulePageState createState() => new _SchedulePageState();
 }
 
-class _SchedulePageState extends State<SchedulePage>
-    with TickerProviderStateMixin {
+class _SchedulePageState extends State<SchedulePage>{
+  DateTime today = new DateTime.now();
   _SchedulePageState() {
     print("opened schedule");
     _onStartup = calendarManager.loadEvents();

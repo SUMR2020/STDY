@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/GoogleAPI/Firestore/MainFirestore.dart';
-import 'package:study/Progress/Observer/ProgressPage.dart';
 
 
 class TaskFireStore extends MainFirestore{
