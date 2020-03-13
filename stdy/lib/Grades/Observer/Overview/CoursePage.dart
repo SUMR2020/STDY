@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/foundation.dart';
-import '../../../HomePage.dart';
-import '../../../GoogleAPI/Firestore/TaskFirestore.dart';
 import '../Input/PrevTaskFormPage.dart';
-import '../../../main.dart';
+import '../../../UpdateApp/Subject/Theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'TaskPage.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';

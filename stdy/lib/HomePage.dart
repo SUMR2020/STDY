@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:study/main.dart';
+import 'package:study/GoogleAPI/Authentication/Authentication.dart';
 import 'package:study/Progress/Observer/ProgressPage.dart';
 import 'Grades/Observer/Overview/AuditPage.dart';
 import 'Schedule/Observer/SchedulePage.dart';
@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-                padding: const EdgeInsets.all(8.0), child: Text('Welcome ' + name+"!")),
+                padding: const EdgeInsets.all(8.0), child: Text('Welcome ' + Authentication().name+"!")),
         Image.asset(
               'assets/appbar.png',
               fit: BoxFit.contain,

@@ -2,12 +2,10 @@ import 'package:study/UpdateApp/Subject/Theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:study/UpdateApp/UI/LoginPage.dart';
-import '../../main.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../GoogleAPI/Authentication/Authentication.dart';
 import 'package:study/UpdateApp/Observer/MyApp.dart';
 
-final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -15,11 +13,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  _signOut() async {
-    await _firebaseAuth.signOut();
-    Authentication().signOutGoogle();
-  }
-
   @override
   Widget build(BuildContext context) {
     ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
@@ -37,7 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ),
-            DropdownButton<String>(
+            DropdownButton<String>(//drop down menu for the theme selector
               isExpanded: true,
               value: themeDrop,
               icon: Icon(Icons.settings_brightness),
@@ -125,7 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
-                      _signOut();
+                      Authentication().signOut();
                       return LoginScreen();
                     },
                   ),

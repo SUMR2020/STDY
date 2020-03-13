@@ -11,7 +11,6 @@ class MyApp extends StatelessWidget {
   String theme;
   Future<bool> _themeLoaded;
 
-
   Future<String> getSavedTheme() async {
     String theme = await ThemeChanger.loadTheme();
     return theme;
