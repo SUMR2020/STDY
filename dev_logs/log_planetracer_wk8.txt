@@ -20,7 +20,16 @@ March 11th, 2020 11am to 1pm
 	- due to async call
 - updated goal field in database
 
-March 13, 2020 6pm to 9pm
+March 12, 2020 6pm to 9pm
 - Utilized a iterator design pattern
 - Created a list class to store task objects
 	- updated the task lists I currently have
+
+March 13th, 11:30am to 1pm
+- Worked on the D3 diagrams
+- Created the diagrams for client-server, batch-sequential and publish/subscribe 
+	- Created with Sharjeel and Uzair
+- Worked on formatting the doc with Sharjeel and Uzair 
+
+March 13th, 1pm to 2:30pm
+- Updated the list iterator class
