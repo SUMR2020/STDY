@@ -64,7 +64,7 @@ class _SchedulePageState extends State<SchedulePage>
         child: new ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          itemCount: taskManager.todayDoneTasks.length,
+          itemCount: taskManager.todayDoneTasks.length(),
           itemBuilder: (context, index) {
 
             return new GestureDetector(
@@ -73,8 +73,8 @@ class _SchedulePageState extends State<SchedulePage>
                 child: new Card( //                           <-- Card widget
 
                   child: ListTile(
-                    leading: Icon(getIcon(taskManager.todayDoneTasks[index].type)),
-                    title: Text(taskManager.todayDoneTasks[index].onlyCourse+": "+taskManager.todayDoneTasks[index].name),
+                    leading: Icon(getIcon(taskManager.todayDoneTasks.get(index).type)),
+                    title: Text(taskManager.todayDoneTasks.get(index).onlyCourse+": "+taskManager.todayDoneTasks.get(index).name),
                   ),
 
                 ));
@@ -92,7 +92,7 @@ class _SchedulePageState extends State<SchedulePage>
         child: new ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          itemCount: taskManager.todayTasks.length,
+          itemCount: taskManager.todayTasks.length(),
           itemBuilder: (context, index) {
 
             return new GestureDetector(
@@ -125,8 +125,8 @@ class _SchedulePageState extends State<SchedulePage>
                                       Navigator.of(context).pop();
                                       if (isNumeric(done)) {
                                         taskManager.grades.updateProgressandDaily(
-                                            taskManager.todayTasks[index].id
-                                            , taskManager.todayTasks[index].course, done);
+                                            taskManager.todayTasks.get(index).id
+                                            , taskManager.todayTasks.get(index).course, done);
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (context){
@@ -156,9 +156,9 @@ class _SchedulePageState extends State<SchedulePage>
             child: new Card( //                           <-- Card widget
 
               child: ListTile(
-                leading: Icon(getIcon(taskManager.todayTasks[index].type)),
-                title: Text(taskManager.todayTasks[index].onlyCourse+ ": "+taskManager.todayTasks[index].name),
-                trailing: Text(getTypeString(taskManager.todayTasks[index].type, taskManager.todayTasks[index].time)),
+                leading: Icon(getIcon(taskManager.todayTasks.get(index).type)),
+                title: Text(taskManager.todayTasks.get(index).onlyCourse+ ": "+taskManager.todayTasks.get(index).name),
+                trailing: Text(getTypeString(taskManager.todayTasks.get(index).type, taskManager.todayTasks.get(index).time)),
               ),
 
             ));
