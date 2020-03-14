@@ -12,14 +12,13 @@ class PushNotificationsManager {
   static final PushNotificationsManager _instance = PushNotificationsManager._();
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  bool _initialized = false;
 
   Future<void> init() async {
-    if (!_initialized) {
+    print ("in init");
+      print ("adding token");
       String token = await _firebaseMessaging.getToken();
       _db.addingTokenData(token); //add token to databse for notifications
       print("FirebaseMessaging token: $token");
-      _initialized = true;
-    }
+
   }
 }
