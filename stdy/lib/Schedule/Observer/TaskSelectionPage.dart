@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:study/Schedule/Observer/CurrTaskFormPage.dart';
-import '../../UpdateApp/Subject/Theme.dart';
+import '../../UpdateApp/Subject/SettingsData.dart';
 import 'CurrTaskFormPage.dart';
 
 /*

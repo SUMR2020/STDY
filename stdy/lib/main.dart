@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'UpdateApp/Subject/Theme.dart';
+import 'UpdateApp/Subject/SettingsData.dart';
 import 'package:flutter/services.dart';
 import 'GoogleAPI/CloudMessaging/PushNotifications.dart' as notifs;
 import 'UpdateApp/Observer/MyApp.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../Subject/Theme.dart';
+import '../Subject/SettingsData.dart';
 import '../UI/ThemedApp.dart';
 
 String themeDrop;

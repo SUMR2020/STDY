@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:study/UpdateApp/Subject/Theme.dart';
+import 'package:study/UpdateApp/Subject/SettingsData.dart';
 import 'package:flutter/services.dart';
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
 

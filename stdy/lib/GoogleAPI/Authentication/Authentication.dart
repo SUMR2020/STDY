@@ -9,13 +9,13 @@ import 'package:study/HomePage.dart';
 
 //class for using google and firebase for authentication
 class Authentication {
-  final scopes = [calendar.CalendarApi.CalendarScope];
+  static final _scopes = [calendar.CalendarApi.CalendarScope];
   String name;
   bool authCheck = false;
-  final FirebaseAuth author = FirebaseAuth.instance;
+  final FirebaseAuth _author = FirebaseAuth.instance;
   auth.AuthClient authClient;
-  final GoogleSignIn googleSignIn =
-  new GoogleSignIn(scopes: [calendar.CalendarApi.CalendarScope]);
+  final GoogleSignIn _googleSignIn =
+  new GoogleSignIn(scopes: _scopes);
 
   static final Authentication _singleton = new Authentication._internal();
 
@@ -26,38 +26,38 @@ class Authentication {
   Authentication._internal();
 
   Future<bool> signInWithGoogle() async {
-    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    if (googleSignInAccount == null) authCheck = false;
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+    final GoogleSignInAccount _googleSignInAccount = await _googleSignIn.signIn();
+    if (_googleSignInAccount == null) authCheck = false;
+    final GoogleSignInAuthentication _googleSignInAuthentication =
+        await _googleSignInAccount.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
+    final AuthCredential _credential = GoogleAuthProvider.getCredential(
+      accessToken: _googleSignInAuthentication.accessToken,
+      idToken: _googleSignInAuthentication.idToken,
     );
 
-    auth.AccessToken token = auth.AccessToken(
+    auth.AccessToken _token = auth.AccessToken(
         "Bearer",
-        googleSignInAuthentication.accessToken,
+        _googleSignInAuthentication.accessToken,
         DateTime.now().add(Duration(days: 1)).toUtc());
-    auth.AccessCredentials(token, googleSignInAccount.id, scopes);
+    auth.AccessCredentials(_token, _googleSignInAccount.id, _scopes);
     http.BaseClient _client = http.Client();
     authClient = auth.authenticatedClient(
-        _client, auth.AccessCredentials(token, googleSignInAccount.id, scopes));
-    final AuthResult authResult = await author.signInWithCredential(credential);
-    final FirebaseUser user = authResult.user;
+        _client, auth.AccessCredentials(_token, _googleSignInAccount.id, _scopes));
+    final AuthResult _authResult = await _author.signInWithCredential(_credential);
+    final FirebaseUser _user = _authResult.user;
 
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
+    assert(!_user.isAnonymous);
+    assert(await _user.getIdToken() != null);
 
-    final FirebaseUser currentUser = await author.currentUser();
-    assert(user.uid == currentUser.uid);
+    final FirebaseUser _currentUser = await _author.currentUser();
+    assert(_user.uid == _currentUser.uid);
 
     print("SUCCESS");
 
     authCheck = true;
 
-    name = user.displayName;
+    name = _user.displayName;
 
     if (name.contains(" ")) {
       name = name.substring(0, name.indexOf(" "));
@@ -67,8 +67,8 @@ class Authentication {
   }
 
   signOut() async {
-    await author.signOut();
-    await googleSignIn.signOut();
+    await _author.signOut();
+    await _googleSignIn.signOut();
   }
 }
 
