@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../../HomePage.dart';
 import '../../GoogleAPI/Authentication/Authentication.dart';
 
+
+//This class creates the login page
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -33,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return OutlineButton(
         splashColor: Theme.of(context).accentColor,
         onPressed: () {
-          Authentication().signInWithGoogle().whenComplete(() {
+          Authentication().signInWithGoogle().whenComplete(() {//get authentication
             if (Authentication().authCheck) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(

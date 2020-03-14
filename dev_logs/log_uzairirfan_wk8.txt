@@ -2,4 +2,6 @@ Spent 2 hours with RC fixing the github as we had incorrectly resolved conflicts
 
 Spent 3 hours working on setting up functions to send push notifications to send fro created tasks
 
-Spent an hour doing more refactoring
+Spent 3 hours doing more refactoring and commenting
+
+spent 5 hours working on D3
