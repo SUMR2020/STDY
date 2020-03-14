@@ -1,6 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/GoogleAPI/Firestore/MainFirestore.dart';
 
+/*
+TaskFirestore
+A persistence class that accesses the database in order to preform low level data
+access and data addition methods. 
+*/
 
 class TaskFireStore extends MainFirestore{
 
