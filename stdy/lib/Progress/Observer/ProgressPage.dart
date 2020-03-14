@@ -14,6 +14,8 @@ class progressPage extends StatefulWidget {
   }
 }
 
+//factory class that draws pie charts
+
 class PieChartFactory {
   PieChartFactory();
 
@@ -44,6 +46,8 @@ class PieChartFactory {
   }
 }
 
+//factory class that draws line graphs
+
 class LineChartFactory {
   LineChartFactory();
 
@@ -64,6 +68,8 @@ class progressPageState extends State<progressPage>{
   List<charts.Series<Task,String>> _seriesPieData;
   List<charts.Series<Task,String>> _seriesPieDataB;
   List<charts.Series<Hours,int>> _seriesLineData;
+
+//function to generate data to be passed into the graph drawing methods
 
     _generateData(){
 
@@ -147,6 +153,7 @@ class progressPageState extends State<progressPage>{
       PieChartFactory chartFactory = new PieChartFactory();
       LineChartFactory linechartFactory =  new  LineChartFactory();
 
+      // displays tabs on the page
     return DefaultTabController(
         length: 6,
         child:Scaffold(
@@ -184,6 +191,8 @@ class progressPageState extends State<progressPage>{
                 ),
               ),
             ),
+
+          //the body contains a list of widgets. each Padding() is a tab, it contains graphs
 
           body: TabBarView(
             children: [
