@@ -1,8 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
+import 'package:study/GoogleAPI/Firestore/InitFirestore.dart';
 
 class PushNotificationsManager {
-  GradesFirestore c = new GradesFirestore();
+  InitFireStore c = new InitFireStore();
   PushNotificationsManager._();
 
   factory PushNotificationsManager() => _instance;
