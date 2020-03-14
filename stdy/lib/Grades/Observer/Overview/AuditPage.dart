@@ -4,7 +4,7 @@ import '../Predictor/GPAPredictorPage.dart';
 import 'CoursePage.dart';
 import '../Input/CourseFormPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../UpdateApp/Subject/Theme.dart';
+import '../../../UpdateApp/Subject/SettingsData.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../Predictor/GPAPredictorPage.dart' as predict;
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';

@@ -9,15 +9,15 @@ class ThemeChanger with ChangeNotifier {
 
 //saves theme to device
   Future<bool> saveTheme(String themeName) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences _prefs = await SharedPreferences.getInstance();
 
-    return prefs.setString('Theme', themeName);
+    return _prefs.setString('Theme', themeName);
   }
 
 //loads theme through device
   static Future<String> loadTheme() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('Theme') ?? "Light";
+    final SharedPreferences _prefs = await SharedPreferences.getInstance();
+    return _prefs.getString('Theme') ?? "Light";
   }
 
   ThemeData _themeData;
@@ -37,15 +37,14 @@ class ThemeChanger with ChangeNotifier {
 class SaveFontScale{
 
   Future<bool> saveSize(int selectedSize) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences _prefs = await SharedPreferences.getInstance();
 
-    return prefs.setInt('Size', selectedSize);
+    return _prefs.setInt('Size', selectedSize);
   }
 
   Future<int> loadScale() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    fontScale = prefs.getInt('Size') ?? 0;
-    print("FONTSCALE "+fontScale.toString());
+    final SharedPreferences _prefs = await SharedPreferences.getInstance();
+    fontScale = _prefs.getInt('Size') ?? 0;
     return fontScale;
   }
 

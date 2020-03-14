@@ -3,7 +3,7 @@ import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
 
 //Class for initializing the notifications
 class PushNotificationsManager {
-  GradesFirestore db = new GradesFirestore();
+  GradesFirestore _db = new GradesFirestore();
   PushNotificationsManager._();
 
   factory PushNotificationsManager() => _instance;
@@ -16,7 +16,7 @@ class PushNotificationsManager {
   Future<void> init() async {
     if (!_initialized) {
       String token = await _firebaseMessaging.getToken();
-      db.addingTokenData(token); //add token to databse for notifications
+      _db.addingTokenData(token); //add token to databse for notifications
       print("FirebaseMessaging token: $token");
       _initialized = true;
     }
