@@ -6,6 +6,7 @@ import "package:http/http.dart" as http;
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:study/UpdateApp/UI/LoginPage.dart';
 import 'package:study/HomePage.dart';
+import '../CloudMessaging/PushNotifications.dart' as notifs;
 
 //class for using google and firebase for authentication
 class Authentication {
@@ -62,6 +63,8 @@ class Authentication {
     if (name.contains(" ")) {
       name = name.substring(0, name.indexOf(" "));
     }
+
+    notifs.PushNotificationsManager().init();//inititalizes cloud messaging
 
     return true;
   }

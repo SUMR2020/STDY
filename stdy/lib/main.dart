@@ -11,8 +11,7 @@ void main() {
   SystemChrome.setEnabledSystemUIOverlays([]);//Removes the navigation bar
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])//Locks app to portrait mode
       .then((_) {
-    notifs.PushNotificationsManager().init();//inititalizes cloud messaging
-    SaveFontScale().loadScale();//gets font scale
+      SaveFontScale().loadScale();//gets font scale
     runApp(MyApp());
   });
 }
