@@ -5,6 +5,7 @@ import 'GoogleAPI/CloudMessaging/PushNotifications.dart' as notifs;
 import 'UpdateApp/Observer/MyApp.dart';
 import 'package:dcdg/dcdg.dart';
 
+//main fucntion of our app
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);//Removes the navigation bar

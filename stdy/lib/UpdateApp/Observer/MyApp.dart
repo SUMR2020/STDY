@@ -5,6 +5,7 @@ import '../UI/ThemedApp.dart';
 
 String themeDrop;
 
+//creates a themed app
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   ThemeData loadedTheme;
@@ -18,7 +19,6 @@ class MyApp extends StatelessWidget {
 
   MyApp() {
     _themeLoaded = gotTheme();
-   // _authorized = _auth.isLoggedIn();
   }
 
   Future<bool> gotTheme() async {

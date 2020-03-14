@@ -15,7 +15,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
+    ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context); //get theme from context
     return Scaffold(
       body: Container(
         child: Column(
@@ -36,13 +36,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: Icon(Icons.settings_brightness),
               iconSize: 24,
               elevation: 16,
-              style: TextStyle(color: stdyPink),
+              style: TextStyle(color: Theme.of(context).primaryColor),
               underline: Container(
                 height: 2,
-                color: stdyPink,
+                color: Theme.of(context).primaryColor,
               ),
               onChanged: (String newValue) {
-                setState(() {
+                setState(() {//checks the value selected by user and sets theme accordingly
                   themeDrop = newValue;
                   if (themeDrop == "Light")
                     _themeChanger.setTheme(
@@ -86,7 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   min: -5.0,
                   max: 20.0,
                   divisions: 25,
-                  activeColor: stdyPink,
+                  activeColor: Theme.of(context).accentColor,
                   inactiveColor: Colors.blueGrey,
                   label: ((fontScale / 20) * 100).toInt().toString() + "%",
                   onChanged: (double newValue) {

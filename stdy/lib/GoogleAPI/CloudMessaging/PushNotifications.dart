@@ -1,8 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:study/GoogleAPI/Firestore/InitFirestore.dart';
 
+//Class for initializing the notifications
 class PushNotificationsManager {
-  InitFireStore c = new InitFireStore();
+  InitFireStore _db = new InitFireStore();
+
   PushNotificationsManager._();
 
   factory PushNotificationsManager() => _instance;
@@ -15,7 +17,7 @@ class PushNotificationsManager {
   Future<void> init() async {
     if (!_initialized) {
       String token = await _firebaseMessaging.getToken();
-      c.addingTokenData(token);
+      _db.addingTokenData(token); //add token to databse for notifications
       print("FirebaseMessaging token: $token");
       _initialized = true;
     }
