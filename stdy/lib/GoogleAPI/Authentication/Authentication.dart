@@ -7,7 +7,7 @@ import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:study/UpdateApp/UI/LoginPage.dart';
 import 'package:study/HomePage.dart';
 
-
+//class for using google and firebase for authentication
 class Authentication {
   final scopes = [calendar.CalendarApi.CalendarScope];
   String name;
@@ -68,16 +68,11 @@ class Authentication {
 
   signOut() async {
     await author.signOut();
-    Authentication().signOutGoogle();
-  }
-
-  void signOutGoogle() async {
     await googleSignIn.signOut();
-
-    print("User Sign Out");
   }
 }
 
+//class for checking if user is authenticated
 class Auth {
   FirebaseAuth _firebaseAuth;
   FirebaseUser _user;

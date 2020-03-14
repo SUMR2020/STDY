@@ -179,13 +179,13 @@ class _SchedulePageState extends State<SchedulePage>{
     }
 
     if (theme.getTheme() == themeStyleData[ThemeStyle.Light]) {
-      colour = stdyPink;
+      colour = Theme.of(context).primaryColor;
       colourweekend = Colors.black;
     }
 
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
-      selectedDayButtonColor: stdyPink,
-      selectedDayBorderColor: stdyPink,
+      selectedDayButtonColor: Theme.of(context).primaryColor,
+      selectedDayBorderColor: Theme.of(context).primaryColor,
       todayBorderColor: Colors.blueGrey,
       onDayPressed: (DateTime date, List<Event> events) {
         if (date != _currentDate2) {
@@ -202,7 +202,7 @@ class _SchedulePageState extends State<SchedulePage>{
       ),
       markedDateWidget: Container(
         margin: EdgeInsets.symmetric(horizontal: 1.0),
-        color: stdyPink,
+        color: Theme.of(context).primaryColor,
         height: 4.0,
         width: 4.0,
       ),
@@ -223,10 +223,10 @@ class _SchedulePageState extends State<SchedulePage>{
       customGridViewPhysics: null,
       isScrollable: false,
       markedDateCustomShapeBorder:
-          CircleBorder(side: BorderSide(color: stdyPink)),
+          CircleBorder(side: BorderSide(color: Theme.of(context).primaryColor)),
       markedDateCustomTextStyle: TextStyle(
         fontSize: 18 + fontScale.toDouble(),
-        color: stdyPink,
+        color: Theme.of(context).primaryColor,
       ),
       showHeader: false,
       weekdayTextStyle: TextStyle(
@@ -246,7 +246,7 @@ class _SchedulePageState extends State<SchedulePage>{
       maxSelectedDate: _currentDate.add(Duration(days: 360)),
       prevDaysTextStyle: TextStyle(
         fontSize: 16 + fontScale.toDouble(),
-        color: stdyPink,
+        color: Theme.of(context).primaryColor,
       ),
       onCalendarChanged: (DateTime date) {
         this.setState(() {
@@ -338,7 +338,7 @@ class _SchedulePageState extends State<SchedulePage>{
             );
           },
           child: Icon(Icons.add),
-          backgroundColor: stdyPink,
+          backgroundColor: Theme.of(context).primaryColor,
           shape: CircleBorder(),
         ),
         body: SingleChildScrollView(
@@ -379,7 +379,7 @@ class _SchedulePageState extends State<SchedulePage>{
                     } else {
 
                       return CircularProgressIndicator(
-                        valueColor: new AlwaysStoppedAnimation<Color>(stdyPink),
+                        valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
                       );
                     }
                   })
