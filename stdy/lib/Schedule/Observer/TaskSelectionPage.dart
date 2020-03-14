@@ -4,8 +4,18 @@ import 'package:study/Schedule/Observer/CurrTaskFormPage.dart';
 import '../../UpdateApp/Subject/Theme.dart';
 import 'CurrTaskFormPage.dart';
 
+/*
+SelectionPage
+This is the underlying page we are building on.
+
+_SelectionPageState
+Class that the display of selection of events
+this is an extension of the SchedulePage, as it is a state of the SchedulePage.
+     tasks: the types of tasks
+     icons: the icons for the tasks
+*/
+
 class SelectionPage extends StatefulWidget {
-  String taskType;
   @override
   State<StatefulWidget> createState() => new _SelectionPageState();
 }
