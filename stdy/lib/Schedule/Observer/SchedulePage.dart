@@ -10,7 +10,26 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 import '../../UpdateApp/Subject/Theme.dart';
 import 'TaskSelectionPage.dart';
-import 'CurrTaskFormPage.dart';
+import '../Helper/Task.dart';
+
+/*
+SchedulePage
+This is the underlying page we are building on.
+
+_SchedulePageState
+Class that the display of viewing the calendar, to do list, and done tasks list
+this is an extension of the SchedulePage, as it is a state of the SchedulePage.
+     today: current date
+     calendarManager: the DAO object to access the calendar API
+     taskManager: the DAO object to access the database
+     _onStartup: boolean for if events have been loaded
+     _tasksLoaded: boolean for if tasks have been loaded
+     _doneTasksLoaded: boolean for if done tasks have been loaded
+     isSwitched: boolean for if to display current or done tasks
+     _currentDate: the current date, used for calendar
+     _currentMonth: current month, used for calendar
+     _targetDateTime: current selected date, used for calendar
+*/
 
 class SchedulePage extends StatefulWidget {
   _SchedulePageState createState() => new _SchedulePageState();
@@ -35,6 +54,7 @@ class _SchedulePageState extends State<SchedulePage>{
   String _currentMonth = DateFormat.yMMM().format(DateTime.now());
   DateTime _targetDateTime = DateTime.now();
 
+  // getting an icon based off of the type of task
   IconData getIcon(String taskType) {
     if (taskType == "reading") return Icons.book;
     if (taskType == "assignment") return Icons.assignment;
@@ -44,16 +64,18 @@ class _SchedulePageState extends State<SchedulePage>{
     return null;
   }
 
+  // updating the task info if the day changes
   void updatingCurrentDay() async{
     today = await taskManager.updateDay(today);
   }
 
-
+  // getting the string for amount to do based off of task type
   String getTypeString(String taskType, String time){
     if (taskType == "reading") return (time + " pages");
     return (time.toString() + " hours");
   }
 
+  // the list view for done tasks, does not include amount
   Widget _listDoneTaskView() {
     print (taskManager.todayDoneTasks.length);
     return new Container(
@@ -82,6 +104,7 @@ class _SchedulePageState extends State<SchedulePage>{
 
   CalendarCarousel  _calendarCarouselNoHeader;
 
+  // listview for current tasks, have amount and can update the amount done
   Widget _listTaskView() {
     String done;
     return new Container(
@@ -120,8 +143,8 @@ class _SchedulePageState extends State<SchedulePage>{
                                     child: Text("Submit"),
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      if (isNumeric(done)) {
-                                        taskManager.grades.updateProgressandDaily(
+                                      if (Task.Empty().isNumeric(done)) {
+                                        taskManager.taskManager.updateProgressandDaily(
                                             taskManager.todayTasks.get(index).id
                                             , taskManager.todayTasks.get(index).course, done);
                                         Navigator.of(context).push(
@@ -165,6 +188,7 @@ class _SchedulePageState extends State<SchedulePage>{
   }
 
 
+  //creating a calendar
   void createCalendar(ThemeChanger theme) {
     var colour;
     var colourweekend;
@@ -291,11 +315,13 @@ class _SchedulePageState extends State<SchedulePage>{
     );
   }
 
+  // getting the title of the current listview
   String getListViewTitle(){
     if (isSwitched) return "TO DO TODAY";
     return "DONE TASKS";
   }
 
+  // getting the container of the current listview
   Widget getCurrentContainer(){
     if (isSwitched){
       return new Container(
