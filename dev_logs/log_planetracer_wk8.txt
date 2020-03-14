@@ -39,3 +39,8 @@ March 13th, 6pm to 10pm
 	- worked on the UML, still not complete
 - commented my code
 - refactored, and cleaned up code
+
+March 14th, 4pm to 7pm
+- worked on creating the powerpoint for D3 and formatting the doc
+- seperated the initialization of the user's DB
+- added my Calendar DAO
