@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import '../../UpdateApp/Subject/Theme.dart';
 import 'TaskSelectionPage.dart';
 import '../Helper/Task.dart';
-
+import '../Subject/CalendarData.dart';
 /*
 SchedulePage
 This is the underlying page we are building on.
@@ -43,7 +43,7 @@ class _SchedulePageState extends State<SchedulePage>{
     _tasksLoaded = taskManager.getTasks();
     _doneTasksLoaded = taskManager.getDoneTasks();
   }
-  CalendarBuilder calendarManager = new CalendarBuilder();
+  CalendarData calendarManager = new CalendarData();
   TaskData taskManager = new TaskData();
   Future<bool> _onStartup;
   Future<bool> _tasksLoaded;
