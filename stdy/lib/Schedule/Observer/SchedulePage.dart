@@ -8,7 +8,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
-import '../../UpdateApp/Subject/Theme.dart';
+import '../../UpdateApp/Subject/SettingsData.dart';
 import 'TaskSelectionPage.dart';
 import 'CurrTaskFormPage.dart';
 

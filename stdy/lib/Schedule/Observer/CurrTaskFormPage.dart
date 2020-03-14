@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../GoogleAPI/Firestore/TaskFirestore.dart';
 import '../../HomePage.dart';
-import '../../UpdateApp/Subject/Theme.dart';
+import '../../UpdateApp/Subject/SettingsData.dart';
 
 
 
