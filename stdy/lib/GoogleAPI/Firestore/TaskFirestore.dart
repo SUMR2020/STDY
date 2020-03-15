@@ -28,14 +28,14 @@ class TaskFireStore extends MainFirestore{
   }
 
 
-  Future<DocumentReference> getTaskData(var task) async{
+  Future<DocumentReference> getTaskData(String c, String i) async{
     DocumentReference q = await db
         .collection("users")
         .document(uid)
         .collection("Grades")
-        .document(task.data["course"])
+        .document(c)
         .collection("Tasks")
-        .document(task.data["id"]);
+        .document(i);
     return q;
   }
 
@@ -71,46 +71,49 @@ class TaskFireStore extends MainFirestore{
         .document(task.data["id"]);
     var before = await docRef.get();
     var days = before["dates"];
-    docRef.updateData({"daily": (double.parse(task.data["toDo"]) / days.length).toStringAsFixed(2)});
+    docRef.updateData({
+      "daily": (double.parse(task.data["toDo"]) / days.length).toStringAsFixed(
+          2)
+    });
   }
+    Future<List> getGoal(DocumentReference d) async{
+      var data = await d.get();
+      var goal = data["goal"];
+      return (goal);
+    }
 
-  Future<bool> updateProgressandDaily(
-      String id, String course, String done) async {
-    DocumentReference docRef = db
-        .collection("users")
-        .document(uid)
-        .collection("Grades")
-        .document(course)
-        .collection("Tasks")
-        .document(id);
+   Future<bool> isDone (DocumentReference d, String done) async {
+     var data = await d.get();
+     if (double.parse(done) >= double.parse(data["today"])) {
+       return true;
+     }
+     return false;
+   }
+
+   void updateToDo(DocumentReference docRef, String done) async{
+     var before = await docRef.get();
+     var totalBefore = before["toDo"];
+     double totalAfter = ((totalBefore) - double.parse(done));
+     if (totalAfter < 0) totalAfter = 0;
+     docRef.updateData({"toDo": totalAfter});
+   }
+
+   void updateDoneToday(DocumentReference docRef) async {
+     docRef.updateData({"today": 0});
+   }
+
+   void updateToday(DocumentReference docRef, String done) async{
+    var before = await docRef.get();
+    var today = before["today"];
+     today = (double.parse(today) - double.parse(done)).toStringAsFixed(2);
+     docRef.updateData({"today": today});
+     print ("after today");
+   }
+
+  Future<bool> updateProgressandDoneList(DocumentReference docRef, String done) async {
+
     var before = await docRef.get();
     var goal = before["goal"];
-    if (double.parse(done) >= double.parse(before["today"])) {
-      print ("In if");
-      docRef.updateData({"today": 0});
-      var totalBefore = before["toDo"];
-      double totalAfter = ((totalBefore) - double.parse(done));
-      if (totalAfter < 0) totalAfter = 0;
-      docRef.updateData({"toDo": totalAfter});
-      var dates = before["dates"];
-      List<DateTime> datesObjs = new List<DateTime>();
-      for (Timestamp t in dates) {
-        DateTime date = (t.toDate());
-        datesObjs.add(DateTime(date.year, date.month, date.day));
-      }
-      DateTime today = DateTime.now();
-      datesObjs.remove(DateTime(today.year, today.month, today.day));
-      docRef.updateData({"dates": datesObjs});
-    }
-    else{
-      print ("In else");
-      var today = before["today"];
-      today = (double.parse(today) - double.parse(done)).toStringAsFixed(2);
-      docRef.updateData({"today": today});
-      print ("after today");
-
-    }
-    print ("out");
     var progress = before["progress"];
     if (progress == null) progress = new List<String>();
     List<DateTime> doneDatesObjs = new List<DateTime>();

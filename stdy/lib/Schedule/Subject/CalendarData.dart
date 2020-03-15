@@ -8,10 +8,10 @@ import 'package:study/GoogleAPI/Calendar/CalendarAPI.dart';
 CalendarData
 A DAO class to obtain data from the google Calendar API, and manipulate it to
 utilize it in ways necessary.
-    markedDataMap: the eventlist that can be parsed by the calendar builder
+    markedDataMap: the event list that can be parsed by the calendar builder
     eventCal: the map of the events
     events: the events gotten from api
-    c: the persistencee layer
+    c: the persistence layer
  */
 
 

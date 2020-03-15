@@ -89,7 +89,7 @@ class TaskData {
             await taskManager.getTasksForCourse(course);
         final List<DocumentSnapshot> documents = courseTasks.documents;
         for (var task in documents) {
-          DocumentReference docRef = await taskManager.getTaskData(task);
+          DocumentReference docRef = await taskManager.getTaskData(task.data["course"], task.data["id"]);
           var dates = await taskManager.getDates(docRef);
           List<DateTime> datesObjs = new List<DateTime>();
           for (Timestamp t in dates) {
@@ -109,7 +109,7 @@ class TaskData {
   Future<bool> getTasks() async {
     _taskDocs = await taskManager.getTasks();
     for (DocumentSnapshot task in _taskDocs) {
-      var docRef = await taskManager.getTaskData(task);
+      var docRef = await taskManager.getTaskData(task.data["course"], task.data["id"]);
       var dates = await taskManager.getDates(docRef);
       List<DateTime> datesObjs = new List<DateTime>();
       for (Timestamp t in dates) {
@@ -134,7 +134,7 @@ class TaskData {
   Future<bool> getDoneTasks() async {
     _taskDocs = await taskManager.getTasks();
     for (DocumentSnapshot task in _taskDocs) {
-      var docRef = await taskManager.getTaskData(task);
+      var docRef = await taskManager.getTaskData(task.data["course"], task.data["id"]);
       var dates = await taskManager.getDoneDates(docRef);
       List<DateTime> datesObjs = new List<DateTime>();
       for (Timestamp t in dates) {
@@ -154,5 +154,29 @@ class TaskData {
       }
     }
     return true;
+  }
+
+  Future<bool> updatingProgress(String id, String course, String done) async {
+    var docRef = await taskManager.getTaskData(course, id);
+    var goal = await taskManager.getGoal(docRef);
+    bool complete = await taskManager.isDone(docRef, done);
+    if (complete) {
+      await taskManager.updateDoneToday(docRef);
+      await taskManager.updateToDo(docRef, done);
+      var dates = await taskManager.getDates(docRef);
+      List<DateTime> datesObjs = new List<DateTime>();
+      for (Timestamp t in dates) {
+        DateTime date = (t.toDate());
+        datesObjs.add(DateTime(date.year, date.month, date.day));
+      }
+      DateTime today = DateTime.now();
+      datesObjs.remove(DateTime(today.year, today.month, today.day));
+      taskManager.updateDates(docRef, datesObjs);
+    }
+    else {
+      await taskManager.updateToday(docRef, done);
+    }
+    bool finish = await taskManager.updateProgressandDoneList(docRef, done);
+    return finish;
   }
 }
