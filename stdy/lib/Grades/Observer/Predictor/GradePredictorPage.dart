@@ -4,31 +4,24 @@ import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
 
 class GradePredictorPage extends StatefulWidget {
 
-  Map<String, dynamic> course;
-  GradePredictorPage(this.course);
-
   @override
   State<StatefulWidget> createState() {
-    return GradePredictorState(this.course);
+    return GradePredictorState();
   }
 }
 
 class GradePredictorState extends State<GradePredictorPage> {
 
-  Map<String, dynamic> course;
+
   String courseName;
   String sem;
   String id;
   GradesFirestore firehouse;
 
 
-  GradePredictorState( Map<String, dynamic> c){
-    course = c;
+  GradePredictorState(){
 
     firehouse = new GradesFirestore();
-
-    courseName = course["id"];
-    sem = course["semester"]+course["year"].toString();
 
   }
 

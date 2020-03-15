@@ -10,6 +10,8 @@
    a. discussed d3 and created architecture diagrams
 5. Mar 14 (Sat) 4:00-11:00 (7 hours):
    a. Refactored code and implemented DAO using GradesData for auditpage and course input. 
+6. Mar 15 (Sun) 10:00-3:00 (5 hours):
+   a. Refactored code for gradesData for course pages. 
 
 
     

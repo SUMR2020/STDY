@@ -7,8 +7,11 @@ class Course{
   int year;
   String letterGrade;
   double weighted;
+  String gradeOption;
+  String inGrade;
+  double totalWeight;
 
-  Course(this.curr,this.grade, this.code, this.id, this.sem, this.year,this.letterGrade);
+  Course(this.curr,this.grade, this.code, this.id, this.sem, this.year,this.letterGrade,this.totalWeight);
 
   @override
   String toString(){

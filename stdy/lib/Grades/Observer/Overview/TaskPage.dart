@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../../UpdateApp/Subject/Theme.dart';
 import 'package:intl/intl.dart';
+import '../../Subject/GradesData.dart';
 
-class TaskInfoPage extends StatefulWidget {
-  Map<String, dynamic> task;
-  TaskInfoPage(this.task);
+class TaskPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return TaskInfoState(task);
+    return TaskState();
   }
 }
 
-class TaskInfoState extends State<TaskInfoPage> {
-  Map<String, dynamic> task;
+class TaskState extends State<TaskPage> {
+
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   bool _bonus;
-  TaskInfoState(Map<String, dynamic> t){
-    task = t;
-    _bonus = task["bonus"];
+  GradesData gradesData;
+  TaskState(){
+    gradesData = new GradesData();
+    _bonus = gradesData.getTaskByID(GradesData.currTaskID).bonus;
 
   }
 
@@ -50,10 +50,10 @@ class TaskInfoState extends State<TaskInfoPage> {
 
     String temp;
 
-    if(task["grade"]!=null){
-      weight = task["weight"];
-      grade = task["grade"];
-      total = task["totalgrade"];
+    if(gradesData.getTaskByID(GradesData.currTaskID).grade!=null){
+      weight = gradesData.getTaskByID(GradesData.currTaskID).weight;
+      grade = gradesData.getTaskByID(GradesData.currTaskID).grade;
+      total = gradesData.getTaskByID(GradesData.currTaskID).totalGrade;
 
       percent = grade / total;
       double gradeWeighted =  percent* weight;
@@ -64,12 +64,12 @@ class TaskInfoState extends State<TaskInfoPage> {
       weighted = "$gradeWeighted/$weight";
 
     }
-    
-    if(task["due"]!=null){
+    /*
+    if(gradesData.getTaskByID(GradesData.currTaskID)!=null){
       print("timestamp is ${task["due"]}");
       dueDate = formatTimestamp(task["due"].seconds);
       hours = double.parse(task["toDo"].toString());
-    }
+    }*/
 
     List<Widget> tasks = <Widget>[
       new TextFormField(
@@ -79,7 +79,7 @@ class TaskInfoState extends State<TaskInfoPage> {
           decoration: new InputDecoration(
             labelText: "Task name",
           ),
-          initialValue: task["name"],
+          initialValue: gradesData.getTaskByID(GradesData.currTaskID).name,
           validator: this._validateCourseName,
           onSaved: (String value) {
             temp = value;
@@ -149,7 +149,7 @@ class TaskInfoState extends State<TaskInfoPage> {
         style: TextStyle(
           fontSize: 16.0 + fontScale,
         ),),
-      Text("Type: ${task["type"]}",
+      Text("Type: ${gradesData.getTaskByID(GradesData.currTaskID).type}",
         style: TextStyle(
           fontSize: 16.0 + fontScale,
         ),),

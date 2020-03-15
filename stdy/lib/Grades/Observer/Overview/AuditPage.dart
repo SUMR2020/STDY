@@ -4,53 +4,31 @@ import 'package:study/Grades/Helper/AuditItem.dart';
 import '../Predictor/GPAPredictorPage.dart';
 import 'CoursePage.dart';
 import '../Input/CourseFormPage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../UpdateApp/Subject/Theme.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../Predictor/GPAPredictorPage.dart' as predict;
-import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
 import '../../Subject/GradesData.dart';
 import '../../Helper/Course.dart';
-import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 
 //https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
-class GradesYearPage extends StatefulWidget {
+class AuditPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return GradesYearPageState();
+    return AuditPageState();
   }
 }
 
-class GradesYearPageState extends State<GradesYearPage> {
-
+class AuditPageState extends State<AuditPage> {
 
   GradesData gradesData;
-
-  int marks;
-
-  List<Item> _data;
-
-  List<DocumentSnapshot> courseData;
-
   Future <bool> _futureData;
 
-  GradesYearPageState(){
+  AuditPageState(){
     gradesData = new GradesData();
-
-    marks = 0;
-
     _futureData = gradesData.fetchGradesData();
 
   }
-
-
-
-
-
 
   void _removeData(String courseID) async {
     print("course id for removal is $courseID");
@@ -67,7 +45,7 @@ class GradesYearPageState extends State<GradesYearPage> {
               child: new Text("Yes"),
               onPressed: () async{
                 await gradesData.removeCourseData(courseID);
-                //gradesData.firestore.calculateGPA(courseData);
+
                 setState(() {});
 
                 Navigator.of(context).pop();
@@ -88,20 +66,15 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   }
 
-  void _openCoursePage(Map<String, dynamic> course) async {
-    //print("grade is $grade");
-    if(course["taken"]=="CURR"){
-      final result = await Navigator.push(
+  void _openCoursePage(String id) async {
+    Course c = gradesData.getCourseByID(id);
+    if(c.curr){
+      GradesData.currCourseID = id;
+      await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => GradesPage(course),
+            builder: (context) => CoursePage(),
           ));
-
-      print("course data with size of ${courseData.length}");
-      _getData();
-
-
-      setState(() {});
 
     }
 
@@ -157,29 +130,6 @@ class GradesYearPageState extends State<GradesYearPage> {
     });
 
   }
-  double t;
-
-  Future <List<DocumentSnapshot>> _getData() async {
-    courseData =  await gradesData.firestore.getCourseData();
-    print ("After get course data");
-   // actualGPA =  await gradesData.firestore.getGPA(false);
-    print ("After currGPA data");
-    //currentGPA = await gradesData.firestore.getGPA(true);
-    print ("After actualGPA data");
-    //actualGPA = double.parse(actualGPA.toStringAsFixed(2));
-    //currentGPA = double.parse(currentGPA.toStringAsFixed(2));
-    print("future 1 done");
-
-    //Map<String, List<Map<String, dynamic>>> courseByYear = gradesData.firestore.getCourseNameSem(courseData);
-
-    //print("gpa is now $t, $currentGPA");
-   // _data = generateItems(courseByYear);
-    setState(() {
-    });
-
-    return courseData;
-  }
-
 
 
   List<Widget> _buildCourses(String semester, List<Course> courses){
@@ -206,9 +156,8 @@ class GradesYearPageState extends State<GradesYearPage> {
               },
             ),
             onTap: () {
-              //_openCoursePage(courses[i]);
+              _openCoursePage(courses[i].id);
               setState(() {
-                print("course opened");
               });
             }),
 
@@ -285,16 +234,11 @@ class GradesYearPageState extends State<GradesYearPage> {
         if (!projectSnap.hasData) {
           return Container(
             alignment: Alignment.center,
-
             child: SizedBox(
-
-
               height: 100,
               width: 100,
               child:  CircularProgressIndicator(
                 valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-
-
              )
             )
           );
@@ -305,9 +249,7 @@ class GradesYearPageState extends State<GradesYearPage> {
               buildUserInfo(),
               _buildPanel(),
             ],
-
           );
-
         }
       },
       future: _futureData,
@@ -320,13 +262,12 @@ class GradesYearPageState extends State<GradesYearPage> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => GPAPredictorPage(courseData),
+          builder: (context) => GPAPredictorPage(),
         ));
   }
 
   @override
   Widget build(BuildContext context) {
-    print('in build');
     //return
     return
       Scaffold(

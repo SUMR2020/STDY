@@ -7,70 +7,33 @@ import 'TaskPage.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../Predictor/GradePredictorPage.dart';
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
+import '../../Subject/GradesData.dart';
+import '../../Helper/Course.dart';
+import '../../Helper/TaskItem.dart';
+import '../../../Schedule/Helper/Task.dart';
 
 
-class GradesPage extends StatefulWidget {
-
-  Map<String, dynamic> course;
-  GradesPage(this.course);
+class CoursePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return GradesPageState(this.course);
+    return CoursePageState();
   }
 }
 
-class GradesPageState extends State<GradesPage> {
+class CoursePageState extends State<CoursePage> {
 
-  Map<String, dynamic> course;
-  String courseName;
+  GradesData gradesData;
 
-  String sem;
-  String id;
-  GradesFirestore firehouse;
-  double grade;
-  double weighted;
-  String letterGrade;
-  double totalWeights;
   String gradePred;
-
-  Future <List<DocumentSnapshot>> _futureData;
+  Future <bool> _futureData;
   List<DocumentSnapshot> taskData;
+
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  List<Item> _data;
-
-  GradesPageState(Map<String, dynamic> c){
-    firehouse = new GradesFirestore();
-
-    course = c;
-    courseName = course["id"];
-    sem = course["semester"]+course["year"].toString();
-    grade = course["grade"];
-    weighted = course["weighted"];
-
-    print("opened $courseName $sem screen");
-    id = (courseName + sem).replaceAll(' ', '');
-
-    _futureData = _getData();
-
-  }
-
-  void _getCourse() async {
-    course = await firehouse.getCourse(id);
-    grade = course["grade"];
-    weighted = course["weighted"];
-    totalWeights = course["totalWeight"];
-    if(totalWeights==null){
-      totalWeights = 0.0;
-    }
-    setState(() {
-      if(weighted !=null) {
-        letterGrade = firehouse.findLetterGPA(weighted);
-      }
-
-    });
-
+  CoursePageState(){
+    gradesData = GradesData();
+    _futureData = gradesData.fetchTaskObjects();
   }
 
   void _calculateGrades(){
@@ -108,6 +71,7 @@ class GradesPageState extends State<GradesPage> {
     double weighted = double.parse(((finalGrade/totalWeight)*100+bonus).toStringAsFixed(1));
     finalGrade = double.parse((finalGrade+bonus).toStringAsFixed(1));
     //round to 2 decimals
+    /*
     setState((){
       totalWeights = totalWeight;
       grade = finalGrade;
@@ -115,56 +79,28 @@ class GradesPageState extends State<GradesPage> {
     });
     print("weight is $totalWeights");
 
+     */
+
     //firehouse.calculateGPA(null);
 
   }
 
   void _addTask() async {
 
-    final result = await Navigator.push(
+    await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TaskInputPage(totalWeights),
+          builder: (context) => PrevTaskFormPage(),
         ));
-    String type = result[0];
-    String name = result[1];
-    double weight = double.parse(result[2]);
-    int total = int.parse(result[3]);
-    double grade = double.parse(result[4]);
-    bool bonus = false;
-    print("bonus is ${result[5]}");
-    if(result[5]=='true'){
-      bonus = true;
-    }
+    print("hello thisting completed");
 
-    await firehouse.addTaskData(
-        name,
-        id,
-        0,
-        null,
-        null,
-        null,
-        true,
-        weight,
-        grade,
-        type,
-        null,
-        bonus,
-        total,
-        id
-
-    );
-
-    print(result);
-
-    await _getData();
-    _calculateGrades();
-    //setState(() {});
+    setState(() {});
 
   }
 
 
-  void _removeData(String task) async {
+  void _removeData(Task task) async {
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -174,7 +110,7 @@ class GradesPageState extends State<GradesPage> {
             style: TextStyle(
               fontSize: 16.0 + fontScale,
             ),),
-          content: new Text("Are you sure you want to delete task $task?",
+          content: new Text("Are you sure you want to delete task ${task.name}?",
             style: TextStyle(
               fontSize: 16.0 + fontScale,
             ),),
@@ -187,10 +123,9 @@ class GradesPageState extends State<GradesPage> {
                 ),),
               onPressed: () async{
                 print("removed coure");
-                await firehouse.remove_task(task, id);
-                await _getData();
-                _calculateGrades();
-                setState(() {_getData();});
+                await gradesData.removeTaskData(task.id);
+
+                setState(() {});
 
                 Navigator.of(context).pop();
               },
@@ -208,56 +143,20 @@ class GradesPageState extends State<GradesPage> {
         );
       },
     );
-
   }
 
-  List<Item> generateItems(Map<String, List<Map<String, dynamic>>> data) {
-    List<Item> items = <Item>[];
 
-    //print("in genItems");
-    List<String> sortedKeys = data.keys.toList();
-    //print("converted to sortkeys");
-
-    sortedKeys.forEach((key) =>
-        items.add(
-            Item(
-                headerValue: key.toString(),
-                expandedValue: "This is a value thing",
-                expandedText: data[key],
-            )
-        )
-    );
-    //print("and done");
-
-
-
-    return items;
-  }
-
-  void _openTaskPage(Map<String, dynamic> task) async {
-    final result = await Navigator.push(
+  void _openTaskPage(String id) async {
+    GradesData.currTaskID = id;
+    await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TaskInfoPage(task),
+          builder: (context) => TaskPage(),
         ));
     setState(() {});
   }
-  Future <List<DocumentSnapshot>> _getData() async {
 
-    taskData =  await firehouse.getTasksData(id);
-    print("got the data");
-    Map<String, List<Map<String, dynamic>>> tasksByType = firehouse.getTasksByType(taskData);
-
-    //print("converted data to map");
-    _data = generateItems(tasksByType);
-
-    _getCourse();
-
-    return taskData;
-
-  }
-
-  List<Widget> _buildTasks(String type, List<Map<String, dynamic>> tasks){
+  List<Widget> _buildTasks(String type, List<Task> tasks){
     List<Widget> courseWidgets = <Widget>[];
 
     print("building task for $type");
@@ -266,20 +165,21 @@ class GradesPageState extends State<GradesPage> {
       //print(grade);
 
       String gradeInfo;
-      String title = tasks[i]["name"];
+      String title = tasks[i].name;
+      print("course title is $title");
       String dueDate = "Due: ";
-      if(tasks[i]["grade"]==null){
+      if(tasks[i].grade==null){
         gradeInfo = "Click to add grade";
       }
 
       else {
 
-        double percent = tasks[i]["grade"] / tasks[i]["totalgrade"];
-        double gradeWeighted =  percent* tasks[i]["weight"];
+        double percent = tasks[i].grade / tasks[i].totalGrade;
+        double gradeWeighted =  percent* tasks[i].weight;
         gradeWeighted = double.parse(gradeWeighted.toStringAsFixed(1));
         percent = double.parse((percent*100).toStringAsFixed(1));
 
-        gradeInfo = 'Earned: ${tasks[i]["grade"]}/${tasks[i]["totalgrade"]}     Weighted: $gradeWeighted/${tasks[i]["weight"]}';
+        gradeInfo = 'Earned: ${tasks[i].grade}/${tasks[i].totalGrade}     Weighted: $gradeWeighted/${tasks[i].weight}';
         title += " ($percent%)";
       }
 
@@ -295,14 +195,13 @@ class GradesPageState extends State<GradesPage> {
               ),),
             trailing: IconButton(
               icon: Icon(Icons.delete),
-              tooltip: 'Increase volume by 10',
               onPressed: () {
-                _removeData(tasks[i]["id"]);
+                _removeData(tasks[i]);
               },
             ),
             onTap: () {
               setState(() {
-                _openTaskPage(tasks[i]);
+                _openTaskPage(tasks[i].id);
               });
             }),
 
@@ -318,28 +217,20 @@ class GradesPageState extends State<GradesPage> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => GradePredictorPage(course),
+          builder: (context) => GradePredictorPage(),
         ));
-
-
   }
-
-  String _validateGradePredict(String value) {
-    if (value.isEmpty) return 'Please enter a valid grade.';
-    return null;
-  }
-
-
 
   Widget _buildPanel()  {
 
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
-          _data[index].isExpanded = !isExpanded;
+
+          GradesData.taskItems[index].isExpanded = !isExpanded;
         });
       },
-      children: _data.map<ExpansionPanel>((Item item) {
+      children: GradesData.taskItems.map<ExpansionPanel>((TaskItem item) {
         return ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
@@ -361,23 +252,66 @@ class GradesPageState extends State<GradesPage> {
     );
   }
 
+  Widget buildUserInfo(){
+    return Container(
+        child: Container(
+            child: Column(
+                children: <Widget>[
+                  Text("Student Stats",
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),
+                  ),
+                  Text("Total weight: ${gradesData.totalWeights}",
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),),
+                  Text("Actual grade:${gradesData.grade}%",
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),),
+                  Text("Current grade: ${gradesData.weighted}%",
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),),
+                  Text("Letter grade: ${gradesData.letterGrade}",
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),),
+
+                ]
+            )
+        )
+    );
+  }
+
   Widget projectWidget() {
     return FutureBuilder(
       builder: (context, projectSnap) {
         if (!projectSnap.hasData) {
-          //print('project snapshot data is: ${projectSnap.data}');
-          return CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+          return Container(
+              alignment: Alignment.center,
+              child: SizedBox(
+                  height: 100,
+                  width: 100,
+                  child:  CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                  )
+              )
           );
         }
         else {
-          return _buildPanel();
+          return Column(
+            children: <Widget>[
+              buildUserInfo(),
+              _buildPanel(),
+            ],
+          );
         }
       },
       future: _futureData,
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -390,7 +324,10 @@ class GradesPageState extends State<GradesPage> {
           centerTitle: true,
           backgroundColor: Color(0x00000000),
           elevation: 0,
-          title: Text('$courseName $sem',
+          title: Text(''
+              '${gradesData.getCourseByID(GradesData.currCourseID).code} '
+              '${gradesData.getCourseByID(GradesData.currCourseID).sem} '
+              '${gradesData.getCourseByID(GradesData.currCourseID).year}',
             )
       ),
 
@@ -423,63 +360,11 @@ class GradesPageState extends State<GradesPage> {
       ),
 
       body: SingleChildScrollView(
-
-        child: Column(
-          children: <Widget>[
-
-            Container(
-                child: Column(
-                    children: <Widget>[
-                      Text("Student Stats",
-                        style: TextStyle(
-                          fontSize: 16.0 + fontScale,
-                        ),
-                      ),
-                      Text("Total weight: $totalWeights",
-                        style: TextStyle(
-                          fontSize: 16.0 + fontScale,
-                        ),),
-                      Text("Actual grade: $grade%",
-                        style: TextStyle(
-                          fontSize: 16.0 + fontScale,
-                        ),),
-                      Text("Current grade: $weighted%",
-                        style: TextStyle(
-                          fontSize: 16.0 + fontScale,
-                        ),),
-                      Text("Letter grade: $letterGrade",
-                        style: TextStyle(
-                          fontSize: 16.0 + fontScale,
-                        ),),
-
-                    ]
-                )
-            ),
-            Container(child: projectWidget()),
-            /*
-            SizedBox(height: 30),
-            _buildForm(context),
-            Text("mark needed is %$gradePred"),*/
-          ],
-
-        ),
-
+        child: projectWidget(),
       ),
     );
   }
 }
 
-class Item {
-  Item({
-    this.expandedValue,
-    this.headerValue,
-    this.expandedText,
-    this.isExpanded = false,
-  });
 
-  String expandedValue;
-  String headerValue;
-  List<Map<String, dynamic>> expandedText;
-  bool isExpanded;
-}
 

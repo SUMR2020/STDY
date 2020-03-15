@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../../UpdateApp/Subject/Theme.dart';
+import '../../Subject/GradesData.dart';
 
-class TaskInputPage extends StatefulWidget {
+class PrevTaskFormPage extends StatefulWidget {
 
-  double totalWeight;
-  TaskInputPage(this.totalWeight);
   @override
   State<StatefulWidget> createState() {
-    return TaskInputState(totalWeight);
+    return PrevTaskFormState();
   }
 }
 
-class TaskInputState extends State<TaskInputPage>{
+class PrevTaskFormState extends State<PrevTaskFormPage>{
 
   List<String> tasks = ["ASSIGNMENT", "TUTORIAL", "PARTICIPATION","PROJECT", "EXAM"];
 
@@ -21,16 +20,17 @@ class TaskInputState extends State<TaskInputPage>{
   String _grade;
   String _name;
   bool _bonus = false;
-  double totalWeight;
 
   String dropdownValueTask;
+  GradesData gradesData;
+
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  TaskInputState(double tW){
-    totalWeight = tW;
+  PrevTaskFormState(){
+    gradesData = new GradesData();
   }
 
-  void addCourseButton(BuildContext context) {
+  void addCourseButton(BuildContext context) async {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
 
@@ -39,8 +39,10 @@ class TaskInputState extends State<TaskInputPage>{
         return;
       }
 
-      print(dropdownValueTask);
-      Navigator.pop(context, [dropdownValueTask.toLowerCase(),_name,_weight,_total,_grade, _bonus.toString()]);
+
+      await gradesData.addPrevTaskFormData(dropdownValueTask.toLowerCase(), _name, double.parse(_weight), int.parse(_total), double.parse(_grade), _bonus);
+      print("and done updating stuff");
+      Navigator.pop(context);
     }
   }
   void _showDialog() {
@@ -84,12 +86,12 @@ class TaskInputState extends State<TaskInputPage>{
   String _validateTaskWeight(String value) {
 
     double val = double.parse(value);
-    print("value of bonus is $_bonus and  double is $val and total is $totalWeight");
-    if(val+totalWeight>100 && !_bonus) return 'Total course weight exceeds 100. Enter weight less than ${100-totalWeight}\n or select bonus';
+    print("value of bonus is $_bonus and  double is $val and total is ${gradesData.getCourseByID(GradesData.currCourseID).totalWeight}");
+    if(val+gradesData.getCourseByID(GradesData.currCourseID).totalWeight>100 && !_bonus)
+      return 'Total course weight exceeds 100. Enter weight less than ${100-gradesData.getCourseByID(GradesData.currCourseID).totalWeight}\n or select bonus';
     if (value.isEmpty) return 'Please enter a valid task weight.';
     return null;
   }
-
 
   @override
   Widget build(BuildContext context) {
