@@ -1,87 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:study/Grades/Helper/AuditItem.dart';
 import '../Predictor/GPAPredictorPage.dart';
 import 'CoursePage.dart';
 import '../Input/CourseFormPage.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../UpdateApp/Subject/SettingsData.dart';
+
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../Predictor/GPAPredictorPage.dart' as predict;
-import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
+import '../../Subject/GradesData.dart';
+import '../../Helper/Course.dart';
+
 
 //https://api.flutter.dev/flutter/material/ExpansionPanelList-class.html
-class GradesYearPage extends StatefulWidget {
+class AuditPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return GradesYearPageState();
+    return AuditPageState();
   }
 }
 
-class GradesYearPageState extends State<GradesYearPage> {
+class AuditPageState extends State<AuditPage> {
 
+  GradesData gradesData;
+  Future <bool> _futureData;
 
-  GradesFirestore firehouse;
-
-  int marks;
-
-  List<Item> _data;
-
-  List<DocumentSnapshot> courseData;
-
-  Future <List<DocumentSnapshot>> _futureData;
-  double actualGPA;
-  double currentGPA;
-
-
-  GradesYearPageState(){
-    firehouse = new GradesFirestore();
-
-    marks = 0;
-
-    _futureData = _getData();
+  AuditPageState(){
+    gradesData = new GradesData();
+    _futureData = gradesData.fetchGradesData();
 
   }
 
-
-  List<Item> generateItems(Map<String, List<Map<String, dynamic>>> data) {
-    List<Item> items = <Item>[];
-
-    List<String> sortedKeys = data.keys.toList();
-
-    sortedKeys.forEach((key) =>
-        items.add(
-            Item(
-                headerValue: key.toString(),
-                expandedValue: "This is a value thing",
-                expandedText: data[key],
-                semGPA: firehouse.calculateSemGPA(key, data[key].length)
-            )
-        )
-    );
-
-
-
-    return items;
-  }
-
-
-  void _removeData(String course, String semester) async {
+  void _removeData(String courseID) async {
+    print("course id for removal is $courseID");
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
           title: new Text("Confirm"),
-          content: new Text("Are you sure you want to delete course $course?"),
+          content: new Text("Are you sure you want to delete course $courseID?"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
               child: new Text("Yes"),
               onPressed: () async{
-                await firehouse.remove_course((course + semester).replaceAll(' ', ''));
-                await _getData();
-                firehouse.calculateGPA(courseData);
-                await _getData();
+                await gradesData.removeCourseData(courseID);
+
                 setState(() {});
 
                 Navigator.of(context).pop();
@@ -102,20 +69,15 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   }
 
-  void _openCoursePage(Map<String, dynamic> course) async {
-    //print("grade is $grade");
-    if(course["taken"]=="CURR"){
-      final result = await Navigator.push(
+  void _openCoursePage(String id) async {
+    Course c = gradesData.getCourseByID(id);
+    if(c.curr){
+      GradesData.currCourseID = id;
+      await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => GradesPage(course),
+            builder: (context) => CoursePage(),
           ));
-
-      print("course data with size of ${courseData.length}");
-      _getData();
-
-
-      setState(() {});
 
     }
 
@@ -159,59 +121,33 @@ class GradesYearPageState extends State<GradesYearPage> {
 
   void _addData() async {
 
-    final result = await Navigator.push(
+    await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => CourseInputPage(),
         ));
 
-    print(result);
-    await firehouse.addData(result);
-
-    await _getData();
-    firehouse.calculateGPA(courseData);
-    await _getData();
-    setState(() {});
-
-  }
-  double t;
-
-  Future <List<DocumentSnapshot>> _getData() async {
-    courseData =  await firehouse.getCourseData();
-    print ("After get course data");
-    actualGPA =  await firehouse.getGPA(false);
-    print ("After currGPA data");
-    currentGPA = await firehouse.getGPA(true);
-    print ("After actualGPA data");
-    actualGPA = double.parse(actualGPA.toStringAsFixed(2));
-    currentGPA = double.parse(currentGPA.toStringAsFixed(2));
-    print("future 1 done");
-
-    Map<String, List<Map<String, dynamic>>> courseByYear = firehouse.getCourseNameSem(courseData);
-
-    print("gpa is now $t, $currentGPA");
-    _data = generateItems(courseByYear);
     setState(() {
+      print("gpa in audit is ${GradesData.gpa}");
+
     });
 
-    return courseData;
   }
 
 
-
-  List<Widget> _buildCourses(String semester, List<Map<String, dynamic>> courses){
+  List<Widget> _buildCourses(String semester, List<Course> courses){
     List<Widget> courseWidgets = <Widget>[];
 
     for(int i =0; i<courses.length; i++){
-      String grade = firehouse.getCourseGrade((courses[i]["id"]+semester).replaceAll(' ',''));
+      //String grade = gradesData.firestore.getCourseGrade((courses[i].id+semester).replaceAll(' ',''));
 
       courseWidgets.add(
         ListTile(
-            title: Text(courses[i]["id"],
+            title: Text(courses[i].code,
               style: TextStyle(
                 fontSize: 16.0 + fontScale,
               ),),
-            subtitle: Text('Grade: $grade',
+            subtitle: Text('Grade: ${courses[i].letterGrade}',
               style: TextStyle(
                 fontSize: 16.0 + fontScale,
               ),),
@@ -219,13 +155,12 @@ class GradesYearPageState extends State<GradesYearPage> {
               icon: Icon(Icons.delete),
               tooltip: 'Increase volume by 10',
               onPressed: () {
-                _removeData(courses[i]["id"], semester);
+                _removeData(courses[i].id);
               },
             ),
             onTap: () {
-              _openCoursePage(courses[i]);
+              _openCoursePage(courses[i].id);
               setState(() {
-                print("course opened");
               });
             }),
 
@@ -242,10 +177,10 @@ class GradesYearPageState extends State<GradesYearPage> {
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
-          _data[index].isExpanded = !isExpanded;
+          GradesData.auditItems[index].isExpanded = !isExpanded;
         });
       },
-      children: _data.map<ExpansionPanel>((Item item) {
+      children: GradesData.auditItems.map<ExpansionPanel>((AuditItem item) {
         return ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
@@ -271,18 +206,53 @@ class GradesYearPageState extends State<GradesYearPage> {
     );
   }
 
+  Widget buildUserInfo(){
+    return Container(
+        child: Column(
+            children: <Widget>[
+              Text("Student Stats",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0 + fontScale,
+                ),),
+              Text("Actual GPA: ${GradesData.gpa}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0 + fontScale,
+                ),),
+              Text("Current GPA: ${GradesData.currGPA}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0 + fontScale,
+                ),),
+
+            ]
+        )
+    );
+  }
 
   Widget projectWidget() {
     return FutureBuilder(
       builder: (context, projectSnap) {
         if (!projectSnap.hasData) {
-          print('project snapshot data is: ${projectSnap.data}');
-          return CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+          return Container(
+            alignment: Alignment.center,
+            child: SizedBox(
+              height: 100,
+              width: 100,
+              child:  CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+             )
+            )
           );
         }
         else {
-          return _buildPanel();
+          return Column(
+            children: <Widget>[
+              buildUserInfo(),
+              _buildPanel(),
+            ],
+          );
         }
       },
       future: _futureData,
@@ -295,14 +265,15 @@ class GradesYearPageState extends State<GradesYearPage> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => GPAPredictorPage(courseData),
+          builder: (context) => GPAPredictorPage(),
         ));
   }
 
   @override
   Widget build(BuildContext context) {
-    print('in build');
-    return Scaffold(
+    //return
+    return
+      Scaffold(
 
       floatingActionButton: SpeedDial(
         child: Icon(Icons.open_in_new),
@@ -334,55 +305,13 @@ class GradesYearPageState extends State<GradesYearPage> {
 
       body: SingleChildScrollView(
 
-        child: Column(
-          children: <Widget>[
-
-            Container(
-              child: Column(
-                children: <Widget>[
-                  Text("Student Stats",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0 + fontScale,
-                    ),),
-                  Text("Actual GPA: $actualGPA",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0 + fontScale,
-                    ),),
-                  Text("Current GPA: $currentGPA",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0 + fontScale,
-                    ),),
-
-                ]
-              )
-            ),
-            Container(child: projectWidget()),
-          ],
-
-        ),
+        child: projectWidget(),
 
       ),
     );
   }
 }
 
-class Item {
-  Item({
-    this.expandedValue,
-    this.headerValue,
-    this.expandedText,
-    this.isExpanded = false,
-    this.semGPA
-  });
 
-  String expandedValue;
-  String headerValue;
-  List<Map<String, dynamic>> expandedText;
-  bool isExpanded;
-  String semGPA;
-}
 
 

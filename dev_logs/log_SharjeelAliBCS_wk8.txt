@@ -6,6 +6,12 @@
    b. Designed a hierarchy for all classes
 3. Mar 10 (Tues) 5:30-7:30 (2 hours)
    a. Implemented hierarchy into codebase. 
+4. Mar 13 (Fri) 11:30-4:00 (4.5 hours)
+   a. discussed d3 and created architecture diagrams
+5. Mar 14 (Sat) 4:00-11:00 (7 hours):
+   a. Refactored code and implemented DAO using GradesData for auditpage and course input. 
+6. Mar 15 (Sun) 10:00-3:00 (5 hours):
+   a. Refactored code for gradesData for course pages. 
 
 
     

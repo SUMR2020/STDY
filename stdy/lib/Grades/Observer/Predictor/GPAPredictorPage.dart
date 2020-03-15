@@ -4,122 +4,61 @@ import '../../../UpdateApp/Subject/SettingsData.dart';
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import '../../Subject/GradesData.dart';
+import '../../Helper/GPATable.dart';
+import '../../Helper/Course.dart';
 
 class GPAPredictorPage extends StatefulWidget {
 
-  List<DocumentSnapshot> courseData;
-  GPAPredictorPage(this.courseData);
+  GPAPredictorPage();
 
   @override
   State<StatefulWidget> createState() {
-    return GPAPredictorState(this.courseData);
+    return GPAPredictorState();
   }
 }
 
 class GPAPredictorState extends State<GPAPredictorPage> {
 
-  List<DocumentSnapshot> courseData;
-  List<String> addedCourseNames;
-  List<Map<String, dynamic>> addedCourseData;
-  String courseName;
-  String sem;
-  String id;
-  int predictCount;
-  GradesFirestore firehouse;
   bool submitted;
-
   String _goalGPA;
   String dropdownValueGrade;
-  String dropdownValueLetter;
-  String temp;
-  String gradeNeeded;
+  GradesData gradesData;
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-
-  GPAPredictorState(List<DocumentSnapshot> c){
+  GPAPredictorState(){
     submitted = false;
-    predictCount=0;
-    addedCourseNames = <String>[];
-    addedCourseData = <Map<String, dynamic>>[];
-    courseData = c;
     dropdownValueGrade = "Letter";
-
-    firehouse = new GradesFirestore();
-
-    for(int i =0; i<courseData.length; i++) {
-      String id = courseData[i].data["id"];
-      if(courseData[i].data["taken"]=="CURR"){
-        predictCount+=1;
-      }
-
-    }
-    print("coutn is $predictCount");
-
+    gradesData = new GradesData();
+    gradesData.calculateCoursePredictCount();
 
   }
 
   void calculateGPANeeded(){
     if (this._formKey.currentState.validate()) {
-
       _formKey.currentState.save();
-      double gpaNeed = double.parse(firehouse.findNumberGPA(double.parse(_goalGPA)));
-      double gpa=0.0;
-
-      for(int i =0; i<courseData.length; i++){
-        if(courseData[i].data["taken"]!="CURR" && !addedCourseNames.contains(id)) {
-          String grade = firehouse.findNumberGPA(courseData[i].data["grade"]);
-          //print(courseData[i].data["id"]);
-          gpa+= double.parse(grade);
-
-        }
-
-      }
-
-      for(int i =0; i<addedCourseData.length; i++){
-        String grade;
-        if(addedCourseData[i]["gradeOption"]=="Letter"){
-          grade = firehouse.grades.indexOf(addedCourseData[i]["inGrade"]).toString();
-        }
-        else if(addedCourseData[i]["gradeOption"]=="Percentage"){
-          grade = firehouse.findNumberGPA(double.parse(addedCourseData[i]["inGrade"]));
-        }
-        else{
-          grade = firehouse.findNumberGPA(addedCourseData[i]["weighted"]);
-        }
-          print(grade);
-          gpa+= double.parse(grade);
-
-        }
-      print(double.parse(_goalGPA));
       setState(() {
-        gradeNeeded = ( ( (gpaNeed*courseData.length)-gpa )/predictCount ).toString();
-        print("total past grade is $gpa");
-        submitted= true;
+        submitted = gradesData.calculateGPAPredict(_goalGPA);
       });
-
     }
-
   }
 
   String _validateCourseGrade(String value) {
     if (value.isEmpty) return 'Please enter a valid grade.';
-    // If empty value, the isEmail function throw a error.
-    // So I changed this function with try and catch.
-    //if (value.isEmpty) return 'Please enter a valid course grade.';
     return null;
   }
 
-  Widget _buildGradeForm(BuildContext context, Map<String, dynamic> course){
+  Widget _buildGradeForm(BuildContext context, Course course){
 
-    if(course["gradeOption"]=="Letter"){
+    if(course.gradeOption=="Letter"){
       return Container(
           child: DropdownButton<String>(
 
             hint: Text("Letter grade",style: TextStyle(
               fontSize: 16.0 + fontScale,
             ),),
-            value: course["inGrade"],
+            value: course.inGrade,
             icon: Icon(Icons.arrow_downward),
             iconSize: 24,
             elevation: 16,
@@ -134,10 +73,10 @@ class GPAPredictorState extends State<GPAPredictorPage> {
             ),
             onChanged: (String newValue) {
               setState(() {
-                course["inGrade"] = newValue;
+                course.inGrade = newValue;
               });
             },
-            items: firehouse.grades.reversed
+            items: GPATable.grades.reversed
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -150,8 +89,8 @@ class GPAPredictorState extends State<GPAPredictorPage> {
           )
       );
     }
-    else if(course["gradeOption"]=="Current"){
-      return Text("                   ${course["weighted"]}",
+    else if(course.gradeOption=="Current"){
+    return Text("                   ${course.weighted}",
         style: TextStyle(
           fontSize: 16.0 + fontScale,
         ),);
@@ -168,7 +107,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
               validator: this._validateCourseGrade,
               onSaved: (String value) {
                 print("val is $value");
-                course["inGrade"] = value;
+                course.inGrade = value;
               }) );
     }
   }
@@ -176,19 +115,18 @@ class GPAPredictorState extends State<GPAPredictorPage> {
   List<Widget> _buildCurrCourses(BuildContext context){
     List<Widget> courseWidgets = <Widget>[];
 
-    for(int i =0; i<addedCourseData.length; i++) {
+    for(int i =0; i<gradesData.currCoursePredict.length; i++) {
       List<String> dropDown = ["Current", "Letter", "Percentage"];
-      if(addedCourseData[i]["weighted"]==null){
+      if(gradesData.currCoursePredict[i].weighted==null){
         dropDown.remove("Current");
       }
-
 
       courseWidgets.add(
 
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("${addedCourseData[i]["id"]}:",
+                Text("${gradesData.currCoursePredict[i].code}:",
                   style: TextStyle(
                     fontSize: 16.0 + fontScale,
                   ),),
@@ -197,7 +135,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
                   hint: Text("Type",style: TextStyle(
                     fontSize: 16.0 + fontScale,
                   ),),
-                  value: addedCourseData[i]["gradeOption"],
+                  value: gradesData.currCoursePredict[i].gradeOption,
                   icon: Icon(Icons.arrow_downward),
                   iconSize: 24,
                   elevation: 16,
@@ -210,7 +148,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
                     color: Theme.of(context).primaryColor,
                   ),
                   onChanged: (String newValue) =>
-                      setState(() => addedCourseData[i]["gradeOption"] = newValue),
+                      setState(() => gradesData.currCoursePredict[i].gradeOption = newValue),
                   /*_curr? (String newValue) {
 
                           setState(() {
@@ -227,14 +165,17 @@ class GPAPredictorState extends State<GPAPredictorPage> {
                       .toList(),
                 ),
                 SizedBox(width: 10),
-                _buildGradeForm(context,addedCourseData[i]),
+                _buildGradeForm(context,gradesData.currCoursePredict[i]),
 
                 IconButton(
                   icon: Icon(Icons.delete),
                   color: Theme.of(context).primaryColor,
                   tooltip: 'Increase volume by 10',
                   onPressed: () {
-                     _removeCurrentCourse(addedCourseData[i]);
+                    setState(() {
+                     gradesData.removeCurrCoursePredict(i);
+                    });
+
 
                   },
                 ),
@@ -248,46 +189,33 @@ class GPAPredictorState extends State<GPAPredictorPage> {
 
   }
 
-  void _removeCurrentCourse(Map<String, dynamic> course){
-    setState(() {
-      addedCourseNames.remove(course["id"]);
-      addedCourseData.removeWhere((item) => item["id"] == course["id"]);
-      predictCount+=1;
 
-    });
 
-  }
-  void _addCurrentCourse(Map<String, dynamic> course){
-
-    if(predictCount==1){
-     // _showDialog("Need at least one current course to predict GPA");
-    }
-
-    setState(() {
-      //course["gradeOption"] = 'Current';
-      //course["inGrade"] ='';
-      addedCourseNames.add(course["id"]);
-      addedCourseData.add(course);
-      predictCount-=1;
-    });
-
-  }
   List<SpeedDialChild> floatingCourseButtons(BuildContext context){
     List<SpeedDialChild> courseButtons= <SpeedDialChild>[];
 
-    for(int i =0; i<courseData.length; i++) {
-      String id = courseData[i].data["id"];
-      if(courseData[i].data["taken"]=="CURR" && !addedCourseNames.contains(id)){
+    for(int i =0; i<GradesData.courses.length; i++) {
+      String code = GradesData.courses[i].code;
+      if(GradesData.courses[i].curr && !gradesData.checkCurrCoursePredictExists(i)){
+        print("hello added b");
         courseButtons.add(
           SpeedDialChild(
             child: Icon(Icons.add),
             backgroundColor: Theme.of(context).primaryColor,
             labelBackgroundColor: Theme.of(context).primaryColor,
             shape: CircleBorder(),
-            label: 'Grade $id',
+            label: 'Grade $code',
 
             labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => _addCurrentCourse(courseData[i].data),
+            onTap: () {
+              setState(() {
+                bool added = gradesData.addCurrCoursePredict(i);
+                if(!added){
+                  _showDialog("Need at least one current course to predict GPA");
+                }
+              });
+
+            }
           ),
 
 
@@ -409,7 +337,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
                 child: ListView(
                   shrinkWrap: true,
                   children: <Widget>[
-                    Text("Grades needed is: $gradeNeeded", style: TextStyle(
+                    Text("Grades needed is: ${gradesData.gpaNeededPredict}", style: TextStyle(
                       fontSize: 16.0 + fontScale,
                     ))
                   ]

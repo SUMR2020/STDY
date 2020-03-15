@@ -18,6 +18,7 @@ abstract class MainFirestore {
     addingUid();
   }
 
+
   Future<List<DocumentSnapshot>> getCourseData() async {
     await addingUid();
     final QuerySnapshot result = await db
@@ -107,7 +108,6 @@ abstract class MainFirestore {
       final List<DocumentSnapshot> documents = courseTasks.documents;
       documents.forEach((data) => allTasks.add(data));
       documents.forEach((data) => print(data));
-
     }
     return allTasks;
   }
