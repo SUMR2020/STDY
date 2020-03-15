@@ -27,15 +27,13 @@ class CoursePageState extends State<CoursePage> {
 
   String gradePred;
   Future <bool> _futureData;
-  List<DocumentSnapshot> taskData;
-
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  //List<DocumentSnapshot> taskData;
 
   CoursePageState(){
     gradesData = GradesData();
     _futureData = gradesData.fetchTaskObjects();
   }
-
+  /*
   void _calculateGrades(){
 
     print("calculating grade");
@@ -83,7 +81,7 @@ class CoursePageState extends State<CoursePage> {
 
     //firehouse.calculateGPA(null);
 
-  }
+  }*/
 
   void _addTask() async {
 
