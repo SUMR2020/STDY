@@ -4,9 +4,7 @@ import 'package:study/GoogleAPI/Firestore/MainFirestore.dart';
 class GradesFirestore  extends MainFirestore{
   GradesFirestore(): super(){
     print("started grades");
-    if (letterGPA == null) {
-      getGPATable();
-    }
+
     print(letterGPA);
   }
 
@@ -25,21 +23,13 @@ class GradesFirestore  extends MainFirestore{
     "A",
     "A+"
   ];
+
+
+
   List<DocumentSnapshot> currDocuments;
   String university = "Carleton";
   Map<String, dynamic> letterGPA;
-  Future<String> convertLetterToDouble(String strVal) async {
-    if (letterGPA == null) {
-      await getGPATable();
-    }
-    if(grades.contains(strVal)){
-      String index = grades.indexOf(strVal).toString().padLeft(2,'0');
-      letterGPA.forEach((k,v) => print('${k}: ${v}'));
-      return letterGPA[index].toString();
 
-    }
-    return null;
-  }
 
 //  GradeData() {
 //    print("started grades");
@@ -50,37 +40,12 @@ class GradesFirestore  extends MainFirestore{
 //
 //  }
 
-  double calculateCurrGPA(bool curr, List<DocumentSnapshot> GradesFirestore) {
-    double gpa = 0.0;
-    int size = GradesFirestore.length;
 
-    for (int i = 0; i < GradesFirestore.length; i++) {
-      Map<String, dynamic> doc = GradesFirestore[i].data;
-      double temp;
-
-      if (doc["taken"] == "CURR") {
-
-        if (curr && doc.containsKey("weighted")) {
-          gpa+= double.parse(findNumberGPA(doc["weighted"]));
-        } else {
-          size--;
-        }
-      }else {
-        gpa+= double.parse(findNumberGPA(doc["grade"]));
-      }
-
-    }
-    return gpa / size;
-  }
-
-
-  void calculateGPA(List<DocumentSnapshot> GradesFirestore) async{
-    if(GradesFirestore==null){
-      GradesFirestore = await getCourseData();
-    }
-    double grade = calculateCurrGPA(false, GradesFirestore);
-    double currGrade = calculateCurrGPA(true, GradesFirestore);
+  void updateGPA(double grade, double currGrade) async{
+    await addingUid();
+    print("$uid gpa has been updated to be $grade");
     await db.collection("users").document(uid).setData({"gpa": grade, "currGpa": currGrade}, merge: true);
+
   }
 
   Future<double>  getGPA(bool curr) async{
@@ -125,7 +90,7 @@ class GradesFirestore  extends MainFirestore{
   }
 
   String findLetterGPA(double grade) {
-    if (grade.isNaN) {
+    if (grade.isNaN || grade==-1) {
       return "N/A";
     }
     String numberGPA = findNumberGPA(grade);
@@ -133,26 +98,7 @@ class GradesFirestore  extends MainFirestore{
     return grades[int.parse(numberGPA)];
   }
 
-  String getCourseGrade(String course) {
-    for (int i = 0; i < currDocuments.length; i++) {
-      if (currDocuments[i].documentID == course) {
-        if (currDocuments[i].data["taken"] == "CURR") {
-          if (currDocuments[i].data.containsKey("weighted")) {
-            double grade = currDocuments[i].data["weighted"];
-            String numberGPA = findNumberGPA(grade);
-            return "CURR (${grades[int.parse(numberGPA)]})";
-          } else {
-            return "CURR";
-          }
-        } else {
-          double grade = currDocuments[i].data["grade"];
-          String numberGPA = findNumberGPA(grade);
-          return grades[int.parse(numberGPA)];
-        }
-      }
-    }
-    return "N/A";
-  }
+
 
   Future<Map<String, dynamic>> getCourse(String id) async {
     List<DocumentSnapshot> list = await getCourseData();
@@ -164,46 +110,18 @@ class GradesFirestore  extends MainFirestore{
   }
 
 
-  String calculateSemGPA(String sem, int size) {
-    double gpa = 0.0;
 
-    List<String> letters = new List();
 
-    //print("calcsemGPA got data from $letterGPA");
-    letterGPA.forEach((k, v) => letters.add(k));
-    letters.sort();
-    //print("letters are $letters");
-
-    for (int i = 0; i < currDocuments.length; i++) {
-      String temp = currDocuments[i].data["semester"] +
-          " " +
-          currDocuments[i].data["year"].toString();
-
-      if (temp == sem) {
-        if (currDocuments[i].data["taken"] == "CURR") {
-          size--;
-        } else {
-          gpa += double.parse(findNumberGPA(currDocuments[i].data["grade"]));
-        }
-      }
-    }
-    gpa = gpa / size;
-
-    if (gpa.isNaN) {
-      return "CURR";
-    }
-
-    return gpa.toStringAsFixed(2);
-  }
-
-void remove_course(String id) async {
+void removeCourse(String id) async {
+    await addingUid();
+    print("uid for removing is $uid");
+    /*
     List<DocumentSnapshot> tasks = await getTasks();
     for(int i =0; i<tasks.length; i++){
       remove_task(tasks[i].documentID, id);
-    }
+    }*/
 
-    db
-        .collection("users")
+    db.collection("users")
         .document(uid)
         .collection("Grades")
         .document(id)
@@ -224,51 +142,23 @@ void remove_course(String id) async {
     print("removed $id");
   }
 
-  void addData(List<String> data) async {
+  void addCourseData(String course, String semester,int year, bool curr, double grade,String letterGrade, String id) async {
     print ("ADD DATA");
-    print (uid);
-    if (data == null) {
-      return;
-    }
-    bool exists = true;
-    String course = data[0];
-    String semester = data[1];
-    int year = int.parse(data[2]);
-    String currCourse;
 
-    double grade = 0.0;
-    if (data[3] == "CURR") {
-      currCourse = "CURR";
-    } else {
-      grade = double.parse(data[3]);
-      currCourse = "PAST";
-    }
 
-    String id = (data[0] + data[1] + data[2]).replaceAll(' ', '');
-
-    await db
-        .collection("users")
-        .document(uid)
-        .get()
-        .then((DocumentSnapshot data) {
-      exists = data.exists;
-    });
-
-    if (!exists) {
-      print("does not exist");
-      await db.collection("users").document(uid).setData({"gpa": -1, "currGpa": -1});
-    }
     await db
         .collection("users")
         .document(uid)
         .collection("Grades")
         .document(id)
         .setData({
-      "id": course,
+      "id": id,
       "year": year,
       "grade": grade,
       "semester": semester,
-      "taken": currCourse
+      "current": curr,
+      "code": course,
+      "letter": letterGrade
     });
 
     print("added data to $uid");
@@ -328,26 +218,24 @@ void remove_course(String id) async {
     });
   }
 
-//Future <Map<String, int>>
-  void getGPATable() async {
-    final QuerySnapshot result = await db.collection('gpa').getDocuments();
-    final List<DocumentSnapshot> documents = result.documents;
+  Future <Map<String, int>> getGPATable() async {
+    print("getting table");
+    await addingUid();
+    Map<String, int> gpaTable;
 
-    for (int i = 0; i < documents.length; i++) {
-      if (documents[i].documentID == university) {
+    await Firestore.instance.collection('gpa').document("Carleton").get().then((DocumentSnapshot ds) {
+        gpaTable = Map<String, int>.from(ds.data);
 
-        letterGPA = documents[i].data;
-      }
-    }
 
-    print("test got letter gpa");
+    });
+    print("assigned gpattable ${gpaTable.length}");
+    return gpaTable;
+
   }
 
 
   Future<List<DocumentSnapshot>> getCourseData() async {
-    if (letterGPA == null) {
-      getGPATable();
-    }
+
     final List<DocumentSnapshot> documents = await super.getCourseData();
     //documents.forEach((data) => print(data.data));
     currDocuments = documents;
@@ -355,12 +243,6 @@ void remove_course(String id) async {
   }
 
   Future<List<DocumentSnapshot>> getTasksData(String course) async {
-    if (letterGPA == null) {
-      //print("letter is null");
-      getGPATable();
-    } else {
-      //print("letter isnt");
-    }
 
 
     final QuerySnapshot result = await db
@@ -402,39 +284,7 @@ void remove_course(String id) async {
     return mapData;
   }
 
-  Map<String, List<Map<String, dynamic>>> getCourseNameSem(
-      List<DocumentSnapshot> documents) {
-    documents.sort((a, b) {
-      String aSem = a.data["semester"];
-      String bSem = b.data["semester"];
-      var aYear = a.data["year"];
-      var bYear = b.data["year"];
-      int val = bYear - aYear;
-      ;
 
-      if (val == 0) {
-        return aSem.compareTo(bSem);
-      }
-      return val;
-    });
-
-    Map<String, List<Map<String, dynamic>>> mapData = Map();
-
-    for (int i = 0; i < documents.length; i++) {
-      String sem = documents[i].data["semester"] +
-          " " +
-          documents[i].data["year"].toString();
-
-      if (!mapData.containsKey(sem)) {
-        mapData[sem] = <Map<String, dynamic>>[];
-      }
-
-      mapData[sem].add(documents[i].data);
-    }
-    print("returned map data");
-
-    return mapData;
-  }
 
   void addingTokenData(String t) async{
     DocumentReference docRef = db.collection("users").document(uid);

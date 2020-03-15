@@ -18,6 +18,7 @@ abstract class MainFirestore {
     addingUid();
   }
 
+
   Future<List<DocumentSnapshot>> getCourseData() async {
     await addingUid();
     final QuerySnapshot result = await db

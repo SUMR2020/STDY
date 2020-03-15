@@ -115,7 +115,7 @@ class GradesPageState extends State<GradesPage> {
     });
     print("weight is $totalWeights");
 
-    firehouse.calculateGPA(null);
+    //firehouse.calculateGPA(null);
 
   }
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:study/Grades/Helper/GPATable.dart';
 import 'package:study/UpdateApp/Subject/Theme.dart';
 import 'package:flutter/services.dart';
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
+import '../../Subject/GradesData.dart';
 
 //https://stackoverflow.com/questions/57300552/flutter-row-inside-listview
 
@@ -23,8 +25,8 @@ class CourseInputState extends State<CourseInputPage>{
   String dropdownValueGrade;
   String dropdownValueLetter;
   bool _curr;
-  GradesFirestore firestore;
-  List<String> semesters;
+  GradesData gradesData;
+
 
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
@@ -32,10 +34,7 @@ class CourseInputState extends State<CourseInputPage>{
   CourseInputState(){
     _curr = false;
     dropdownValueGrade = "Letter";
-    firestore = GradesFirestore();
-    semesters = <String>["Fall", "Winter", "Summer"];
-
-    print(semesters);
+    gradesData = GradesData();
 
   }
 
@@ -45,15 +44,6 @@ class CourseInputState extends State<CourseInputPage>{
       _formKey.currentState.save();
 
       if(_curr){
-        var now = new DateTime.now();
-        _addYear = now.year.toString();
-
-        int month = now.month;
-        if(month>=1 && month <5)dropdownValueSem = semesters[1];
-        if(month>=5 && month <9)dropdownValueSem = semesters[2];
-        if(month>=9)dropdownValueSem = semesters[0];
-        _addGrade="CURR";
-
       }
       else{
         if(dropdownValueGrade=="Letter" && !_curr) {
@@ -61,7 +51,8 @@ class CourseInputState extends State<CourseInputPage>{
             _showDialog("Choose a letter grade");
             return;
           }
-          _addGrade = await firestore.convertLetterToDouble(dropdownValueLetter);
+          _addGrade = dropdownValueLetter;
+          //
         }
         print("grade chosen is $_addGrade");
 
@@ -70,14 +61,13 @@ class CourseInputState extends State<CourseInputPage>{
           _showDialog("Select a semester");
           return;
         }
-
-
       }
 
-
-
+      //String course, String semester,int year, bool curr, double grade
       print("adding $_addCourse $_addYear $dropdownValueSem, $_addGrade");
-      Navigator.pop(context, [_addCourse, dropdownValueSem, _addYear, _addGrade]);
+      await gradesData.addCourseFormData(_addCourse,dropdownValueSem, _addYear, _curr, _addGrade);
+      print("finished with page");
+      Navigator.pop(context);
 
     }
 }
@@ -158,7 +148,7 @@ class CourseInputState extends State<CourseInputPage>{
             dropdownValueLetter = newValue;
           });
         },
-        items: firestore.grades.reversed
+        items: GPATable.grades.reversed
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
@@ -267,7 +257,7 @@ class CourseInputState extends State<CourseInputPage>{
                         dropdownValueSem = newValue;
                       });
                     },
-                    items: semesters.map<DropdownMenuItem<String>>((String value) {
+                    items: GradesData.semesters.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
