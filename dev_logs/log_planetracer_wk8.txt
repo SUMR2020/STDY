@@ -33,3 +33,14 @@ March 13th, 11:30am to 1pm
 
 March 13th, 1pm to 2:30pm
 - Updated the list iterator class
+
+March 13th, 6pm to 10pm
+- worked on the D3 write up, completed my writing sections for everything
+	- worked on the UML, still not complete
+- commented my code
+- refactored, and cleaned up code
+
+March 14th, 4pm to 7pm
+- worked on creating the powerpoint for D3 and formatting the doc
+- seperated the initialization of the user's DB
+- added my Calendar DAO
