@@ -18,6 +18,7 @@ environment:
 
 dependencies:
   dcdg: ^2.0.1
+  validators: ^2.0.0
   flare_splash_screen:
   firebase_messaging:
   shared_preferences:

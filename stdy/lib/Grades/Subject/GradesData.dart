@@ -1,9 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:study/Schedule/Observer/CurrTaskFormPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../Helper/Course.dart';
@@ -11,7 +7,7 @@ import '../Helper/AuditItem.dart';
 import '../Helper/TaskItem.dart';
 import '../Helper/GPATable.dart';
 import '../../Schedule/Helper/Task.dart';
-
+import 'package:validators/validators.dart';
 class GradesData with ChangeNotifier{
 
 
