@@ -1,4 +1,4 @@
-import 'package:study/UpdateApp/Subject/Theme.dart';
+import 'package:study/UpdateApp/Subject/SettingsData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:study/UpdateApp/UI/LoginPage.dart';

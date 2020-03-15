@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../../UpdateApp/Subject/Theme.dart';
+import '../../../UpdateApp/Subject/SettingsData.dart';
 import 'package:intl/intl.dart';
 import '../../Subject/GradesData.dart';
 
