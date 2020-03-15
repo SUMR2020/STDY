@@ -144,7 +144,7 @@ class _SchedulePageState extends State<SchedulePage>{
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       if (Task.Empty().isNumeric(done)) {
-                                        taskManager.taskManager.updateProgressandDaily(
+                                        taskManager.updatingProgress(
                                             taskManager.todayTasks.get(index).id
                                             , taskManager.todayTasks.get(index).course, done);
                                         Navigator.of(context).push(
