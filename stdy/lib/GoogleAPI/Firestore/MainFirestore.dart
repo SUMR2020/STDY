@@ -112,4 +112,7 @@ abstract class MainFirestore {
     return allTasks;
   }
 
+  updateTask(String i, String c);
+  getTaskData(String i, String x);
+
 }

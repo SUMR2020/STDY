@@ -18,9 +18,8 @@ void removeCourse(String id) async {
     await addingUid();
     List<DocumentSnapshot> tasks = await getTasks();
     for(int i =0; i<tasks.length; i++){
-      await removeTask(tasks[i].documentID, id);
+      await updateTask(tasks[i].documentID, id);
     }
-
     db.collection("users")
         .document(uid)
         .collection("Grades")
@@ -30,7 +29,7 @@ void removeCourse(String id) async {
     print("removed $id");
   }
 
-  void removeTask(String id, String course) async {
+  void updateTask(String id, String course) async {
     await addingUid();
     //print("removing task $id for course$course");
     db
@@ -80,7 +79,7 @@ void removeCourse(String id) async {
 
   }
 
-  Future<List<DocumentSnapshot>> getTasksData(String course) async {
+  Future<List<DocumentSnapshot>> getTaskData(String course, String x) async {
     await addingUid();
     final QuerySnapshot result = await db
         .collection('users')

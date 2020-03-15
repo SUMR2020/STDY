@@ -3,12 +3,13 @@ import 'package:study/GoogleAPI/Authentication/Authentication.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 
+/*
+CalendarBuilder
+A DAO class that accesses the GoogleCalendar api in order to preform low level data
+access and data addition methods.
+*/
 
 class CalendarBuilder {
-  EventList<Event> markedDateMap = new EventList<Event>();
-  Map<DateTime, List> eventCal;
-  calendar.CalendarApi events;
-
   // function to retrieve a user's primary calendar data, using the authorization from the auth scree
   Future<calendar.CalendarApi> gettingCalendar() async {
   calendar.CalendarApi calendarApi;

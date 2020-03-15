@@ -5,7 +5,7 @@ import '../Helper/Task.dart';
 import '../Helper/TaskList.dart';
 /*
 TaskData
-A DAO class to obtain data from the database, and manipulate it to utilize it in ways
+A class to obtain data from the database, and manipulate it to utilize it in ways
 necessary.
     _taskDocs: all tasks
     todayTasks: tasks to be done today
@@ -97,7 +97,7 @@ class TaskData {
             if (!(date.isBefore(DateTime.now())))
               datesObjs.add(DateTime(date.year, date.month, date.day));
           }
-          taskManager.updateDates(docRef, datesObjs);
+          taskManager.updateTask(task.data["course"], task.data["id"]);
           taskManager.redistributeData(task, course);
           taskManager.updateDaily(docRef);
         }
@@ -171,7 +171,7 @@ class TaskData {
       }
       DateTime today = DateTime.now();
       datesObjs.remove(DateTime(today.year, today.month, today.day));
-      taskManager.updateDates(docRef, datesObjs);
+      taskManager.updateTask(course, id);
     }
     else {
       await taskManager.updateToday(docRef, done);
