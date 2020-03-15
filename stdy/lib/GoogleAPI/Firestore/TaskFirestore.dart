@@ -3,7 +3,7 @@ import 'package:study/GoogleAPI/Firestore/MainFirestore.dart';
 
 /*
 TaskFirestore
-A persistence class that accesses the database in order to preform low level data
+A DAO class that accesses the database in order to preform low level data
 access and data addition methods.
 */
 
@@ -51,8 +51,15 @@ class TaskFireStore extends MainFirestore{
     return dates;
   }
 
-  void updateDates(DocumentReference docRef, List<DateTime> i){
-    docRef.updateData({"dates": i});
+  void updateTask(String i, String c) async{
+    DocumentReference q = await db
+        .collection("users")
+        .document(uid)
+        .collection("Grades")
+        .document(c)
+        .collection("Tasks")
+        .document(i);
+    q.updateData({"dates": i});
   }
 
   void updateDaily(DocumentReference docRef) async{
@@ -110,8 +117,8 @@ class TaskFireStore extends MainFirestore{
      print ("after today");
    }
 
-  Future<bool> updateProgressandDoneList(DocumentReference docRef, String done) async {
 
+  Future<bool> updateProgressandDoneList(DocumentReference docRef, String done) async {
     var before = await docRef.get();
     var goal = before["goal"];
     var progress = before["progress"];

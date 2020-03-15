@@ -3,6 +3,10 @@ import 'package:study/GoogleAPI/Firestore/MainFirestore.dart';
 
 class InitFireStore extends MainFirestore {
   InitFireStore() : super();
+  void getTaskData(String i, String x){
+  }
+  void updateTask(String i, String x){
+  }
   void addingTokenData(String t) async {
     DocumentReference docRef = db.collection("users").document(uid);
     bool exists = false;

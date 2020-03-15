@@ -148,7 +148,7 @@ class GradesData with ChangeNotifier{
 
   void removeTaskData(String id) async{
     print("id for removal is $id");
-    await firestore.removeTask(id, currCourseID);
+    await firestore.updateTask(id, currCourseID);
     await refreshCoursePage();
   }
 
@@ -186,7 +186,7 @@ class GradesData with ChangeNotifier{
     else {
       year = int.parse(strYear);
 
-      if (isNumeric((strGrade))) {
+      if (Task.Empty().isNumeric((strGrade))) {
         grade = double.parse(strGrade);
         letterGrade = findLetterGPA(grade);
 
@@ -338,7 +338,7 @@ class GradesData with ChangeNotifier{
     tasks = <Task>[];
     print("in fetch tasks");
 
-    List<DocumentSnapshot> docs = await firestore.getTasksData(currCourseID);
+    List<DocumentSnapshot> docs = await firestore.getTaskData(currCourseID, null);
 
     for (int i = 0; i < docs.length; i++) {
 
