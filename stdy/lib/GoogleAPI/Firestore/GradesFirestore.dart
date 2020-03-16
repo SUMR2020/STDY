@@ -95,6 +95,7 @@ void removeCourse(String id) async {
 
   Future<double>  getGPA(bool curr) async {
     double val;
+    await addingUid();
     await Firestore.instance
         .collection('users')
         .document(uid)
@@ -125,6 +126,7 @@ void removeCourse(String id) async {
 
 
   void addingTokenData(String t) async{
+    await addingUid();
     DocumentReference docRef = db.collection("users").document(uid);
     bool exists = false;
     await db

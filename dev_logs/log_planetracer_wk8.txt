@@ -44,3 +44,8 @@ March 14th, 4pm to 7pm
 - worked on creating the powerpoint for D3 and formatting the doc
 - seperated the initialization of the user's DB
 - added my Calendar DAO
+
+March 15th, 2pm to 8pm
+- fixed up the template
+- worked on the documentation
+- worked on uml
