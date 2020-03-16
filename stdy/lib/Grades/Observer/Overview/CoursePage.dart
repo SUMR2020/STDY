@@ -346,7 +346,7 @@ class CoursePageState extends State<CoursePage> {
                 fontSize: 16.0+fontScale,
                 color: Colors.white,
               ),),
-            Text(text!='null'&& text!='NaN'? text:"N/A",
+            Text(text!='null'&& text!='NaN'? "$text%":"N/A",
               style: TextStyle(
                   fontSize: 32,
                   color: Colors.white,
