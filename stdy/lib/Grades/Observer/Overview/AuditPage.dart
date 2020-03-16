@@ -142,27 +142,62 @@ class AuditPageState extends State<AuditPage> {
       //String grade = gradesData.firestore.getCourseGrade((courses[i].id+semester).replaceAll(' ',''));
 
       courseWidgets.add(
-        ListTile(
-            title: Text(courses[i].code,
-              style: TextStyle(
-                fontSize: 16.0 + fontScale,
-              ),),
-            subtitle: Text('Grade: ${courses[i].letterGrade}',
-              style: TextStyle(
-                fontSize: 16.0 + fontScale,
-              ),),
-            trailing: IconButton(
-              icon: Icon(Icons.delete),
-              tooltip: 'Increase volume by 10',
-              onPressed: () {
-                _removeData(courses[i].id);
-              },
-            ),
+        GestureDetector(
             onTap: () {
               _openCoursePage(courses[i].id);
-              setState(() {
-              });
-            }),
+              setState(() {});
+            },
+        child: Padding(
+              padding: EdgeInsets.all(5.0),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width / 1.15,
+              height: 70 ,
+              child: DecoratedBox(
+
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(courses[i].code,
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                        ),),
+                      ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(courses[i].letterGrade,
+                        style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
+                        ),),
+                    ),
+
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Colors.white,
+                      tooltip: 'Increase volume by 10',
+                      onPressed: () {
+                        _removeData(courses[i].id);
+                      },
+                    ),
+                  ],
+                ),
+
+
+              ),
+
+          )
+          )
+        )
 
 
       );
@@ -175,6 +210,7 @@ class AuditPageState extends State<AuditPage> {
   Widget _buildPanel()  {
 
     return ExpansionPanelList(
+
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
           GradesData.auditItems[index].isExpanded = !isExpanded;
@@ -182,6 +218,7 @@ class AuditPageState extends State<AuditPage> {
       },
       children: GradesData.auditItems.map<ExpansionPanel>((AuditItem item) {
         return ExpansionPanel(
+
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
               title: Text(item.headerValue,
@@ -207,26 +244,61 @@ class AuditPageState extends State<AuditPage> {
   }
 
   Widget buildUserInfo(){
-    return Container(
-        child: Column(
-            children: <Widget>[
-              Text("Student Stats",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0 + fontScale,
-                ),),
-              Text("Actual GPA: ${GradesData.gpa}",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0 + fontScale,
-                ),),
-              Text("Current GPA: ${GradesData.currGPA}",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0 + fontScale,
-                ),),
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width / 1.1,
+          height: 150 ,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            ),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text("STATS",
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold
+                    ),),
+                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  statsColumn("Actual GPA", GradesData.gpa.toString()),
+                  statsColumn("Current GPA", GradesData.currGPA.toString()),
+                  statsColumn("Total courses", GradesData.courses.length.toString()),
+                ],
+              )
+            ],
+          ),
+        ),
+      )
+    );
+  }
 
-            ]
+  Widget statsColumn(String title, String text){
+    print("val is $text");
+
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        children: <Widget>[
+            Text(title,
+              style: TextStyle(
+                fontSize: 16.0+fontScale,
+                color: Colors.white,
+              ),),
+           Text(text!='null' && text!='NaN'?text:"N/A",
+              style: TextStyle(
+                  fontSize: 32,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold
+              ),),
+          ],
         )
     );
   }

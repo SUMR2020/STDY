@@ -4,8 +4,6 @@ import 'package:study/GoogleAPI/Firestore/MainFirestore.dart';
 class GradesFirestore  extends MainFirestore{
 
   GradesFirestore(): super(){
-    print("started grades");
-
 }
 
   void updateGPA(double grade, double currGrade) async{
@@ -26,7 +24,6 @@ void removeCourse(String id) async {
         .document(id)
         .delete();
 
-    print("removed $id");
   }
 
   void updateTask(String id, String course) async {
@@ -40,12 +37,9 @@ void removeCourse(String id) async {
         .collection("Tasks")
         .document(id)
         .delete();
-    print("removed $id");
   }
 
   void addCourseData(String course, String semester,int year, bool curr, double grade,String letterGrade, String id) async {
-    print ("ADD DATA");
-
 
     await db
         .collection("users")
@@ -61,9 +55,9 @@ void removeCourse(String id) async {
       "code": course,
       "letter": letterGrade,
       "totalweight": 0,
+      "weighted": 0,
     });
 
-    print("added data to $uid");
   }
 
   Future <Map<String, int>> getGPATable() async {
@@ -105,19 +99,21 @@ void removeCourse(String id) async {
         val = double.parse(ds.data["currGpa"].toString());
       }
       else {
-        print(ds.data["gpa"]);
         val = double.parse(ds.data["gpa"].toString());
       }
 
       // use ds as a snapshot
     });
+    return val;
   }
 
-  void setCourseGrade(String course, double grade, double weighted, double totalWeight) async{
+  void setCourseGrade(String course, double grade, double weighted, double totalWeight, String letterGrade) async{
+    print("updating course grade");
+    await addingUid();
     course = course.replaceAll(" ", "");
 
     await db.collection("users").document(uid).collection("Grades").document((course)).updateData(
-        {"grade": grade,"weighted": weighted, "totalWeight": totalWeight});
+        {"grade": grade,"weighted": weighted, "totalweight": totalWeight,"letter": letterGrade});
   }
 
 

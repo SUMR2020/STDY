@@ -11,7 +11,7 @@ class Course{
   String inGrade;
   double totalWeight;
 
-  Course(this.curr,this.grade, this.code, this.id, this.sem, this.year,this.letterGrade,this.totalWeight);
+  Course(this.curr,this.grade, this.code, this.id, this.sem, this.year,this.letterGrade,this.totalWeight,this.weighted);
 
   @override
   String toString(){
