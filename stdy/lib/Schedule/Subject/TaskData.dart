@@ -44,9 +44,9 @@ class TaskData {
     List<DocumentSnapshot> _courses = await taskManager.getCourseData();
     List<Course> _courseObjs = List<Course>();
     for (var data in _courses) {
-      if (data.data["taken"] == "CURR") {
+      if (data.data["current"] == true) {
         _courseObjs.add(new Course(
-            data.data["year"], data.data["id"], data.data["semester"]));
+            data.data["year"], data.data["code"], data.data["semester"]));
       }
     }  _courseObjs.forEach((data) => _courseNames.add((data._name+" " + data._semester+ " " +(data._year.toString()))));
     return _courseNames;
