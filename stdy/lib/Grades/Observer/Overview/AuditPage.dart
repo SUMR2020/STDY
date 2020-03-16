@@ -269,7 +269,7 @@ class AuditPageState extends State<AuditPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   statsColumn("Actual GPA", GradesData.gpa.toString()),
-                  statsColumn("Current GPA", GradesData.gpa.toString()),
+                  statsColumn("Current GPA", GradesData.currGPA.toString()),
                   statsColumn("Total courses", GradesData.courses.length.toString()),
                 ],
               )
@@ -281,6 +281,7 @@ class AuditPageState extends State<AuditPage> {
   }
 
   Widget statsColumn(String title, String text){
+    print("val is $text");
 
     return Padding(
       padding: EdgeInsets.all(10.0),
@@ -291,7 +292,7 @@ class AuditPageState extends State<AuditPage> {
                 fontSize: 16.0+fontScale,
                 color: Colors.white,
               ),),
-           Text(text!='null'?text:"N/A",
+           Text(text!='null' && text!='NaN'?text:"N/A",
               style: TextStyle(
                   fontSize: 32,
                   color: Colors.white,

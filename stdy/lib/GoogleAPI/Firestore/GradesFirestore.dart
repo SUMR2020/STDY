@@ -104,6 +104,7 @@ void removeCourse(String id) async {
 
       // use ds as a snapshot
     });
+    return val;
   }
 
   void setCourseGrade(String course, double grade, double weighted, double totalWeight, String letterGrade) async{

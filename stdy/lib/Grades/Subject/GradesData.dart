@@ -402,6 +402,7 @@ class GradesData with ChangeNotifier{
   Future<bool> fetchGPA() async{
     gpa = await firestore.getGPA(false);
     currGPA = await firestore.getGPA(true);
+    print("curr is $currGPA");
 
     return true;
   }
