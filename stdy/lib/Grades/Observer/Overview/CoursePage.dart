@@ -33,55 +33,8 @@ class CoursePageState extends State<CoursePage> {
     gradesData = GradesData();
     _futureData = gradesData.fetchTaskObjects();
   }
-  /*
-  void _calculateGrades(){
-
-    print("calculating grade");
-    double finalGrade = 0.0;
-    double totalWeight = 0.0;
-    double bonus = 0.0;
-
-    for(int i =0; i<taskData.length; i++){
-      DocumentSnapshot curr = taskData[i];
-      print(curr["name"]);
-      if(curr["grade"]==null){
-        continue;
-      }
-      double currGrade = curr["grade"];
-      int currTotal = curr["totalgrade"];
-      double currWeight = curr["weight"];
 
 
-      if(!curr["bonus"]){//replace this
-        totalWeight+= currWeight;
-        print("value is now ${curr["name"]}");
-        double percentEarned = (currGrade/currTotal)*currWeight;
-        finalGrade+=percentEarned;
-      }
-      else{
-        double percentEarned = (currGrade/currTotal)*currWeight;
-        bonus+=percentEarned;
-
-      }
-
-    }
-
-    double weighted = double.parse(((finalGrade/totalWeight)*100+bonus).toStringAsFixed(1));
-    finalGrade = double.parse((finalGrade+bonus).toStringAsFixed(1));
-    //round to 2 decimals
-    /*
-    setState((){
-      totalWeights = totalWeight;
-      grade = finalGrade;
-      firehouse.setCourseGrade(id, finalGrade, weighted, totalWeight);
-    });
-    print("weight is $totalWeights");
-
-     */
-
-    //firehouse.calculateGPA(null);
-
-  }*/
 
   void _addTask() async {
 
@@ -90,8 +43,6 @@ class CoursePageState extends State<CoursePage> {
         MaterialPageRoute(
           builder: (context) => PrevTaskFormPage(),
         ));
-    print("hello thisting completed");
-
     setState(() {});
 
   }
@@ -120,7 +71,6 @@ class CoursePageState extends State<CoursePage> {
                   fontSize: 16.0 + fontScale,
                 ),),
               onPressed: () async{
-                print("removed coure");
                 await gradesData.removeTaskData(task.id);
 
                 setState(() {});
@@ -154,56 +104,112 @@ class CoursePageState extends State<CoursePage> {
     setState(() {});
   }
 
+
   List<Widget> _buildTasks(String type, List<Task> tasks){
     List<Widget> courseWidgets = <Widget>[];
 
-    print("building task for $type");
     for(int i =0; i<tasks.length; i++){
       //String grade = firehouse.getCourseGrade((tasks[i]+semester).replaceAll(' ',''));
       //print(grade);
 
-      String gradeInfo;
-      String title = tasks[i].name;
-      print("course title is $title");
+      String earnedInfo, weightedInfo;
+      double percent;
       String dueDate = "Due: ";
       if(tasks[i].grade==null){
-        gradeInfo = "Click to add grade";
+        earnedInfo = "";
+        weightedInfo = "";
+
       }
 
       else {
 
-        double percent = tasks[i].grade / tasks[i].totalGrade;
+        percent = tasks[i].grade / tasks[i].totalGrade;
         double gradeWeighted =  percent* tasks[i].weight;
         gradeWeighted = double.parse(gradeWeighted.toStringAsFixed(1));
         percent = double.parse((percent*100).toStringAsFixed(1));
 
-        gradeInfo = 'Earned: ${tasks[i].grade}/${tasks[i].totalGrade}     Weighted: $gradeWeighted/${tasks[i].weight}';
-        title += " ($percent%)";
+        earnedInfo = 'Earned: ${tasks[i].grade}/${tasks[i].totalGrade}';
+        weightedInfo ='$gradeWeighted/${tasks[i].weight}';
+
       }
 
       courseWidgets.add(
-        ListTile(
-            title: Text(title,
-              style: TextStyle(
-                fontSize: 16.0 + fontScale,
-              ),),
-            subtitle: Text(gradeInfo,
-              style: TextStyle(
-                fontSize: 16.0 + fontScale,
-              ),),
-            trailing: IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                _removeData(tasks[i]);
-              },
-            ),
-            onTap: () {
-              setState(() {
+          GestureDetector(
+              onTap: () {
                 _openTaskPage(tasks[i].id);
-              });
-            }),
+                setState(() {});
+              },
+              child: Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width / 1.15,
+                    height: 70 ,
+                    child: DecoratedBox(
+
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0,top: 10.0),
+                                child: Text(tasks[i].name,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold
+                                  ),),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(earnedInfo,
+                                  style: TextStyle(
+                                      fontSize: 14.0+fontScale,
+                                      color: Colors.white,
+                                  ),),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(weightedInfo,
+                                  style: TextStyle(
+                                    fontSize: 14.0+fontScale,
+                                    color: Colors.white,
+                                  ),),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text("$percent%",
+                              style: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold
+                              ),),
+                          ),
+
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            color: Colors.white,
+                            tooltip: 'Increase volume by 10',
+                            onPressed: () {
+                              _removeData(tasks[i]);
+                            },
+                          ),
+                        ],
+                      ),
 
 
+                    ),
+
+                  )
+              )
+          )
       );
     }
 
@@ -251,6 +257,110 @@ class CoursePageState extends State<CoursePage> {
   }
 
   Widget buildUserInfo(){
+    double progressValue = gradesData.getCourseByID(GradesData.currCourseID).totalWeight/100;
+
+    return Padding(
+        padding: EdgeInsets.all(10.0),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width / 1.1,
+          height: 180 ,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            ),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text("STATS",
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold
+                    ),),
+                ),
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text("Completed",
+                        style: TextStyle(
+                            fontSize: 16.0+fontScale,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
+                        ),),
+                    ),
+                    SizedBox(
+                      width: 200,
+                      child:LinearProgressIndicator(
+                        value: progressValue,
+                        backgroundColor: Colors.white,
+                        valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text("${gradesData.getCourseByID(GradesData.currCourseID).totalWeight}%",
+                        style: TextStyle(
+                            fontSize: 16.0+fontScale,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
+                        ),),
+                    ),
+                  ],
+                ),
+
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    statsColumn("Weighted Grade", gradesData.getCourseByID(GradesData.currCourseID).weighted.toString()),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(gradesData.getCourseByID(GradesData.currCourseID).letterGrade,
+                        style: TextStyle(
+                            fontSize: 40,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
+                        ),),
+                    ),
+                    statsColumn("Actual Grade", gradesData.getCourseByID(GradesData.currCourseID).grade!=-1.0? gradesData.getCourseByID(GradesData.currCourseID).grade.toString():"N/A"),
+                  ],
+                )
+              ],
+            ),
+          ),
+        )
+    );
+  }
+
+  Widget statsColumn(String title, String text){
+
+    return Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Column(
+          children: <Widget>[
+            Text(title,
+              style: TextStyle(
+                fontSize: 16.0+fontScale,
+                color: Colors.white,
+              ),),
+            Text(text!='null'?text:"N/A",
+              style: TextStyle(
+                  fontSize: 32,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold
+              ),),
+          ],
+        )
+    );
+  }
+
+
+  /*
+
+  Widget buildUserInfo(){
     return Container(
         child: Container(
             child: Column(
@@ -281,7 +391,7 @@ class CoursePageState extends State<CoursePage> {
             )
         )
     );
-  }
+  }*/
 
   Widget projectWidget() {
     return FutureBuilder(
@@ -313,7 +423,7 @@ class CoursePageState extends State<CoursePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("building course");
+
     return Scaffold(
       appBar: new AppBar(
           iconTheme: IconThemeData(

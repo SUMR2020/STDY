@@ -28,10 +28,6 @@ class GradesData with ChangeNotifier{
   static String currCourseID;
   static List<TaskItem> taskItems;
   static List<Task> tasks;
-  double grade;
-  double weighted;
-  String letterGrade;
-  double totalWeights;
 
   //Task variables---------------------------------------------------------------------------------------------------------------------------------------------
   static String currTaskID;
@@ -61,6 +57,7 @@ class GradesData with ChangeNotifier{
   }
 
   Course getCourseByID(String id){
+
     for(int i =0; i<courses.length;i++){
       if(courses[i].id ==id){
         return courses[i];
@@ -135,7 +132,6 @@ class GradesData with ChangeNotifier{
 
   bool checkCurrCoursePredictExists(int i){
     for(int k=0; k<currCoursePredict.length;k++){
-      print(courses[i]);
       if(currCoursePredict[k].id==courses[i].id){
         return true;
       }
@@ -147,8 +143,10 @@ class GradesData with ChangeNotifier{
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   void removeTaskData(String id) async{
-    print("id for removal is $id");
     await firestore.updateTask(id, currCourseID);
+    await refreshCoursePage();
+    calculateGrades();
+    await updateCourseGrade();
     await refreshCoursePage();
   }
 
@@ -165,6 +163,9 @@ class GradesData with ChangeNotifier{
   void addPrevTaskFormData(String type, String name, double weight, int total, double grade, bool bonus) async{
 
     await firestore.addTaskData(name, currCourseID, 0, null, null, null, true, weight, grade, type, null, bonus, total, currCourseID);
+    await refreshCoursePage();
+    calculateGrades();
+    await updateCourseGrade();
     await refreshCoursePage();
   }
 
@@ -212,6 +213,47 @@ class GradesData with ChangeNotifier{
 //UPDATERS
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  void calculateGrades(){
+
+    double finalGrade = 0.0;
+    double totalWeight = 0.0;
+    double bonus = 0.0;
+    double weighted = 0.0;
+    double grade = 0.0;
+
+    for(int i =0; i<tasks.length; i++){
+
+      if(tasks[i].grade==-1){
+        continue;
+      }
+      double currGrade = tasks[i].grade;
+      int currTotal = tasks[i].totalGrade;
+      double currWeight = tasks[i].weight;
+
+      if(!tasks[i].bonus){//replace this
+        totalWeight+= currWeight;
+
+        double percentEarned = (currGrade/currTotal)*currWeight;
+        finalGrade+=percentEarned;
+      }
+      else{
+        double percentEarned = (currGrade/currTotal)*currWeight;
+        bonus+=percentEarned;
+
+      }
+
+    }
+
+    weighted = double.parse(((finalGrade/totalWeight)*100+bonus).toStringAsFixed(1));
+    grade = double.parse((finalGrade+bonus).toStringAsFixed(1));
+    print("$totalWeight for weighted of $weighted and actual of $grade");
+    getCourseByID(currCourseID).grade = grade;
+    getCourseByID(currCourseID).weighted = weighted;
+    getCourseByID(currCourseID).totalWeight = totalWeight;
+    print("grade is now $grade");
+    getCourseByID(currCourseID).letterGrade = grade==0.0? "CURR": findLetterGPA(weighted);
+  }
+
   double calculateCurrGPA(bool curr) {
     double gpa = 0.0;
     int size = courses.length;
@@ -240,6 +282,10 @@ class GradesData with ChangeNotifier{
     currGPA = calculateCurrGPA(true);
     await firestore.updateGPA(gpa, currGPA);
 
+  }
+
+  void updateCourseGrade() async{
+    await firestore.setCourseGrade(currCourseID, getCourseByID(currCourseID).grade, getCourseByID(currCourseID).weighted, getCourseByID(currCourseID).totalWeight,getCourseByID(currCourseID).letterGrade);
   }
 
 
@@ -313,6 +359,7 @@ class GradesData with ChangeNotifier{
 //PAGE REFRESHERS
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
   refreshAuditPage() async{
+
     await fetchCourseObjects();
     await calculateGPA();
   }
@@ -336,7 +383,6 @@ class GradesData with ChangeNotifier{
 
   Future<bool> fetchTaskObjects() async{
     tasks = <Task>[];
-    print("in fetch tasks");
 
     List<DocumentSnapshot> docs = await firestore.getTaskData(currCourseID, null);
 
@@ -361,13 +407,15 @@ class GradesData with ChangeNotifier{
   }
 
   Future<bool> fetchCourseObjects() async{
+
       courses = <Course>[];
       List<DocumentSnapshot> docs = await firestore.getCourseData();
 
       for (int i = 0; i < docs.length; i++) {
         Map<String, dynamic> data = docs[i].data;
-        Course c = new Course(data["current"], data["grade"], data["code"], data["id"], data["semester"], data["year"],data["letter"],double.parse(data["totalweight"].toString()));
+        Course c = new Course(data["current"], data["grade"], data["code"], data["id"], data["semester"], data["year"],data["letter"],double.parse(data["totalweight"].toString()),double.parse(data["weighted"].toString()));
         courses.add(c);
+
       }
       generateAuditItems();
 
