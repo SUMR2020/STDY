@@ -17,6 +17,7 @@ class TaskFireStore extends MainFirestore{
   }
 
   Future<QuerySnapshot> getTasksForCourse(String course) async{
+    await addingUid();
     QuerySnapshot q = await db
         .collection('users')
         .document(uid)
@@ -29,6 +30,7 @@ class TaskFireStore extends MainFirestore{
 
 
   Future<DocumentReference> getTaskData(String c, String i) async{
+    await addingUid();
     DocumentReference q = await db
         .collection("users")
         .document(uid)
@@ -40,18 +42,21 @@ class TaskFireStore extends MainFirestore{
   }
 
   Future<List> getDates(DocumentReference docRef) async{
+    await addingUid();
     var doc = await docRef.get();
     var dates = doc.data["dates"];
     return dates;
   }
 
   Future<List> getDoneDates(DocumentReference docRef) async{
+    await addingUid();
     var doc = await docRef.get();
     var dates = doc.data["done"];
     return dates;
   }
 
   void updateTask(String i, String c) async{
+    await addingUid();
     DocumentReference q = await db
         .collection("users")
         .document(uid)
@@ -69,6 +74,7 @@ class TaskFireStore extends MainFirestore{
   }
 
   Future<bool> redistributeData(var task, String course) async {
+    await addingUid();
     DocumentReference docRef = db
         .collection("users")
         .document(uid)

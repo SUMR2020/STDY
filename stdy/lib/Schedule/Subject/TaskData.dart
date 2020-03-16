@@ -37,12 +37,13 @@ class TaskData {
   TaskList todayTasks = new TaskList();
   TaskList todayDoneTasks = new TaskList();
   TaskFireStore taskManager = new TaskFireStore();
+  List<Course> _courseObjs;
 
 
   Future<List<String>> getCourseNameList() async {
     List<String> _courseNames = List<String>();
     List<DocumentSnapshot> _courses = await taskManager.getCourseData();
-    List<Course> _courseObjs = List<Course>();
+    _courseObjs = List<Course>();
     for (var data in _courses) {
       if (data.data["taken"] == "CURR") {
         _courseObjs.add(new Course(
@@ -154,6 +155,12 @@ class TaskData {
       }
     }
     return true;
+  }
+
+  bool printTasks(){
+    while (todayTasks.moveNext()){
+     print(todayTasks.current);
+    }
   }
 
   Future<bool> updatingProgress(String id, String course, String done) async {

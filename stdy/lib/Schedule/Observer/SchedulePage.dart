@@ -353,6 +353,7 @@ class _SchedulePageState extends State<SchedulePage>{
 
   @override
   Widget build(BuildContext context) {
+    taskManager.printTasks();
     final theme = Provider.of<ThemeChanger>(context);
     updatingCurrentDay();
     return new Scaffold(
