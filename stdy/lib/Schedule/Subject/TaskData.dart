@@ -109,13 +109,7 @@ class TaskData {
 
   Future<bool> getTasks() async {
     _taskDocs = await taskManager.getTasks();
-    print ("stinyk");
-    for (int i = 0; i < _taskDocs.length; i++){
-      print ("STONKS");
-      print(_taskDocs[i].toString());
-    }
     for (DocumentSnapshot task in _taskDocs) {
-      print ("STONKS");
       print(task.toString());
       var docRef = await taskManager.getTaskData(task.data["course"], task.data["id"]);
       var dates = await taskManager.getDates(docRef);

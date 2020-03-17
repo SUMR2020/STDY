@@ -94,7 +94,6 @@ abstract class MainFirestore {
     await addingUid();
     List<DocumentSnapshot> allTasks = new List<DocumentSnapshot>();
     List<DocumentSnapshot> courses = await getCourseData();
-    print ("ggggv " + courses.toString());
     for (DocumentSnapshot course in courses) {
       print(course);
       String name = course.data["id"].toString();
