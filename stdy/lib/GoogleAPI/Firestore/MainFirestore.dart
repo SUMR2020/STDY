@@ -94,10 +94,11 @@ abstract class MainFirestore {
     await addingUid();
     List<DocumentSnapshot> allTasks = new List<DocumentSnapshot>();
     List<DocumentSnapshot> courses = await getCourseData();
+    print ("ggggv " + courses.toString());
     for (DocumentSnapshot course in courses) {
-      String name = course.data["id"] +
-          course.data["semester"] +
-          course.data["year"].toString();
+      print(course);
+      String name = course.data["id"].toString();
+      print (name);
       final QuerySnapshot courseTasks = await db
           .collection('users')
           .document(uid)
@@ -109,6 +110,7 @@ abstract class MainFirestore {
       documents.forEach((data) => allTasks.add(data));
       documents.forEach((data) => print(data));
     }
+    print (allTasks);
     return allTasks;
   }
 
