@@ -55,6 +55,13 @@ class TaskFireStore extends MainFirestore{
     return dates;
   }
 
+  Future<List> allDates(DocumentReference docRef) async{
+    await addingUid();
+    var doc = await docRef.get();
+    var dates = doc.data["allday"];
+    return dates;
+  }
+
   void updateTask(String i, String c) async{
     await addingUid();
     DocumentReference q = await db
@@ -95,7 +102,14 @@ class TaskFireStore extends MainFirestore{
       return (goal);
     }
 
-   Future<bool> isDone (DocumentReference d, String done) async {
+  Future<List> getProgress(DocumentReference d) async{
+    var data = await d.get();
+    var goal = data["progress"];
+    return (goal);
+  }
+
+
+  Future<bool> isDone (DocumentReference d, String done) async {
      var data = await d.get();
      if (double.parse(done) >= double.parse(data["today"])) {
        return true;
@@ -120,7 +134,6 @@ class TaskFireStore extends MainFirestore{
     var today = before["today"];
      today = (double.parse(today) - double.parse(done)).toStringAsFixed(2);
      docRef.updateData({"today": today});
-     print ("after today");
    }
 
 
@@ -130,7 +143,7 @@ class TaskFireStore extends MainFirestore{
     var progress = before["progress"];
     if (progress == null) progress = new List<String>();
     List<DateTime> doneDatesObjs = new List<DateTime>();
-    var doneDays = before["done"];
+    var doneDays = before["allday"];
     if (doneDays == null) doneDays = new List<String>();
     else {
       for (Timestamp t in doneDays) {

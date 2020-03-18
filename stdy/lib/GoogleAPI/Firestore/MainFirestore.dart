@@ -75,7 +75,8 @@ abstract class MainFirestore {
       "totalgrade": total,
       "today": daily,
       "done" : new List<DateTime>(),
-      "onlyCourse" : onlyC
+      "onlyCourse" : onlyC,
+      "allday":  new List<DateTime>(),
     });
 
 //    if (forMarks) {
@@ -95,9 +96,7 @@ abstract class MainFirestore {
     List<DocumentSnapshot> allTasks = new List<DocumentSnapshot>();
     List<DocumentSnapshot> courses = await getCourseData();
     for (DocumentSnapshot course in courses) {
-      print(course);
       String name = course.data["id"].toString();
-      print (name);
       final QuerySnapshot courseTasks = await db
           .collection('users')
           .document(uid)
@@ -107,9 +106,7 @@ abstract class MainFirestore {
           .getDocuments();
       final List<DocumentSnapshot> documents = courseTasks.documents;
       documents.forEach((data) => allTasks.add(data));
-      documents.forEach((data) => print(data));
     }
-    print (allTasks);
     return allTasks;
   }
 

@@ -36,8 +36,7 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage>{
-  DateTime today = new DateTime.now();
-  _SchedulePageState() {
+   _SchedulePageState() {
     print("opened schedule");
     _onStartup = calendarManager.loadEvents();
     _tasksLoaded = taskManager.getTasks();
@@ -66,7 +65,7 @@ class _SchedulePageState extends State<SchedulePage>{
 
   // updating the task info if the day changes
   void updatingCurrentDay() async{
-    today = await taskManager.updateDay(today);
+    await taskManager.updateDay();
   }
 
   // getting the string for amount to do based off of task type
