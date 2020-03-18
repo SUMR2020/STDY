@@ -168,14 +168,16 @@ class CoursePageState extends State<CoursePage> {
   }
 
   void _openCompleteCoursePage() async {
-    await Navigator.push(
+    List<bool> complete = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => CompleteCourseFormPage(),
         ));
-    await gradesData.refreshAuditPage();
-    print("done with complete page");
-    Navigator.pop(context);
+    if(complete!=null) {
+      await gradesData.refreshAuditPage();
+      print("done with complete page");
+      Navigator.pop(context);
+    }
   }
 
   List<Widget> _buildTasks(String type, List<Task> tasks){

@@ -271,8 +271,8 @@ class AuditPageState extends State<AuditPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  statsColumn("Actual GPA", GradesData.gpa.toString()),
-                  statsColumn("Current GPA", GradesData.currGPA.toString()),
+                  statsColumn("Actual GPA", GradesData.gpa.toStringAsFixed(2)),
+                  statsColumn("Current GPA", GradesData.currGPA.toStringAsFixed(2)),
                   statsColumn("Total courses", GradesData.courses.length.toString()),
                 ],
               )

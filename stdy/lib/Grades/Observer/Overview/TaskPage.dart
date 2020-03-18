@@ -180,31 +180,69 @@ class TaskState extends State<TaskPage> {
 
   }
 
+  bool checkFormFilled(){
+    _formKey.currentState.save();
+    if(_bonus != gradesData.getTaskByID(GradesData.currTaskID).bonus){
+      return true;
+
+    }
+    return false;
+  }
+
+  Future<bool> _onWillPop() async {
+    if(checkFormFilled()) {
+      return (await showDialog(
+        context: context,
+        builder: (context) =>
+        new AlertDialog(
+          title: new Text('Quit'),
+          content: new Text('Do you want to discard unsaved changes?'),
+          actions: <Widget>[
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: new Text('No'),
+            ),
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: new Text('Yes'),
+            ),
+          ],
+        ),
+      )) ?? false;
+    }
+    return true;
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-          iconTheme: IconThemeData(
-            color: Theme.of(context).primaryColor, //change your color here
-          ),
-          centerTitle: true,
-          backgroundColor: Color(0x00000000),
-          elevation: 0,
-          title: Text('TASK INFO')
-      ),
-      body: new Container(
-          padding: new EdgeInsets.all(20.0),
+    return new WillPopScope(
+        onWillPop: _onWillPop,
+          child:  Scaffold(
+        appBar: new AppBar(
+            iconTheme: IconThemeData(
+              color: Theme.of(context).primaryColor, //change your color here
+            ),
+            centerTitle: true,
+            backgroundColor: Color(0x00000000),
+            elevation: 0,
+            title: Text('TASK INFO')
+        ),
+        body: new Container(
+            padding: new EdgeInsets.all(20.0),
 
-          child: new Form(
-              key: this._formKey,
-              child: new ListView(
+            child: new Form(
+                key: this._formKey,
+                child: new ListView(
 
-                children: taskInfo(context)
+                  children: taskInfo(context)
 
-              )
-          )
+                )
+            )
 
-      ),
+        ),
+        )
     );
   }
 

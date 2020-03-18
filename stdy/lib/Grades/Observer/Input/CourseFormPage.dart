@@ -326,38 +326,71 @@ class CourseInputState extends State<CourseInputPage>{
         )
     );
   }
+  bool checkFormFilled(){
+    _formKey.currentState.save();
+    if(_addGrade!=null || _addYear!='' || _addCourse!='' || dropdownValueSem!=null || _curr ||  dropdownValueGrade != "Letter" || dropdownValueLetter!=null){
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> _onWillPop() async {
+    if(checkFormFilled()) {
+      return (await showDialog(
+        context: context,
+        builder: (context) =>
+        new AlertDialog(
+          title: new Text('Quit'),
+          content: new Text('Do you want to discard unsaved changes?'),
+          actions: <Widget>[
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: new Text('No'),
+            ),
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: new Text('Yes'),
+            ),
+          ],
+        ),
+      )) ?? false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-          iconTheme: IconThemeData(
-            color: Theme.of(context).primaryColor, //change your color here
+    return new WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+          appBar: new AppBar(
+              iconTheme: IconThemeData(
+                color: Theme
+                    .of(context)
+                    .primaryColor, //change your color here
+              ),
+              centerTitle: true,
+              backgroundColor: Color(0x00000000),
+              elevation: 0,
+              title: Text('INPUT COURSE')
           ),
-          centerTitle: true,
-          backgroundColor: Color(0x00000000),
-          elevation: 0,
-          title: Text('INPUT COURSE')
-      ),
-      body:
+          body:
 
-      new Container(
-          padding: new EdgeInsets.all(20.0),
-          child: new Column(
-            children: <Widget>[
-              _buildForm(context),
+          new Container(
+              padding: new EdgeInsets.all(20.0),
+              child: new Column(
+                children: <Widget>[
+                  _buildForm(context),
 
-            ],
-          )
-          //,
+                ],
+              )
+            //,
 
 
+          ),
+        )
 
-      ),
     );
   }
 }
 
-/*
-
- */

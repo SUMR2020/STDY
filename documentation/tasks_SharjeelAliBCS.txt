@@ -1,19 +1,19 @@
 Required Features:
 1. Add task page to show all task info (Done)
-2. Add grade predictor for grade goal
-3. Add gpa predictor for gpa goal (Done)
+2. Add gpa predictor for gpa goal (Done)
 3. Add validator/checker for bonus marks (Done)
-4. Option to edit tasks
-5. Back button unsaved changes
-6. Option to add letter grade (Done)
-7. Validation checks
-8. Option to set courses too "PAST"/Complete. Requires grade input. 
-9. GPA table input
+4. Back button unsaved changes (Done)
+5. Option to add letter grade (Done)
+6. Validation checks (Done)
+7. Option to set courses too "PAST"/Complete. Requires grade input. (Done)
+8. Option to edit tasks
+9. Add grade predictor for grade goal
 
 Bonus features:
-1. Course Outline
-2. Add option to input/export JSON files for data
-3. Option to bundle input tasks (i.e. assignment section has 4 assignments, can input this bundle together as one, makes 4 assignment tasks). 
+1. GPA table input
+2. Course Outline
+3. Add option to input/export JSON files for data
+4. Option to bundle input tasks (i.e. assignment section has 4 assignments, can input this bundle together as one, makes 4 assignment tasks). 
 
 Refactor Changes:
 1. Change "curr" to false for taken (Done)

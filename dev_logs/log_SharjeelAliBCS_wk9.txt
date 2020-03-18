@@ -1,5 +1,6 @@
 1. Mar 16 (Mon) 9:30 - 12:30 (3 hours)
    a. Styled the grades pages to make them less bland. 
-2. Mar 18 (Wed) 9:00 - 11:00
+2. Mar 18 (Wed) 9:00 - 12:00
    a. fixed some bugs
    b. Added option to set course as "complete"
+   c. Added back button "unsaved changes"

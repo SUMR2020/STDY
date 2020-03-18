@@ -286,7 +286,7 @@ class GradesData with ChangeNotifier{
 
       if (courses[i].curr) {
 
-        if (curr && courses[i].weighted!=null) {
+        if (curr && (courses[i].weighted!=0 && !courses[i].weighted.isNaN)) {
           gpa+= double.parse(findNumberGPA(courses[i].weighted));
         } else {
           size--;
