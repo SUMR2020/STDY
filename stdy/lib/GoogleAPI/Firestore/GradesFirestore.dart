@@ -39,6 +39,11 @@ void removeCourse(String id) async {
         .delete();
   }
 
+  void setCompleteCourse(String course, String letterGrade, double grade) async{
+    await db.collection("users").document(uid).collection("Grades").document((course)).updateData(
+        {"grade": grade,"letter": letterGrade,"current": false});
+  }
+
   void addCourseData(String course, String semester,int year, bool curr, double grade,String letterGrade, String id) async {
 
     await db

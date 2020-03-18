@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../Input/PrevTaskFormPage.dart';
+import '../Input/CompleteCourseFormPage.dart';
 import '../../../UpdateApp/Subject/SettingsData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'TaskPage.dart';
@@ -9,8 +10,10 @@ import '../Predictor/GradePredictorPage.dart';
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
 import '../../Subject/GradesData.dart';
 import '../../Helper/Course.dart';
+import '../../Helper/CoursePopup.dart';
 import '../../Helper/TaskItem.dart';
 import '../../../Schedule/Helper/Task.dart';
+
 
 
 class CoursePage extends StatefulWidget {
@@ -44,7 +47,67 @@ class CoursePageState extends State<CoursePage> {
           builder: (context) => PrevTaskFormPage(),
         ));
     setState(() {});
+    if(gradesData.getCourseByID(GradesData.currCourseID).totalWeight>=100){
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("Course Complete!"),
+            content: new Text("Do you wish to complete the course? You will not be able to edit any tasks after."),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Yes"),
+                onPressed: () async{
+                  await _openCompleteCoursePage();
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text("No"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
 
+  }
+
+  void _showDialog(String title, String content) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title,
+            style: TextStyle(
+              fontSize: 16.0 + fontScale,
+            ),),
+          content: new Text(content,
+            style: TextStyle(
+              fontSize: 16.0 + fontScale,
+            ),),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close",
+                style: TextStyle(
+                  fontSize: 16.0 + fontScale,
+                ),),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
 
@@ -104,6 +167,18 @@ class CoursePageState extends State<CoursePage> {
     setState(() {});
   }
 
+  void _openCompleteCoursePage() async {
+    List<bool> complete = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CompleteCourseFormPage(),
+        ));
+    if(complete!=null) {
+      await gradesData.refreshAuditPage();
+      print("done with complete page");
+      Navigator.pop(context);
+    }
+  }
 
   List<Widget> _buildTasks(String type, List<Task> tasks){
     List<Widget> courseWidgets = <Widget>[];
@@ -122,7 +197,6 @@ class CoursePageState extends State<CoursePage> {
       }
 
       else {
-
         percent = tasks[i].grade / tasks[i].totalGrade;
         double gradeWeighted =  percent* tasks[i].weight;
         gradeWeighted = double.parse(gradeWeighted.toStringAsFixed(1));
@@ -130,7 +204,6 @@ class CoursePageState extends State<CoursePage> {
 
         earnedInfo = 'Earned: ${tasks[i].grade}/${tasks[i].totalGrade}';
         weightedInfo ='$gradeWeighted/${tasks[i].weight}';
-
       }
 
       courseWidgets.add(
@@ -185,7 +258,7 @@ class CoursePageState extends State<CoursePage> {
                           ),
                           Padding(
                             padding: EdgeInsets.all(10.0),
-                            child: Text("$percent%",
+                            child: Text(percent==null?"CURR":"$percent%",
                               style: TextStyle(
                                   fontSize: 30,
                                   color: Colors.white,
@@ -358,41 +431,6 @@ class CoursePageState extends State<CoursePage> {
   }
 
 
-  /*
-
-  Widget buildUserInfo(){
-    return Container(
-        child: Container(
-            child: Column(
-                children: <Widget>[
-                  Text("Student Stats",
-                    style: TextStyle(
-                      fontSize: 16.0 + fontScale,
-                    ),
-                  ),
-                  Text("Total weight: ${gradesData.totalWeights}",
-                    style: TextStyle(
-                      fontSize: 16.0 + fontScale,
-                    ),),
-                  Text("Actual grade:${gradesData.grade}%",
-                    style: TextStyle(
-                      fontSize: 16.0 + fontScale,
-                    ),),
-                  Text("Current grade: ${gradesData.weighted}%",
-                    style: TextStyle(
-                      fontSize: 16.0 + fontScale,
-                    ),),
-                  Text("Letter grade: ${gradesData.letterGrade}",
-                    style: TextStyle(
-                      fontSize: 16.0 + fontScale,
-                    ),),
-
-                ]
-            )
-        )
-    );
-  }*/
-
   Widget projectWidget() {
     return FutureBuilder(
       builder: (context, projectSnap) {
@@ -421,8 +459,32 @@ class CoursePageState extends State<CoursePage> {
     );
   }
 
+  void choiceAction(String choice) async{
+    print("Working for $choice");
+    switch(choice){
+      case CoursePopup.compCourse:
+        if(gradesData.getCourseByID(GradesData.currCourseID).totalWeight<100){
+          _showDialog("Error", "Course is not completed. Weight is less than 100.");
+        }
+        else {
+          await _openCompleteCoursePage();
+        }
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("building it again for id of ${GradesData.currCourseID}");
+    if(gradesData.getCourseByID(GradesData.currCourseID)==null){
+      return Scaffold(
+        appBar: new AppBar(
+            iconTheme: IconThemeData(
+              color: Theme.of(context).primaryColor, //change your color here
+            ),
+        )
+      );
+    }
 
     return Scaffold(
       appBar: new AppBar(
@@ -436,7 +498,25 @@ class CoursePageState extends State<CoursePage> {
               '${gradesData.getCourseByID(GradesData.currCourseID).code} '
               '${gradesData.getCourseByID(GradesData.currCourseID).sem} '
               '${gradesData.getCourseByID(GradesData.currCourseID).year}',
-            )
+            ),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+
+            child: PopupMenuButton<String>(
+                onSelected: choiceAction,
+
+                itemBuilder: (BuildContext context){
+                  return CoursePopup.choices.map((String choice){
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+            ),
+          ),
+        ],
       ),
 
 

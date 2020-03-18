@@ -48,7 +48,8 @@ class GradesData with ChangeNotifier{
 //Getters
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
   Task getTaskByID(String id){
-    for(int i =0; i<courses.length;i++){
+
+    for(int i =0; i<tasks.length;i++){
       if(tasks[i].id ==id){
         return tasks[i];
       }
@@ -156,10 +157,33 @@ class GradesData with ChangeNotifier{
     await refreshAuditPage();
 }
 
+  bool isNumeric(String s) {
+    if(s == null) {
+      return false;
+    }
+    return double.parse(s, (e) => null) != null;
+  }
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //ADDERS
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  void addCompleteCourseData(String strGrade) async{
+    print("inputted value of $strGrade");
+    double grade =0.0;
+    String letterGrade = 'CURR';
+    if (isNumeric((strGrade))) {
+      grade = double.parse(strGrade);
+      letterGrade = findLetterGPA(grade);
+    }
+    else {
+      letterGrade = strGrade;
+      grade = double.parse(convertLetterToDouble(letterGrade));
+    }
+    print("letter is $letterGrade for percent of $grade");
+    await firestore.setCompleteCourse(currCourseID, letterGrade, grade);
+
+  }
   void addPrevTaskFormData(String type, String name, double weight, int total, double grade, bool bonus) async{
 
     await firestore.addTaskData(name, currCourseID, 0, null, null, null, true, weight, grade, type, null, bonus, total, currCourseID);
@@ -223,7 +247,7 @@ class GradesData with ChangeNotifier{
 
     for(int i =0; i<tasks.length; i++){
 
-      if(tasks[i].grade==-1){
+      if(tasks[i].grade==null){
         continue;
       }
       double currGrade = tasks[i].grade;
@@ -262,7 +286,7 @@ class GradesData with ChangeNotifier{
 
       if (courses[i].curr) {
 
-        if (curr && courses[i].weighted!=null) {
+        if (curr && (courses[i].weighted!=0 && !courses[i].weighted.isNaN)) {
           gpa+= double.parse(findNumberGPA(courses[i].weighted));
         } else {
           size--;

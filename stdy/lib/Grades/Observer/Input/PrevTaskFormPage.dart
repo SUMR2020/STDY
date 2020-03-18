@@ -93,140 +93,175 @@ class PrevTaskFormState extends State<PrevTaskFormPage>{
     return null;
   }
 
+  bool checkFormFilled(){
+    _formKey.currentState.save();
+    if(_grade!='' || _total!='' || _weight!='' || _name!='' || _bonus || dropdownValueTask!=null){
+      return true;
+
+    }
+    return false;
+  }
+
+  Future<bool> _onWillPop() async {
+    if(checkFormFilled()) {
+      return (await showDialog(
+        context: context,
+        builder: (context) =>
+        new AlertDialog(
+          title: new Text('Quit'),
+          content: new Text('Do you want to discard unsaved changes?'),
+          actions: <Widget>[
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: new Text('No'),
+            ),
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: new Text('Yes'),
+            ),
+          ],
+        ),
+      )) ?? false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-          iconTheme: IconThemeData(
-            color: Theme.of(context).primaryColor, //change your color here
-          ),
-          centerTitle: true,
-          backgroundColor: Color(0x00000000),
-          elevation: 0,
-          title: Text('INPUT TASK')
-      ),
-      body: new Container(
-          padding: new EdgeInsets.all(20.0),
-          child: new Form(
-            key: this._formKey,
-            child: new ListView(
+    return new WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+        appBar: new AppBar(
+            iconTheme: IconThemeData(
+              color: Theme.of(context).primaryColor, //change your color here
+            ),
+            centerTitle: true,
+            backgroundColor: Color(0x00000000),
+            elevation: 0,
+            title: Text('INPUT TASK')
+        ),
+        body: new Container(
+            padding: new EdgeInsets.all(20.0),
+            child: new Form(
+              key: this._formKey,
+              child: new ListView(
 
-            children: <Widget>[
-              new TextFormField(
-                  style: TextStyle(
-                    fontSize: 16.0 + fontScale,
-                  ),
-                  decoration: new InputDecoration(
-                    hintText: 'Enter task name here...',
-                    labelText: "Task name *",
-                  ),
-                  validator: this._validateTaskName,
-                  onSaved: (String value) {
-                    print("val is $value");
-                    _name = value;
-                  }),
-              new TextFormField(
-                  style: TextStyle(
-                    fontSize: 16.0 + fontScale,
-                  ),
-                  keyboardType: TextInputType.number,
-                  decoration: new InputDecoration(
-                    hintText: 'Enter task grade here...',
-                    labelText: "Task grade *",
-                  ),
-                  validator: this._validateTaskGrade,
-                  onSaved: (String value) {
-                    print("val is $value");
-                    _grade = value;
-                  }),
-              new TextFormField(
-                  style: TextStyle(
-                    fontSize: 16.0 + fontScale,
-                  ),
-                  keyboardType: TextInputType.number,
-                  decoration: new InputDecoration(
-                    hintText: 'Enter task total marks here...',
-                    labelText: "Task total marks *",
-                  ),
-                  validator: this._validateTaskTotal,
-                  onSaved: (String value) {
-                    print("val is $value");
-                    _total = value;
-                  }),
-              new TextFormField(
-                  style: TextStyle(
-                    fontSize: 16.0 + fontScale,
-                  ),
-                  keyboardType: TextInputType.number,
-                  decoration: new InputDecoration(
-                    hintText: 'Enter task weight here...',
-                    labelText: "Task weight *",
-                  ),
-                  validator: this._validateTaskWeight,
-                  onSaved: (String value) {
-                    print("val is $value");
-                    _weight = value;
-                  }),
-              Text("Task type"),
-              DropdownButton<String>(
+              children: <Widget>[
+                new TextFormField(
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),
+                    decoration: new InputDecoration(
+                      hintText: 'Enter task name here...',
+                      labelText: "Task name *",
+                    ),
+                    validator: this._validateTaskName,
+                    onSaved: (String value) {
+                      print("val is $value");
+                      _name = value;
+                    }),
+                new TextFormField(
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),
+                    keyboardType: TextInputType.number,
+                    decoration: new InputDecoration(
+                      hintText: 'Enter task grade here...',
+                      labelText: "Task grade *",
+                    ),
+                    validator: this._validateTaskGrade,
+                    onSaved: (String value) {
+                      print("val is $value");
+                      _grade = value;
+                    }),
+                new TextFormField(
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),
+                    keyboardType: TextInputType.number,
+                    decoration: new InputDecoration(
+                      hintText: 'Enter task total marks here...',
+                      labelText: "Task total marks *",
+                    ),
+                    validator: this._validateTaskTotal,
+                    onSaved: (String value) {
+                      print("val is $value");
+                      _total = value;
+                    }),
+                new TextFormField(
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),
+                    keyboardType: TextInputType.number,
+                    decoration: new InputDecoration(
+                      hintText: 'Enter task weight here...',
+                      labelText: "Task weight *",
+                    ),
+                    validator: this._validateTaskWeight,
+                    onSaved: (String value) {
+                      print("val is $value");
+                      _weight = value;
+                    }),
+                Text("Task type"),
+                DropdownButton<String>(
 
-                hint: Text("Choose task type"),
-                value: dropdownValueTask,
-                icon: Icon(Icons.arrow_downward),
-                iconSize: 24,
-                elevation: 16,
-                style: TextStyle(
+                  hint: Text("Choose task type"),
+                  value: dropdownValueTask,
+                  icon: Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  elevation: 16,
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 16.0+ fontScale,
+                  ),
+                  underline: Container(
+                    height: 2,
                     color: Theme.of(context).primaryColor,
-                    fontSize: 16.0+ fontScale,
+                  ),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownValueTask = newValue;
+                    });
+                  },
+                  items: tasks
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  })
+                      .toList(),
                 ),
-                underline: Container(
-                  height: 2,
-                  color: Theme.of(context).primaryColor,
+                new CheckboxListTile(
+
+                  title: Text("Is this a bonus task?",
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),),
+                  value: _bonus,
+                  activeColor: Theme.of(context).primaryColor,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _bonus = value;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
                 ),
-                onChanged: (String newValue) {
-                  setState(() {
-                    dropdownValueTask = newValue;
-                  });
-                },
-                items: tasks
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                })
-                    .toList(),
-              ),
-              new CheckboxListTile(
 
-                title: Text("Is this a bonus task?",
-                  style: TextStyle(
-                    fontSize: 16.0 + fontScale,
-                  ),),
-                value: _bonus,
-                activeColor: Theme.of(context).primaryColor,
-                onChanged: (bool value) {
-                  setState(() {
-                    _bonus = value;
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
+                RaisedButton(
+                  child: Text('Add task',
+                    style: TextStyle(
+                      fontSize: 16.0 + fontScale,
+                    ),),
+                  onPressed: (){
+                    addCourseButton(context);
+                  },
+                ),
 
-              RaisedButton(
-                child: Text('Add task',
-                  style: TextStyle(
-                    fontSize: 16.0 + fontScale,
-                  ),),
-                onPressed: (){
-                  addCourseButton(context);
-                },
-              ),
-
-            ],
-          ),
-          )
-
+              ],
+            ),
+            )
+        )
       ),
     );
   }
