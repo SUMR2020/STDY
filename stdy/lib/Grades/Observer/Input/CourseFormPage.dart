@@ -301,35 +301,27 @@ class CourseInputState extends State<CourseInputPage>{
                         ),
                         SizedBox(width: 10),
                         _buildGradeForm(context),
-
-
-
                       ]
                   ),
-
-
                 ]
               )
-
-
-
             ),
-
-
-
-            RaisedButton(
-              child: Text('Add course',
-                  style: TextStyle(
-                    fontSize: 16.0 + fontScale,
+            Row(
+                children: <Widget>[
+                  Expanded(
+                    child: RaisedButton(
+                      child: Text('Add Course',
+                          style: TextStyle(
+                            fontSize: 16.0 + fontScale,
+                          )
+                      ),
+                      onPressed: (){
+                        addCourseButton(context);
+                      },
+                    ),
                   )
-              ),
-
-              onPressed: (){
-                addCourseButton(context);
-              },
-            ),
-
-
+                ]
+            )
           ],
         )
     );

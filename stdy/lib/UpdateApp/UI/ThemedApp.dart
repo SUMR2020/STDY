@@ -26,6 +26,7 @@ return Container(
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if(snapshot.hasData){
           return MaterialApp(
+              debugShowCheckedModeBanner: false,
               theme: theme.getTheme(),
               title: 'STDY',
               home: SplashScreen.navigate(//plays splash screen animation

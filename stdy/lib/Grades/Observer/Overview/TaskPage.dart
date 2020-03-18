@@ -20,6 +20,7 @@ class TaskState extends State<TaskPage> {
   GradesData gradesData;
   TaskState(){
     gradesData = new GradesData();
+    print("is is ${GradesData.currTaskID}");
     _bonus = gradesData.getTaskByID(GradesData.currTaskID).bonus;
 
   }

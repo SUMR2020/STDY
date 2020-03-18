@@ -78,12 +78,14 @@ class AuditPageState extends State<AuditPage> {
           MaterialPageRoute(
             builder: (context) => CoursePage(),
           ));
-
+      print("back in audit page");
+      setState(() {});
     }
-
     else {
       _showDialog("Error", "Cannot add assignments to past course.");
     }
+
+
 
   }
 
@@ -139,6 +141,7 @@ class AuditPageState extends State<AuditPage> {
     List<Widget> courseWidgets = <Widget>[];
 
     for(int i =0; i<courses.length; i++){
+
       //String grade = gradesData.firestore.getCourseGrade((courses[i].id+semester).replaceAll(' ',''));
 
       courseWidgets.add(
@@ -173,7 +176,7 @@ class AuditPageState extends State<AuditPage> {
                       ),
                     Padding(
                       padding: EdgeInsets.all(10.0),
-                      child: Text(courses[i].letterGrade,
+                      child: Text(courses[i].curr && courses[i].letterGrade!='CURR'?"CURR (${courses[i].letterGrade})": courses[i].letterGrade,
                         style: TextStyle(
                             fontSize: 30,
                             color: Colors.white,
