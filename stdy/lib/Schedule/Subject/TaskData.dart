@@ -76,35 +76,53 @@ class TaskData {
         type, daily, bonus, null, onlyC);
   }
 
-  Future<DateTime> updateDay(DateTime d) async {
-    DateTime now = new DateTime(
-        DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    DateTime check = new DateTime(d.year, d.month, d.day);
-    if (check == now) {
-      return d;
-    } else {
-      var list = await taskManager.getCourseData();
-      for (int i = 0; i < list.length; i++) {
-        String course = taskManager.getCourse(list[i]);
-        final QuerySnapshot courseTasks =
-            await taskManager.getTasksForCourse(course);
-        final List<DocumentSnapshot> documents = courseTasks.documents;
-        for (var task in documents) {
-          DocumentReference docRef = await taskManager.getTaskData(task.data["course"], task.data["id"]);
-          var dates = await taskManager.getDates(docRef);
-          List<DateTime> datesObjs = new List<DateTime>();
-          for (Timestamp t in dates) {
-            DateTime date = (t.toDate());
-            if (!(date.isBefore(DateTime.now())))
-              datesObjs.add(DateTime(date.year, date.month, date.day));
-          }
-          taskManager.updateTask(task.data["course"], task.data["id"]);
-          taskManager.redistributeData(task, course);
-          taskManager.updateDaily(docRef);
+  Future<DateTime> updateDay() async {
+      print ("kil me");
+      _taskDocs = await taskManager.getTasks();
+      for (DocumentSnapshot task in _taskDocs) {
+        print(task.data["name"]);
+        var docRef = await taskManager.getTaskData(
+            task.data["course"], task.data["id"]);
+        var dates = await taskManager.allDates(docRef);
+        if (dates == null) dates = new List<String>();
+        List<DateTime> DoneDatesObjs = new List<DateTime>();
+        for (Timestamp t in dates) {
+          DateTime date = (t.toDate());
+          DoneDatesObjs.add(DateTime(date.year, date.month, date.day));
         }
+        DateTime today = DateTime.now();
+        if (!DoneDatesObjs.contains(
+            DateTime(today.year, today.month, today.day))) {
+          DoneDatesObjs.add(today);
+          var progress = await taskManager.getProgress(docRef);
+          if (progress == null) progress = new List<String>();
+          progress.add("0");
+          var goal = await taskManager.getGoal(docRef);
+          if (goal == null) goal = new List<String>();
+          var data = await docRef.get();
+          goal.add(data["today"]);
+          docRef.updateData({"progress": progress});
+          docRef.updateData({"goal": goal});
+          docRef.updateData({"allday": DoneDatesObjs});
+        }
+        var currdates = await taskManager.getDates(docRef);
+        List<DateTime> datesObjs = new List<DateTime>();
+        for (Timestamp t in currdates) {
+          DateTime date = (t.toDate());
+          if (date.isAfter(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day-1)))
+            datesObjs.add(DateTime(date.year, date.month, date.day));
+        }
+        docRef.updateData({"dates": datesObjs});
+        var num = ((task.data["toDo"]) / datesObjs.length);
+        docRef.updateData({
+          "daily": (num.toStringAsFixed(2)).toString()
+        });
+       // taskManager.redistributeData(task, task.data["id"]);
       }
-      return DateTime.now();
-    }
+
+          // update dates, remove old
+
+          // redistribute the data
   }
 
   Future<bool> getTasks() async {

@@ -4,3 +4,7 @@ March 16th, 2020 8am t0 9:30am:
 March 16th, 2020 7pm to 8:30pm:
 - worked on debugging the code to search for an error in displaying tasks
 - found it and fixed it
+
+March 18th, 2020 12-2pm:
+- worked on updating a function (daily)
+- to be called constantly to check if tasks ened to e updated
