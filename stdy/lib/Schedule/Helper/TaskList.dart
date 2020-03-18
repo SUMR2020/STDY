@@ -13,7 +13,7 @@ class TaskList implements Iterator{
   var _index = 0;
 
   // looping through untim empty
-  String get current => _tasks[_index++];
+  Task get current => _tasks[_index++];
   bool moveNext() => _index < _tasks.length;
 
   // ctor
