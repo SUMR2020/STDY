@@ -1,200 +1,257 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
+import 'package:study/Progress/Subject/ProgressData.dart';
 import '../../UpdateApp/Subject/SettingsData.dart';
 import '../../HomePage.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
 
-class progressPage extends StatefulWidget {
+class ProgressPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return progressPageState();
-  }
-}
-
-//factory class that draws pie charts
-
-class PieChartFactory {
-  PieChartFactory();
-
-  Widget makePieChart(List<charts.Series<Task,String>> _seriesPieData){
-    return Expanded(
-        child: charts.PieChart(
-            _seriesPieData,
-            animate : true,
-            behaviors: [
-              new charts.DatumLegend(
-                outsideJustification: charts.OutsideJustification.start,
-                horizontalFirst: false,
-                desiredMaxRows: 1,
-                cellPadding: new EdgeInsets.only(right:4.0, bottom:4.0),
-                entryTextStyle: charts.TextStyleSpec(
-                    color: charts.MaterialPalette.pink.shadeDefault,
-                    fontSize: 14 + fontScale
-                ),
-              )
-            ],
-            defaultRenderer: new charts.ArcRendererConfig(
-                arcWidth: 75,
-                arcRendererDecorators: [
-                  new charts.ArcLabelDecorator(
-                      labelPosition: charts.ArcLabelPosition.inside)
-                ])),
-      );
+    return ProgressPageState();
   }
 }
 
 //factory class that draws line graphs
 
-class LineChartFactory {
-  LineChartFactory();
+//class LineChartFactory {
+//  LineChartFactory();
+//
+//  Widget makeLineChart(List<charts.Series<Hours,int>> _seriesLineData){
+//    return Expanded(
+//      child: charts.LineChart(
+//        _seriesLineData,
+//        defaultRenderer: new charts.LineRendererConfig(
+//            includeArea: false, stacked: true),
+//        animate : true,
+//      ),
+//    );
+//  }
+//}
+//
+
+
+class ProgressPageState extends State<ProgressPage>{
+  List<charts.Series<Task,String>> _seriesPieData;
+  List<charts.Series<Task,String>> _seriesPieDataB;
+  List<charts.Series<Hours,int>> _seriesLineData;
+  //List<charts.Series<Hours,int>> _seriesLineDataB;
+
+  ProgressData progressData = new ProgressData();
+  Future taskProgress;
+
+  Future _getTasks() async{
+    print("getTasks called in page");
+    return  await progressData.getTotalProgressDatat();
+  }
+
+  List<charts.Series<Task,String>>  _seriesData(data, taskType){
+    List<Task> totalProgress=[];
+    data[taskType].forEach((k, v) => totalProgress.add(new Task('$k', double.parse(v['percent'].toStringAsFixed(1)), Color(0xFFFDA3A4) )));
+
+    return [new charts.Series(
+      data: totalProgress,
+      domainFn: (Task task,_)=>task.task,
+      measureFn: (Task task,_)=>task.taskvalue,
+//        colorFn: (Task task,_)=>
+//            charts.ColorUtil.fromDartColor(task.colorvalue),
+      id: 'Daily Task',
+      labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
+    )];
+  }
+  Widget makePieChart(Future taskProgress, var taskType){
+    return Expanded(
+        child: FutureBuilder(
+            future: taskProgress,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                print(snapshot.data.toString());
+                return charts.PieChart(
+                    _seriesData(snapshot.data, taskType),
+                    animate: true,
+                    behaviors: [
+                      new charts.DatumLegend(
+                        outsideJustification: charts.OutsideJustification.start,
+                        horizontalFirst: false,
+                        desiredMaxRows: 1,
+                        cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
+                        entryTextStyle: charts.TextStyleSpec(
+                            color: charts.MaterialPalette.pink.shadeDefault,
+                            fontSize: 14 + fontScale
+                        ),
+                      )
+                    ],
+                    defaultRenderer: new charts.ArcRendererConfig(
+                        arcWidth: 75,
+                        arcRendererDecorators: [
+                          new charts.ArcLabelDecorator()
+                        ]));
+              } else {
+                return Align(child: CircularProgressIndicator());
+              }
+            }
+        )
+    );
+  }
 
   Widget makeLineChart(List<charts.Series<Hours,int>> _seriesLineData){
     return Expanded(
       child: charts.LineChart(
-          _seriesLineData,
-          animate : true,
-        ),
+        _seriesLineData,
+        defaultRenderer: new charts.LineRendererConfig(
+            includeArea: false, stacked: true),
+        animate : true,
+      ),
     );
   }
-}
 
 
 
-class progressPageState extends State<progressPage>{
 
-  List<charts.Series<Task,String>> _seriesPieData;
-  List<charts.Series<Task,String>> _seriesPieDataB;
-  List<charts.Series<Hours,int>> _seriesLineData;
-
-//function to generate data to be passed into the graph drawing methods
-
-    _generateData(){
-
-      var pieData=[
-        new Task('Assignment 1', 25.0, Color(0xFFFDA3A4) ),
-        new Task('Assignment 2', 25.0, Color(0xFFF06292) ),
-        new Task('Assignment 3', 50.0 , Color(0xFFE91E63)),
-
-      ];
-
-      var pieDataB=[
-        new Task('Project 1', 15.0, Color(0xFFFDA3A4) ),
-        new Task('Project 2', 40.0, Color(0xFFF06292) ),
-        new Task('Project 3', 45.0 , Color(0xFFE91E63)),
-
-      ];
-
-      var lineData=[
-        new Hours(1,1),
-        new Hours(3,7),
-        new Hours(5,2),
-        new Hours(9,4),
-
-      ];
+  //function to generate data to be passed into the graph drawing methods
 
 
-      _seriesPieData.add(
-        charts.Series(
-          data: pieData,
-          domainFn: (Task task,_)=>task.task,
-          measureFn: (Task task,_)=>task.taskvalue,
-          colorFn: (Task task,_)=>
-              charts.ColorUtil.fromDartColor(task.colorvalue),
-              id: 'Daily Task',
-          labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
+  _generateData() {
 
-        ),
-      );
+    var pieDataB=[
+      new Task('Project 1', 15.0, Color(0xFFFDA3A4) ),
+      new Task('Project 2', 40.0, Color(0xFFF06292) ),
+      new Task('Project 3', 45.0 , Color(0xFFE91E63)),
 
-      _seriesPieDataB.add(
-        charts.Series(
-          data: pieDataB,
-          domainFn: (Task task,_)=>task.task,
-          measureFn: (Task task,_)=>task.taskvalue,
-          colorFn: (Task task,_)=>
-              charts.ColorUtil.fromDartColor(task.colorvalue),
-          id: 'Daily Task B',
-          labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
+    ];
 
-        ),
-      );
+    var actual=[
+      new Hours(0,11),
+      new Hours(1,12),
+      new Hours(2,2),
+      new Hours(3,4),
 
-      _seriesLineData.add(
-        charts.Series(
-          data: lineData,
-          domainFn: (Hours hours,_)=>hours.hours,
-          measureFn: (Hours hours,_)=>hours.days,
-          colorFn: (Hours hours,_)=>
-              charts.ColorUtil.fromDartColor(Color(0xFFFDA3A4)),
-          id: 'Hours',
+    ];
 
-        ),
-      );
+    var expected=[
+      new Hours(0,10),
+      new Hours(1,11),
+      new Hours(2,5),
+      new Hours(3,6),
+    ];
 
-    }
+
+    _seriesPieData.add(
+      charts.Series(
+        data: pieDataB,
+        domainFn: (Task task,_)=>task.task,
+        measureFn: (Task task,_)=>task.taskvalue,
+        colorFn: (Task task,_)=>
+            charts.ColorUtil.fromDartColor(task.colorvalue),
+        id: 'Daily Task',
+        labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
+
+      ),
+    );
+
+    _seriesPieDataB.add(
+      charts.Series(
+        data: pieDataB,
+        domainFn: (Task task,_)=>task.task,
+        measureFn: (Task task,_)=>task.taskvalue,
+        colorFn: (Task task,_)=>
+            charts.ColorUtil.fromDartColor(task.colorvalue),
+        id: 'Daily Task B',
+        labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
+
+      ),
+    );
+
+    _seriesLineData.add(
+      charts.Series(
+        data: actual,
+        domainFn: (Hours hours,_)=>hours.hours,
+        measureFn: (Hours hours,_)=>hours.days,
+        colorFn: (Hours hours,_)=>
+            charts.ColorUtil.fromDartColor(Color(0xFFFDA3A4)),
+        id: 'Hours',
+
+      ),
+    );
+
+    _seriesLineData.add(
+      charts.Series(
+        data: expected,
+        domainFn: (Hours hours,_)=>hours.hours,
+        measureFn: (Hours hours,_)=>hours.days,
+        colorFn: (Hours hours,_)=>
+            charts.ColorUtil.fromDartColor(Color(0xFFE91E63)),
+        id: 'Hours',
+
+      ),
+    );
+
+  }
 
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _seriesPieData = List<charts.Series<Task,String>>();
     _seriesPieDataB = List<charts.Series<Task,String>>();
     _seriesLineData = List<charts.Series<Hours,int>> ();
+    //_seriesLineDataB = List<charts.Series<Hours,int>> ();
     _generateData();
+    taskProgress = _getTasks();
   }
 
 
 
   @override
   Widget build(BuildContext context) {
-      PieChartFactory chartFactory = new PieChartFactory();
-      LineChartFactory linechartFactory =  new  LineChartFactory();
+//    PieChartFactory chartFactory = new PieChartFactory();
+//    LineChartFactory linechartFactory =  new  LineChartFactory();
 
-      // displays tabs on the page
+    // displays tabs on the page
     return DefaultTabController(
-        length: 6,
-        child:Scaffold(
-            appBar: new PreferredSize(
-              preferredSize: Size.fromHeight(kToolbarHeight),
-              child: new Container(
-                //  color: Colors.green,
-                child: new SafeArea(
-                  child: Column(
-                    children: <Widget>[
-                      new Expanded(child: new Container()),
-                      new TabBar(
-                        indicatorColor: Theme.of(context).accentColor,
-                        tabs: [
-                          Tab(icon: Icon(Icons.book,
-                            color: Theme.of(context).accentColor,)
-                          ),
-                          Tab(icon: Icon(Icons.assignment,
-                            color: Theme.of(context).accentColor,)),
-                          Tab(icon: Icon(Icons.note,
-                            color: Theme.of(context).accentColor,)),
-                          Tab(icon: Icon(Icons.event_note,
-                            color: Theme.of(context).accentColor,)
-                          ),
-                          Tab(icon: Icon(Icons.pie_chart,
-                            color: Theme.of(context).accentColor,)
-                          ),
-                          Tab(icon: Icon(Icons.blur_linear,
-                            color: Theme.of(context).accentColor,)
-                          ),
-                        ],
+      length: 6,
+      child:Scaffold(
+        appBar: new PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: new Container(
+            //  color: Colors.green,
+            child: new SafeArea(
+              child: Column(
+                children: <Widget>[
+                  new Expanded(child: new Container()),
+                  new TabBar(
+                    indicatorColor: Theme.of(context).accentColor,
+                    tabs: [
+                      Tab(icon: Icon(Icons.book,
+                        color: Theme.of(context).accentColor,)
+                      ),
+                      Tab(icon: Icon(Icons.assignment,
+                        color: Theme.of(context).accentColor,)),
+                      Tab(icon: Icon(Icons.note,
+                        color: Theme.of(context).accentColor,)),
+                      Tab(icon: Icon(Icons.event_note,
+                        color: Theme.of(context).accentColor,)
+                      ),
+                      Tab(icon: Icon(Icons.pie_chart,
+                        color: Theme.of(context).accentColor,)
+                      ),
+                      Tab(icon: Icon(Icons.blur_linear,
+                        color: Theme.of(context).accentColor,)
                       ),
                     ],
                   ),
-                ),
+                ],
               ),
             ),
+          ),
+        ),
 
-          //the body contains a list of widgets. each Padding() is a tab, it contains graphs
+        //the body contains a list of widgets. each Padding() is a tab, it contains graphs
 
-          body: TabBarView(
+        body: TabBarView(
             children: [
               Padding(
                   padding: EdgeInsets.all(8.0),
@@ -202,8 +259,8 @@ class progressPageState extends State<progressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              chartFactory.makePieChart(_seriesPieData),
-                              linechartFactory.makeLineChart(_seriesLineData),
+                              makePieChart(taskProgress, 'total'),
+                              makeLineChart(_seriesLineData),
                             ],
                           )
                       )
@@ -216,8 +273,8 @@ class progressPageState extends State<progressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              chartFactory.makePieChart(_seriesPieDataB),
-                              linechartFactory.makeLineChart(_seriesLineData),
+                              makePieChart(taskProgress, 'reading'),
+                              makeLineChart(_seriesLineData),
                             ],
                           )
                       )
@@ -230,9 +287,8 @@ class progressPageState extends State<progressPage>{
                   child: Center(
                     child: Column(
                       children: <Widget>[
-                        chartFactory.makePieChart(_seriesPieData),
-                        chartFactory.makePieChart(_seriesPieDataB),
-                        linechartFactory.makeLineChart(_seriesLineData),
+                        makePieChart(taskProgress, 'assignment'),
+                        makeLineChart(_seriesLineData),
                       ],
                     )
                   )
@@ -245,9 +301,8 @@ class progressPageState extends State<progressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              chartFactory.makePieChart(_seriesPieData),
-                              chartFactory.makePieChart(_seriesPieDataB),
-                              linechartFactory.makeLineChart(_seriesLineData),
+                              makePieChart(taskProgress, 'project'),
+                              makeLineChart(_seriesLineData),
                             ],
                           )
                       )
@@ -260,9 +315,8 @@ class progressPageState extends State<progressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              chartFactory.makePieChart(_seriesPieData),
-                              chartFactory.makePieChart(_seriesPieDataB),
-                              linechartFactory.makeLineChart(_seriesLineData),
+                              makePieChart(taskProgress, 'lectures'),
+                              makeLineChart(_seriesLineData),
                             ],
                           )
                       )
@@ -275,9 +329,8 @@ class progressPageState extends State<progressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              chartFactory.makePieChart(_seriesPieData),
-                              chartFactory.makePieChart(_seriesPieDataB),
-                              linechartFactory.makeLineChart(_seriesLineData),
+                              makePieChart(taskProgress, 'notes'),
+                              makeLineChart(_seriesLineData),
                             ],
                           )
                       )
@@ -285,8 +338,8 @@ class progressPageState extends State<progressPage>{
               ),
 
             ]
-           ),
         ),
+      ),
     );
 
   }

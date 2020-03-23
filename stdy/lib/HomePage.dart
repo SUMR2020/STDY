@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     SchedulePage(),
     AuditPage(),
-    progressPage(),
+    ProgressPage(),
     SettingsScreen()
   ];
 
