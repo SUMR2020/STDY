@@ -107,6 +107,8 @@ abstract class MainFirestore {
       final List<DocumentSnapshot> documents = courseTasks.documents;
       documents.forEach((data) => allTasks.add(data));
     }
+    print ("taskdata");
+    print(allTasks.toString());
     return allTasks;
   }
 
