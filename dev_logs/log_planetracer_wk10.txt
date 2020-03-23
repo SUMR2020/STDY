@@ -1,0 +1,2 @@
+March 23rd, 2020 12-1pm:
+- worked on fixing a bug I found with task addition
