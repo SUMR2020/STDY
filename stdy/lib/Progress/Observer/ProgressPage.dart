@@ -49,6 +49,7 @@ class ProgressPageState extends State<ProgressPage>{
   }
 
   List<charts.Series<Task,String>>  _seriesData(data, taskType){
+    print("in _seriesData");
     List<Task> totalProgress=[];
     data[taskType].forEach((k, v) => totalProgress.add(new Task('$k', double.parse(v['percent'].toStringAsFixed(1)), Color(0xFFFDA3A4) )));
 
@@ -67,7 +68,9 @@ class ProgressPageState extends State<ProgressPage>{
         child: FutureBuilder(
             future: taskProgress,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                print("connectionState: ");
+                print(snapshot.connectionState.toString());
                 print(snapshot.data.toString());
                 return charts.PieChart(
                     _seriesData(snapshot.data, taskType),

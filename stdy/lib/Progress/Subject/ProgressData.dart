@@ -19,6 +19,9 @@ class ProgressData {
     return diff.inDays <= 7;
   }
 
+  _progressTimeline(var task){
+
+  }
 
   _progressAggregate(var task){
     double weeklyProgress = 0.0;
@@ -72,6 +75,38 @@ class ProgressData {
   }
 
 
+  _courseTimeline(var courseTimeline, var task){
+    print("in course time line");
+    print(task.data['allday'].length.toString());
+    for (int i = 0; i<task.data['allday'].length; i++){
+      print("in loop");
+//      print("allday: " + task.data['allday'][i].toDate())
+      var allDayTime = task.data['allday'][i].toDate();
+      print(allDayTime.toString());
+      var timeDiff = allDayTime.difference(DateTime.now()).inDays;
+      print("timeDiff: " + timeDiff.toString());
+      String goal = task.data['goal'][i].toString();
+      String progress = task.data['progress'][i].toString();
+      courseTimeline[timeDiff.toString()]['totalGoal'] += double.parse(goal);
+      courseTimeline[timeDiff.toString()]['totalProgress'] += double.parse(progress);
+    }
+
+  }
+
+  _taskTimeline(var timeline, var task, var t){
+    if (task.data['type'] == t){
+      for (int i = 0; i<task.data['allday'].length; i++){
+        var timeDiff = task.data['allday'][i].toDate().difference(DateTime.now()).inDays;
+        print(timeDiff);
+        String goal = task.data['goal'][i].toString();
+        String progress = task.data['progress'][i].toString();
+        timeline[t][timeDiff.toString()]['totalGoal'] += double.parse(goal);
+        timeline[t][timeDiff.toString()]['totalProgress'] += double.parse(progress);
+      }
+    }
+  }
+
+
   Future<void> fetchProgressData() async{
     List<DocumentSnapshot> tasks = await fireStore.getTasks();
     var progress = {
@@ -82,16 +117,77 @@ class ProgressData {
       'lectures': {},
       'notes': {}
     };
+    var timeline = {
+      'total': {
+        "-6": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-5": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-4": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-3": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-2": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-1": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "0": {"totalGoal": 0.0, "totalProgress": 0.0},
+      },
+      'assignment':{
+        "-6": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-5": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-4": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-3": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-2": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-1": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "0": {"totalGoal": 0.0, "totalProgress": 0.0},
+        },
+      'reading':{
+        "-6": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-5": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-4": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-3": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-2": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-1": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "0": {"totalGoal": 0.0, "totalProgress": 0.0},
+      },
+      'project':{
+        "-6": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-5": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-4": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-3": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-2": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-1": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "0": {"totalGoal": 0.0, "totalProgress": 0.0},
+      },
+      'lectures':{
+        "-6": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-5": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-4": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-3": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-2": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-1": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "0": {"totalGoal": 0.0, "totalProgress": 0.0},
+      },
+      'notes':{
+        "-6": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-5": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-4": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-3": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-2": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "-1": {"totalGoal": 0.0, "totalProgress": 0.0},
+        "0": {"totalGoal": 0.0, "totalProgress": 0.0},
+      }
+    };
 
     for (var task in tasks){
+      print("task: ");
+      print(task.data['name']);
       if (task.data['curr']){
         _courseProgress(progress['total'], task);
+        _courseTimeline(timeline['total'], task);
         for (var t in taskTypes){
           _taskProgress(progress, task, t);
+          _taskTimeline(timeline, task, t);
 
         }
       }
     }
+//    print(timeline['assignment'].toString());
 
     double sumTotalProgress = 0.0;
     progress['total'].forEach((k, v) => sumTotalProgress +=  v['totalProgress']);
@@ -111,6 +207,7 @@ class ProgressData {
   }
 
   Future  getTotalProgressDatat() async{
+    print("in get total progress");
     return await fetchProgressData();
   }
 }
