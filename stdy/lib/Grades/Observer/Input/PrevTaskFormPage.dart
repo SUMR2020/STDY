@@ -251,6 +251,7 @@ class PrevTaskFormState extends State<PrevTaskFormPage>{
                 RaisedButton(
                   child: Text('Add task',
                     style: TextStyle(
+                      color: Colors.white,
                       fontSize: 16.0 + fontScale,
                     ),),
                   onPressed: (){

@@ -37,6 +37,8 @@ class GradesData with ChangeNotifier{
   List<Course> currCoursePredict;
   String gpaNeededPredict;
 
+  double gradeNeededPredict;
+
 
   GradesData(){
     firestore = GradesFirestore();
@@ -69,6 +71,20 @@ class GradesData with ChangeNotifier{
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //Predictor Calculations
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  bool calculateGradePredict(String goalGrade){
+    double gradeNeeded;
+    if(isNumeric((goalGrade))){
+      gradeNeeded = double.parse(goalGrade);
+    }
+    else{
+      gradeNeeded = double.parse(convertLetterToDouble(goalGrade));
+    }
+
+    gradeNeededPredict = (gradeNeeded-getCourseByID(currCourseID).grade) /(100-getCourseByID(currCourseID).totalWeight)*100;
+    gradeNeededPredict = double.parse(gradeNeededPredict.toStringAsFixed(2));
+    return true;
+  }
 
   bool calculateGPAPredict(String goalGPA){
 

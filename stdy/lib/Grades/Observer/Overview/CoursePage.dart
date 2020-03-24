@@ -366,11 +366,16 @@ class CoursePageState extends State<CoursePage> {
                     ),
                     SizedBox(
                       width: 200,
-                      child:LinearProgressIndicator(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+
+                        child:LinearProgressIndicator(
                         value: progressValue,
                         backgroundColor: Colors.white,
-                        valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),
+                        valueColor: new AlwaysStoppedAnimation<Color>(Color(0xfffc8284)),
                       ),
+                      )
+
                     ),
                     Padding(
                       padding: EdgeInsets.all(10.0),

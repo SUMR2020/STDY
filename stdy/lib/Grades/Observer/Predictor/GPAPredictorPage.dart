@@ -255,6 +255,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
   Widget _buildForm(BuildContext context){
     return new Form(
         key: this._formKey,
+
         child: new Column(
 
           children: <Widget>[
@@ -281,18 +282,21 @@ class GPAPredictorState extends State<GPAPredictorPage> {
 
                 ),
 
-            RaisedButton(
+          SizedBox(
+            width: double.infinity,
+            child:  RaisedButton(
+
               child: Text('Run Predictor',
                   style: TextStyle(
+                    color: Colors.white,
                     fontSize: 16.0 + fontScale,
                   )
               ),
-
               onPressed: (){
                 calculateGPANeeded();
               },
             ),
-
+          )
 
           ],
         )
@@ -426,8 +430,8 @@ class GPAPredictorState extends State<GPAPredictorPage> {
   String _validateGPAGoal(String value) {
     // If empty value, the isEmail function throw a error.
     // So I changed this function with try and catch.
-    if(double.parse(value)>12) return 'Please enter a GPA less than or equal to 12.0';
     if (value.isEmpty ) return 'Please enter a valid GPA.';
+    if(double.parse(value)>12) return 'Please enter a GPA less than or equal to 12.0';
     return null;
   }
 
