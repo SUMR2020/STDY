@@ -1,0 +1,14 @@
+March 10th:
+Team meeting discussing design patters and working on document for d3 11:30 -1:00 pm
+
+March 11th:
+Formatting and  drawing diagrams
+
+March 12th: fixed diagrams and worked more  on write up
+
+March 13th: refactored line  charts
+Team meeting to discuss d3 more
+Formatted diagrams on draw  io  (layered, hierarchy, batch sequential, publish/subscribe)
+
+March 14th:
+Wrote design pattern blurb, tasks blurb, commented code
