@@ -182,20 +182,20 @@ class ProgressPageState extends State<ProgressPage>{
                   new TabBar(
                     indicatorColor: Theme.of(context).accentColor,
                     tabs: [
-                      Tab(icon: Icon(Icons.book,
+                      Tab(icon: Icon(Icons.home,
                         color: Theme.of(context).accentColor,)
                       ),
+                      Tab(icon: Icon(Icons.book,
+                        color: Theme.of(context).accentColor,)),
                       Tab(icon: Icon(Icons.assignment,
                         color: Theme.of(context).accentColor,)),
+                      Tab(icon: Icon(Icons.build,
+                        color: Theme.of(context).accentColor,)
+                      ),
+                      Tab(icon: Icon(Icons.personal_video,
+                        color: Theme.of(context).accentColor,)
+                      ),
                       Tab(icon: Icon(Icons.note,
-                        color: Theme.of(context).accentColor,)),
-                      Tab(icon: Icon(Icons.event_note,
-                        color: Theme.of(context).accentColor,)
-                      ),
-                      Tab(icon: Icon(Icons.pie_chart,
-                        color: Theme.of(context).accentColor,)
-                      ),
-                      Tab(icon: Icon(Icons.blur_linear,
                         color: Theme.of(context).accentColor,)
                       ),
                     ],
