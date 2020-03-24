@@ -45,7 +45,8 @@ abstract class MainFirestore {
       String daily,
       bool bonus,
       int total,
-      String onlyC) async {
+      String onlyC,
+      bool curr) async {
     await addingUid();
     String id = (new DateTime.now().millisecondsSinceEpoch).toString();
     course = course.replaceAll(" ", "");
@@ -70,7 +71,7 @@ abstract class MainFirestore {
       "grade": grade,
       "type": type,
       "daily": daily,
-      "curr": true,
+      "curr": curr,
       "bonus": bonus,
       "totalgrade": total,
       "today": daily,

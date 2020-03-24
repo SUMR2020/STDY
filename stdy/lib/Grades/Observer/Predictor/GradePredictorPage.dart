@@ -196,7 +196,6 @@ class GradePredictorState extends State<GradePredictorPage> {
               ),
             )
 
-
           ],
         )
     );

@@ -62,8 +62,9 @@ void removeCourse(String id) async {
       "totalweight": 0,
       "weighted": 0,
     });
-
   }
+
+
 
   Future <Map<String, int>> getGPATable() async {
 
@@ -76,6 +77,37 @@ void removeCourse(String id) async {
 
     return gpaTable;
 
+  }
+
+  void updateTaskData(
+      String course,
+      String id,
+      String name,
+      double weight,
+      double grade,
+      int total,
+      bool bonus,
+      bool curr) async {
+    await addingUid();
+    course = course.replaceAll(" ", "");
+    await db
+        .collection("users")
+        .document(uid)
+        .collection("Grades")
+        .document((course))
+        .collection("Tasks")
+        .document(id)
+        .updateData({
+      "name": name,
+      "goal": new List<int>(),
+      "weight": weight,
+      "grade": grade,
+      "curr": curr,
+      "bonus": bonus,
+      "totalgrade": total,
+      "done": new List<DateTime>(),
+      "allday": new List<DateTime>(),
+    });
   }
 
   Future<List<DocumentSnapshot>> getTaskData(String course, String x) async {

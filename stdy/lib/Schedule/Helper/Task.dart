@@ -17,9 +17,13 @@ class Task {
   String onlyCourse;
   bool bonus;
   bool curr;
+  bool forMarks;
   double grade;
   double weight;
   int totalGrade;
+  DateTime due;
+  int totalHours;
+
 
 
 
@@ -35,7 +39,7 @@ class Task {
 
   }
 
-  Task.prev(String t, String n, String ti, String i, String c, String oc,bool b, bool cu, double g,double w,int tg){
+  Task.prev(String t, String n, String ti, String i, String c, String oc,bool b, bool cu, double g,double w,int tg, DateTime d, int th, bool fm){
     type = t;
     name = n;
     time = ti;
@@ -47,6 +51,9 @@ class Task {
     grade = g;
     weight = w;
     totalGrade = tg;
+    due = d;
+    totalHours = th;
+    forMarks = fm;
 
   }
 

@@ -37,8 +37,6 @@ class CoursePageState extends State<CoursePage> {
     _futureData = gradesData.fetchTaskObjects();
   }
 
-
-
   void _addTask() async {
 
     await Navigator.push(

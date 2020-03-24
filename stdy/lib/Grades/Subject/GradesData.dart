@@ -198,9 +198,18 @@ class GradesData with ChangeNotifier{
     return double.parse(s, (e) => null) != null;
   }
 
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //ADDERS
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  void updateTaskData(String name, double weight, double grade, int total, bool bonus, bool curr) async{
+    await firestore.updateTaskData(currCourseID, currTaskID, name, weight, grade, total, bonus, curr);
+    await refreshCoursePage();
+    calculateGrades();
+    await updateCourseGrade();
+    await refreshCoursePage();
+  }
 
   void addCompleteCourseData(String strGrade) async{
     print("inputted value of $strGrade");
@@ -220,7 +229,7 @@ class GradesData with ChangeNotifier{
   }
   void addPrevTaskFormData(String type, String name, double weight, int total, double grade, bool bonus) async{
 
-    await firestore.addTaskData(name, currCourseID, 0, null, null, null, true, weight, grade, type, null, bonus, total, currCourseID);
+    await firestore.addTaskData(name, currCourseID, 0, null, null, null, true, weight, grade, type, null, bonus, total, currCourseID,false);
     await refreshCoursePage();
     calculateGrades();
     await updateCourseGrade();
@@ -428,6 +437,14 @@ class GradesData with ChangeNotifier{
     await calculateGPA();
   }
 
+  refreshTaskPage() async {
+    await fetchGradesData();
+    await fetchTaskObjects();
+    await calculateGPA();
+    await updateCourseGrade();
+    await refreshCoursePage();
+  }
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //FETCHERS
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -448,8 +465,11 @@ class GradesData with ChangeNotifier{
     for (int i = 0; i < docs.length; i++) {
 
       Map<String, dynamic> data = docs[i].data;
-
-      Task t = new Task.prev(data["type"],data["name"],"",data["id"],data["course"],data["onlyCourse"],data["bonus"], data["curr"], data["grade"],data["weight"],data["totalgrade"]);
+      DateTime temp;
+      if(data["due"]!=null){
+        temp = DateTime.parse(data["due"].toDate().toString());
+      }
+      Task t = new Task.prev(data["type"],data["name"],"",data["id"],data["course"],data["onlyCourse"],data["bonus"], data["curr"], data["grade"],data["weight"],data["totalgrade"],temp,data["toDo"],data["forMarks"]);
       tasks.add(t);
     }
 
