@@ -9,7 +9,6 @@ class ProgressData {
    static final List<String> taskTypes = ['assignment', 'reading', 'project', 'lectures', 'notes'];
 
 
-
   ProgressData() {
     fireStore = ProgressFirestore();
   }
@@ -17,10 +16,6 @@ class ProgressData {
   bool withinSevenDays(DateTime t){
     var diff = DateTime.now().difference(t);
     return diff.inDays <= 7;
-  }
-
-  _progressTimeline(var task){
-
   }
 
   _progressAggregate(var task){
@@ -47,7 +42,6 @@ class ProgressData {
 
     if (coursesTasks[task.data['onlyCourse']] != null) {
       var aggregate = coursesTasks[task.data['onlyCourse']];
-      //print(percentage.toString());
       aggregate['totalProgress'] += progressAggregate['weeklyProgress'];
       aggregate['totalGoal']  += progressAggregate['weeklyGoal'];
     } else {
@@ -76,15 +70,9 @@ class ProgressData {
 
 
   _courseTimeline(var courseTimeline, var task){
-    print("in course time line");
-    print(task.data['allday'].length.toString());
     for (int i = 0; i<task.data['allday'].length; i++){
-      print("in loop");
-//      print("allday: " + task.data['allday'][i].toDate())
       var allDayTime = task.data['allday'][i].toDate();
-      print(allDayTime.toString());
       var timeDiff = allDayTime.difference(DateTime.now()).inDays;
-      print("timeDiff: " + timeDiff.toString());
       String goal = task.data['goal'][i].toString();
       String progress = task.data['progress'][i].toString();
       courseTimeline[timeDiff.toString()]['totalGoal'] += double.parse(goal);
@@ -97,7 +85,6 @@ class ProgressData {
     if (task.data['type'] == t){
       for (int i = 0; i<task.data['allday'].length; i++){
         var timeDiff = task.data['allday'][i].toDate().difference(DateTime.now()).inDays;
-        print(timeDiff);
         String goal = task.data['goal'][i].toString();
         String progress = task.data['progress'][i].toString();
         timeline[t][timeDiff.toString()]['totalGoal'] += double.parse(goal);
@@ -117,6 +104,34 @@ class ProgressData {
       'lectures': {},
       'notes': {}
     };
+    for (var task in tasks){
+      if (task.data['curr']){
+        _courseProgress(progress['total'], task);
+        for (var t in taskTypes){
+          _taskProgress(progress, task, t);
+
+        }
+      }
+    }
+    double sumTotalProgress = 0.0;
+    progress['total'].forEach((k, v) => sumTotalProgress +=  v['totalProgress']);
+    progress['total'].forEach((k, v) => v['percent'] = (v['totalProgress']/sumTotalProgress)*100);
+    for (var t in taskTypes){
+      double sumTotalProgress = 0.0;
+      progress[t].forEach((k, v) => sumTotalProgress +=  v['weeklyProgress']);
+      for (var v in progress[t].values){
+        var percent = 0.0;
+        if (v['weeklyProgress'] != 0.0){
+          percent = (v['weeklyProgress']/sumTotalProgress)*100;
+        }
+        v['percent'] = percent;
+      }
+    }
+    return progress;
+  }
+
+  Future<void> fetchTimelineData() async{
+    List<DocumentSnapshot> tasks = await fireStore.getTasks();
     var timeline = {
       'total': {
         "-6": {"totalGoal": 0.0, "totalProgress": 0.0},
@@ -135,7 +150,7 @@ class ProgressData {
         "-2": {"totalGoal": 0.0, "totalProgress": 0.0},
         "-1": {"totalGoal": 0.0, "totalProgress": 0.0},
         "0": {"totalGoal": 0.0, "totalProgress": 0.0},
-        },
+      },
       'reading':{
         "-6": {"totalGoal": 0.0, "totalProgress": 0.0},
         "-5": {"totalGoal": 0.0, "totalProgress": 0.0},
@@ -175,39 +190,22 @@ class ProgressData {
     };
 
     for (var task in tasks){
-      print("task: ");
-      print(task.data['name']);
       if (task.data['curr']){
-        _courseProgress(progress['total'], task);
         _courseTimeline(timeline['total'], task);
         for (var t in taskTypes){
-          _taskProgress(progress, task, t);
           _taskTimeline(timeline, task, t);
 
         }
       }
     }
-//    print(timeline['assignment'].toString());
-
-    double sumTotalProgress = 0.0;
-    progress['total'].forEach((k, v) => sumTotalProgress +=  v['totalProgress']);
-    progress['total'].forEach((k, v) => v['percent'] = (v['totalProgress']/sumTotalProgress)*100);
-    for (var t in taskTypes){
-      double sumTotalProgress = 0.0;
-      progress[t].forEach((k, v) => sumTotalProgress +=  v['weeklyProgress']);
-      for (var v in progress[t].values){
-        var percent = 0.0;
-        if (v['weeklyProgress'] != 0.0){
-          percent = (v['weeklyProgress']/sumTotalProgress)*100;
-        }
-        v['percent'] = percent;
-      }
-    }
-    return progress;
+    return timeline;
   }
 
-  Future  getTotalProgressDatat() async{
-    print("in get total progress");
+  Future  getTotalProgressData() async{
     return await fetchProgressData();
+  }
+
+  Future getTimelineProgressData() async{
+    return await fetchTimelineData();
   }
 }

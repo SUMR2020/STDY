@@ -15,50 +15,46 @@ class ProgressPage extends StatefulWidget {
   }
 }
 
-//factory class that draws line graphs
-
-//class LineChartFactory {
-//  LineChartFactory();
-//
-//  Widget makeLineChart(List<charts.Series<Hours,int>> _seriesLineData){
-//    return Expanded(
-//      child: charts.LineChart(
-//        _seriesLineData,
-//        defaultRenderer: new charts.LineRendererConfig(
-//            includeArea: false, stacked: true),
-//        animate : true,
-//      ),
-//    );
-//  }
-//}
-//
-
 
 class ProgressPageState extends State<ProgressPage>{
-  List<charts.Series<Task,String>> _seriesPieData;
-  List<charts.Series<Task,String>> _seriesPieDataB;
-  List<charts.Series<Hours,int>> _seriesLineData;
-  //List<charts.Series<Hours,int>> _seriesLineDataB;
-
   ProgressData progressData = new ProgressData();
   Future taskProgress;
+  Future timeLineProgress;
+
+  var shades = [
+    Color(0xFFF48FB1),
+    Color(0xFFD81B60),
+    Color(0xFF880E4F),
+    Color(0xFFAD1457),
+    Color(0xFFF06292),
+    Color(0xFFC2185B),
+    Color(0xFFF50057),
+    Color(0xFFE91E63),
+    Color(0xFFFF80AB),
+    Color(0xFFFF4081)];
 
   Future _getTasks() async{
-    print("getTasks called in page");
-    return  await progressData.getTotalProgressDatat();
+    return  await progressData.getTotalProgressData();
   }
 
-  List<charts.Series<Task,String>>  _seriesData(data, taskType){
-    print("in _seriesData");
-    List<Task> totalProgress=[];
-    data[taskType].forEach((k, v) => totalProgress.add(new Task('$k', double.parse(v['percent'].toStringAsFixed(1)), Color(0xFFFDA3A4) )));
+  Future _getTimelineProgress() async{
+    return await progressData.getTimelineProgressData();
+  }
 
+
+  List<charts.Series<Task,String>>  _pieSeriesData(data, taskType){
+    List<Task> totalProgress=[];
+    int i = 0;
+    for (var item in data[taskType].entries){
+      totalProgress.add(new Task(item.key, double.parse(item.value['percent'].toStringAsFixed(1)), shades[i]));
+      i++;
+    }
     return [new charts.Series(
       data: totalProgress,
       domainFn: (Task task,_)=>task.task,
       measureFn: (Task task,_)=>task.taskvalue,
-//        colorFn: (Task task,_)=>
-//            charts.ColorUtil.fromDartColor(task.colorvalue),
+      colorFn: (Task task,_)=>
+          charts.ColorUtil.fromDartColor(task.colorvalue),
       id: 'Daily Task',
       labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
     )];
@@ -69,11 +65,8 @@ class ProgressPageState extends State<ProgressPage>{
             future: taskProgress,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
-                print("connectionState: ");
-                print(snapshot.connectionState.toString());
-                print(snapshot.data.toString());
                 return charts.PieChart(
-                    _seriesData(snapshot.data, taskType),
+                    _pieSeriesData(snapshot.data, taskType),
                     animate: true,
                     behaviors: [
                       new charts.DatumLegend(
@@ -100,77 +93,24 @@ class ProgressPageState extends State<ProgressPage>{
     );
   }
 
-  Widget makeLineChart(List<charts.Series<Hours,int>> _seriesLineData){
-    return Expanded(
-      child: charts.LineChart(
-        _seriesLineData,
-        defaultRenderer: new charts.LineRendererConfig(
-            includeArea: false, stacked: true),
-        animate : true,
-      ),
-    );
-  }
+  List<charts.Series<Hours,int>> _lineSeriesData(data, taskType){
+    var _seriesLineData = List<charts.Series<Hours,int>> ();
+    List<Hours> goal = [];
+    List<Hours> progress = [];
 
 
+    for (int i = -6; i < 1; i++) {
+      goal.add(Hours(i+7, data[taskType][i.toString()]['totalGoal'].round()));
 
+    }
+    for (int i = -6; i < 1; i++) {
+      progress.add(Hours(i+7, data[taskType][i.toString()]['totalProgress'].round()));
+    }
 
-  //function to generate data to be passed into the graph drawing methods
-
-
-  _generateData() {
-
-    var pieDataB=[
-      new Task('Project 1', 15.0, Color(0xFFFDA3A4) ),
-      new Task('Project 2', 40.0, Color(0xFFF06292) ),
-      new Task('Project 3', 45.0 , Color(0xFFE91E63)),
-
-    ];
-
-    var actual=[
-      new Hours(0,11),
-      new Hours(1,12),
-      new Hours(2,2),
-      new Hours(3,4),
-
-    ];
-
-    var expected=[
-      new Hours(0,10),
-      new Hours(1,11),
-      new Hours(2,5),
-      new Hours(3,6),
-    ];
-
-
-    _seriesPieData.add(
-      charts.Series(
-        data: pieDataB,
-        domainFn: (Task task,_)=>task.task,
-        measureFn: (Task task,_)=>task.taskvalue,
-        colorFn: (Task task,_)=>
-            charts.ColorUtil.fromDartColor(task.colorvalue),
-        id: 'Daily Task',
-        labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
-
-      ),
-    );
-
-    _seriesPieDataB.add(
-      charts.Series(
-        data: pieDataB,
-        domainFn: (Task task,_)=>task.task,
-        measureFn: (Task task,_)=>task.taskvalue,
-        colorFn: (Task task,_)=>
-            charts.ColorUtil.fromDartColor(task.colorvalue),
-        id: 'Daily Task B',
-        labelAccessorFn: (Task row,_)=>'${row.taskvalue}',
-
-      ),
-    );
 
     _seriesLineData.add(
       charts.Series(
-        data: actual,
+        data: goal,
         domainFn: (Hours hours,_)=>hours.hours,
         measureFn: (Hours hours,_)=>hours.days,
         colorFn: (Hours hours,_)=>
@@ -182,7 +122,7 @@ class ProgressPageState extends State<ProgressPage>{
 
     _seriesLineData.add(
       charts.Series(
-        data: expected,
+        data: progress,
         domainFn: (Hours hours,_)=>hours.hours,
         measureFn: (Hours hours,_)=>hours.days,
         colorFn: (Hours hours,_)=>
@@ -191,28 +131,42 @@ class ProgressPageState extends State<ProgressPage>{
 
       ),
     );
+    return _seriesLineData;
+  }
 
+
+  Widget makeLineChart(Future timelineProgress, var taskType){
+    return Expanded(
+      child: FutureBuilder(
+        future: timelineProgress,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.done){
+            return charts.LineChart(
+              _lineSeriesData(snapshot.data, taskType),
+              defaultRenderer: new charts.LineRendererConfig(
+                  includeArea: false, stacked: true),
+              animate : true,
+            );
+          } else {
+            return Align(child: CircularProgressIndicator());
+          }
+        }
+      )
+    );
   }
 
 
   @override
   void initState() {
     super.initState();
-    _seriesPieData = List<charts.Series<Task,String>>();
-    _seriesPieDataB = List<charts.Series<Task,String>>();
-    _seriesLineData = List<charts.Series<Hours,int>> ();
-    //_seriesLineDataB = List<charts.Series<Hours,int>> ();
-    _generateData();
     taskProgress = _getTasks();
+    timeLineProgress = _getTimelineProgress();
   }
 
 
 
   @override
   Widget build(BuildContext context) {
-//    PieChartFactory chartFactory = new PieChartFactory();
-//    LineChartFactory linechartFactory =  new  LineChartFactory();
-
     // displays tabs on the page
     return DefaultTabController(
       length: 6,
@@ -263,7 +217,7 @@ class ProgressPageState extends State<ProgressPage>{
                           child: Column(
                             children: <Widget>[
                               makePieChart(taskProgress, 'total'),
-                              makeLineChart(_seriesLineData),
+                              makeLineChart(timeLineProgress, 'total'),
                             ],
                           )
                       )
@@ -277,7 +231,7 @@ class ProgressPageState extends State<ProgressPage>{
                           child: Column(
                             children: <Widget>[
                               makePieChart(taskProgress, 'reading'),
-                              makeLineChart(_seriesLineData),
+                              makeLineChart(timeLineProgress, 'reading'),
                             ],
                           )
                       )
@@ -291,7 +245,7 @@ class ProgressPageState extends State<ProgressPage>{
                     child: Column(
                       children: <Widget>[
                         makePieChart(taskProgress, 'assignment'),
-                        makeLineChart(_seriesLineData),
+                        makeLineChart(timeLineProgress, 'assignment'),
                       ],
                     )
                   )
@@ -305,7 +259,7 @@ class ProgressPageState extends State<ProgressPage>{
                           child: Column(
                             children: <Widget>[
                               makePieChart(taskProgress, 'project'),
-                              makeLineChart(_seriesLineData),
+                              makeLineChart(timeLineProgress, 'project'),
                             ],
                           )
                       )
@@ -319,7 +273,7 @@ class ProgressPageState extends State<ProgressPage>{
                           child: Column(
                             children: <Widget>[
                               makePieChart(taskProgress, 'lectures'),
-                              makeLineChart(_seriesLineData),
+                              makeLineChart(timeLineProgress, 'lectures'),
                             ],
                           )
                       )
@@ -333,7 +287,7 @@ class ProgressPageState extends State<ProgressPage>{
                           child: Column(
                             children: <Widget>[
                               makePieChart(taskProgress, 'notes'),
-                              makeLineChart(_seriesLineData),
+                              makeLineChart(timeLineProgress, 'notes'),
                             ],
                           )
                       )
@@ -352,7 +306,6 @@ class Task{
   String task;
   double taskvalue;
   Color colorvalue;
-//gonna need time as a thingy here
   Task(this.task, this.taskvalue, this.colorvalue);
 
 }
@@ -360,6 +313,5 @@ class Task{
 class Hours{
   int hours;
   int days;
-
   Hours(this.hours, this.days);
 }
