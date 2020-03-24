@@ -63,6 +63,7 @@ final themeStyleData = {
     primaryColor: _stdyPink,
     accentColor: _stdyPink,
     buttonColor: _stdyPink,
+    cardColor: Colors.white,
     primaryTextTheme: TextTheme(title: TextStyle(color: _stdyPink)),
   ),
   ThemeStyle.Dark: ThemeData(
@@ -70,6 +71,7 @@ final themeStyleData = {
     primaryColor: _stdyPink,
     accentColor: _stdyPink,
     buttonColor: _stdyPink,
+    cardColor: Color(0xff303030),
     primaryTextTheme: TextTheme(title: TextStyle(color: _stdyPink)),
   ),
   ThemeStyle.DarkOLED: ThemeData(
@@ -77,6 +79,7 @@ final themeStyleData = {
       primaryColor: _stdyPink,
       accentColor: _stdyPink,
       buttonColor: _stdyPink,
+      cardColor: Colors.black,
       primaryTextTheme: TextTheme(title: TextStyle(color: _stdyPink)),
       scaffoldBackgroundColor: Colors.black),
 };

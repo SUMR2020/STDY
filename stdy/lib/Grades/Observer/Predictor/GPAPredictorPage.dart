@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:googleapis/cloudbuild/v1.dart';
 import '../../../UpdateApp/Subject/SettingsData.dart';
 import 'package:study/GoogleAPI/Firestore/GradesFirestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -116,10 +117,14 @@ class GPAPredictorState extends State<GPAPredictorPage> {
     List<Widget> courseWidgets = <Widget>[];
 
     for(int i =0; i<gradesData.currCoursePredict.length; i++) {
-      List<String> dropDown = ["Current", "Letter", "Percentage"];
-      if(gradesData.currCoursePredict[i].weighted==null){
-        dropDown.remove("Current");
+      List<String> dropDown;
+      if(gradesData.currCoursePredict[i].weighted==0){
+        dropDown = ["Letter", "Percentage"];
       }
+      else{
+        dropDown = ["Current","Letter", "Percentage"];
+      }
+      print("drop down contains $dropDown");
 
       courseWidgets.add(
 
@@ -149,12 +154,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
                   ),
                   onChanged: (String newValue) =>
                       setState(() => gradesData.currCoursePredict[i].gradeOption = newValue),
-                  /*_curr? (String newValue) {
 
-                          setState(() {
-                            dropdownValueGrade = newValue;
-                          });
-                        }: null,*/
                   items: dropDown
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
@@ -255,6 +255,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
   Widget _buildForm(BuildContext context){
     return new Form(
         key: this._formKey,
+
         child: new Column(
 
           children: <Widget>[
@@ -265,7 +266,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
                 ),
                 keyboardType: TextInputType.number,
                 decoration: new InputDecoration(
-                  hintText: 'Enter desired GPA...',
+                  hintText: 'Enter desired GPA from 0 to 12.0...',
                   labelText: "Desired GPA *",
                 ),
                 validator: this._validateGPAGoal,
@@ -281,28 +282,156 @@ class GPAPredictorState extends State<GPAPredictorPage> {
 
                 ),
 
-            RaisedButton(
+          SizedBox(
+            width: double.infinity,
+            child:  RaisedButton(
+
               child: Text('Run Predictor',
                   style: TextStyle(
+                    color: Colors.white,
                     fontSize: 16.0 + fontScale,
                   )
               ),
-
               onPressed: (){
                 calculateGPANeeded();
               },
             ),
-
+          )
 
           ],
         )
     );
   }
 
+  Widget buildPredictBlock(BuildContext context){
+    if(!submitted){
+      print("not submitted");
+      return null;
+    }
+    int index = double.parse(gradesData.gpaNeededPredict).ceil();
+    double hei = 160;
+    print("index is $index");
+    if(index<=12){
+      hei+=double.parse((50*gradesData.predictCount).toString());
+    }
+    return Padding(
+        padding: EdgeInsets.all(10.0),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width / 1.1,
+          height:  hei,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            ),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text("GRADE NEEDED",
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold
+                    ),),
+                ),
+                Column(
+                  children: infoColumn(index),
+                )
+              ],
+            ),
+
+          ),
+        )
+    );
+
+  }
+
+  List<Widget> infoColumn(index){
+    if(index>=12){
+      return [
+        Container(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: EdgeInsets.all(0.0),
+
+            child: Text("Grade needed greater than A+",
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold
+              ),),
+          ),
+        ),
+      ];
+    }
+    return [
+      Container(
+        alignment: Alignment.center,
+        child: Padding(
+          padding: EdgeInsets.all(0.0),
+
+          child: Text(GPATable.grades[index],
+            style: TextStyle(
+                fontSize: 40,
+                color: Colors.white,
+                fontWeight: FontWeight.bold
+            ),),
+        ),
+      ),
+      Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              Text("For each of the following courses",
+                style: TextStyle(
+                  fontSize: 18.0+fontScale,
+                  color: Colors.white,
+                ),),
+
+            ],
+          )
+      ),
+      Column(
+        children:  courseColumn(),
+      )
+    ];
+  }
+
+
+  List<Widget> courseColumn(){
+    List<Widget> temp = <Widget>[];
+    List<Course> courses = gradesData.getCurrPredictCourses();
+
+    for(int i =0; i<courses.length; i++){
+      temp.add(
+          Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(
+                children: <Widget>[
+                  Text(courses[i].code,
+                    style: TextStyle(
+                      fontSize: 18.0+fontScale,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold
+                    ),),
+
+                ],
+              )
+          )
+      );
+
+    }
+    return temp;
+
+  }
+
+
   String _validateGPAGoal(String value) {
     // If empty value, the isEmail function throw a error.
     // So I changed this function with try and catch.
     if (value.isEmpty ) return 'Please enter a valid GPA.';
+    if(double.parse(value)>12) return 'Please enter a GPA less than or equal to 12.0';
     return null;
   }
 
@@ -337,9 +466,7 @@ class GPAPredictorState extends State<GPAPredictorPage> {
                 child: ListView(
                   shrinkWrap: true,
                   children: <Widget>[
-                    Text("Grades needed is: ${gradesData.gpaNeededPredict}", style: TextStyle(
-                      fontSize: 16.0 + fontScale,
-                    ))
+                    buildPredictBlock(context),
                   ]
                 )
               ),

@@ -73,7 +73,7 @@ class TaskData {
       int total,
       String onlyC) async {
     taskManager.addTaskData(name, course, toDo, dates, dueDate, done, forMarks, null, null,
-        type, daily, bonus, null, onlyC);
+        type, daily, bonus, null, onlyC,true);
   }
 
   Future<DateTime> updateDay() async {

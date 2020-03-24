@@ -251,6 +251,7 @@ class CompleteCourseFormState extends State<CompleteCourseFormPage>{
                   child: RaisedButton(
                     child: Text('Complete Course',
                         style: TextStyle(
+                          color: Colors.white,
                           fontSize: 16.0 + fontScale,
                         )
                     ),

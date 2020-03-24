@@ -37,6 +37,8 @@ class GradesData with ChangeNotifier{
   List<Course> currCoursePredict;
   String gpaNeededPredict;
 
+  double gradeNeededPredict;
+
 
   GradesData(){
     firestore = GradesFirestore();
@@ -70,10 +72,25 @@ class GradesData with ChangeNotifier{
 //Predictor Calculations
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  bool calculateGradePredict(String goalGrade){
+    double gradeNeeded;
+    if(isNumeric((goalGrade))){
+      gradeNeeded = double.parse(goalGrade);
+    }
+    else{
+      gradeNeeded = double.parse(convertLetterToDouble(goalGrade));
+    }
+
+    gradeNeededPredict = (gradeNeeded-getCourseByID(currCourseID).grade) /(100-getCourseByID(currCourseID).totalWeight)*100;
+    gradeNeededPredict = double.parse(gradeNeededPredict.toStringAsFixed(2));
+    return true;
+  }
+
   bool calculateGPAPredict(String goalGPA){
 
-      double gpaNeed = double.parse(findNumberGPA(double.parse(goalGPA)));
+      double gpaNeed = double.parse(goalGPA);
       double gpa=0.0;
+      print("goal gpa is $goalGPA");
 
       for(int i =0; i<GradesData.courses.length; i++){
         if(!GradesData.courses[i].curr && !checkCurrCoursePredictExists(i)) {
@@ -101,8 +118,25 @@ class GradesData with ChangeNotifier{
       gpaNeededPredict = ( ( (gpaNeed*GradesData.courses.length)-gpa )/predictCount ).toString();
       return true;
 
+  }
 
+  List<Course> getCurrPredictCourses(){
+    List<Course> temp = <Course>[];
 
+    for(int i =0; i<courses.length; i++) {
+      bool flag = false;
+      for(int j =0; j<currCoursePredict.length; j++){
+        if(courses[i].code==currCoursePredict[j].code){
+          flag = true;
+          break;
+        }
+      }
+
+      if(courses[i].curr && !flag){
+        temp.add(courses[i]);
+      }
+    }
+    return temp;
   }
 
   void calculateCoursePredictCount(){
@@ -164,9 +198,18 @@ class GradesData with ChangeNotifier{
     return double.parse(s, (e) => null) != null;
   }
 
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //ADDERS
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  void updateTaskData(String name, double weight, double grade, int total, bool bonus, bool curr) async{
+    await firestore.updateTaskData(currCourseID, currTaskID, name, weight, grade, total, bonus, curr);
+    await refreshCoursePage();
+    calculateGrades();
+    await updateCourseGrade();
+    await refreshCoursePage();
+  }
 
   void addCompleteCourseData(String strGrade) async{
     print("inputted value of $strGrade");
@@ -186,7 +229,7 @@ class GradesData with ChangeNotifier{
   }
   void addPrevTaskFormData(String type, String name, double weight, int total, double grade, bool bonus) async{
 
-    await firestore.addTaskData(name, currCourseID, 0, null, null, null, true, weight, grade, type, null, bonus, total, currCourseID);
+    await firestore.addTaskData(name, currCourseID, 0, null, null, null, true, weight, grade, type, null, bonus, total, currCourseID,false);
     await refreshCoursePage();
     calculateGrades();
     await updateCourseGrade();
@@ -347,6 +390,7 @@ class GradesData with ChangeNotifier{
   }
 
   String findLetterGPA(double grade) {
+    print("grade is $grade");
     if (grade.isNaN) {
       return "N/A";
     }
@@ -393,6 +437,14 @@ class GradesData with ChangeNotifier{
     await calculateGPA();
   }
 
+  refreshTaskPage() async {
+    await fetchGradesData();
+    await fetchTaskObjects();
+    await calculateGPA();
+    await updateCourseGrade();
+    await refreshCoursePage();
+  }
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //FETCHERS
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -413,8 +465,11 @@ class GradesData with ChangeNotifier{
     for (int i = 0; i < docs.length; i++) {
 
       Map<String, dynamic> data = docs[i].data;
-
-      Task t = new Task.prev(data["type"],data["name"],"",data["id"],data["course"],data["onlyCourse"],data["bonus"], data["curr"], data["grade"],data["weight"],data["totalgrade"]);
+      DateTime temp;
+      if(data["due"]!=null){
+        temp = DateTime.parse(data["due"].toDate().toString());
+      }
+      Task t = new Task.prev(data["type"],data["name"],"",data["id"],data["course"],data["onlyCourse"],data["bonus"], data["curr"], data["grade"],data["weight"],data["totalgrade"],temp,data["toDo"],data["forMarks"]);
       tasks.add(t);
     }
 

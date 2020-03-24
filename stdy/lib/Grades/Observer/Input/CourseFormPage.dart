@@ -312,6 +312,7 @@ class CourseInputState extends State<CourseInputPage>{
                     child: RaisedButton(
                       child: Text('Add Course',
                           style: TextStyle(
+                            color: Colors.white,
                             fontSize: 16.0 + fontScale,
                           )
                       ),
