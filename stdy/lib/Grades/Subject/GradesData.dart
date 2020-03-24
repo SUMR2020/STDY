@@ -72,8 +72,9 @@ class GradesData with ChangeNotifier{
 
   bool calculateGPAPredict(String goalGPA){
 
-      double gpaNeed = double.parse(findNumberGPA(double.parse(goalGPA)));
+      double gpaNeed = double.parse(goalGPA);
       double gpa=0.0;
+      print("goal gpa is $goalGPA");
 
       for(int i =0; i<GradesData.courses.length; i++){
         if(!GradesData.courses[i].curr && !checkCurrCoursePredictExists(i)) {
@@ -101,8 +102,25 @@ class GradesData with ChangeNotifier{
       gpaNeededPredict = ( ( (gpaNeed*GradesData.courses.length)-gpa )/predictCount ).toString();
       return true;
 
+  }
 
+  List<Course> getCurrPredictCourses(){
+    List<Course> temp = <Course>[];
 
+    for(int i =0; i<courses.length; i++) {
+      bool flag = false;
+      for(int j =0; j<currCoursePredict.length; j++){
+        if(courses[i].code==currCoursePredict[j].code){
+          flag = true;
+          break;
+        }
+      }
+
+      if(courses[i].curr && !flag){
+        temp.add(courses[i]);
+      }
+    }
+    return temp;
   }
 
   void calculateCoursePredictCount(){
@@ -347,6 +365,7 @@ class GradesData with ChangeNotifier{
   }
 
   String findLetterGPA(double grade) {
+    print("grade is $grade");
     if (grade.isNaN) {
       return "N/A";
     }
