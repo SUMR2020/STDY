@@ -25,39 +25,70 @@ class Entry {
 // The entire multilevel list displayed by this app.
 final List<Entry> data = <Entry>[
   Entry(
-    'Chapter A',
+    'Home Page',
+        <Entry>[
+          Entry(
+            'Viewing Schedule',
+            <Entry>[
+              Entry('beep'),
+            ],
+          ),
+          Entry(
+            'Entering New Task',
+            <Entry>[
+              Entry('beep'),
+            ],
+          ),
+        ],
+  ),
+  Entry(
+    'Course Page',
     <Entry>[
       Entry(
-        'Section A0',
+        'Entering Current Course',
         <Entry>[
-          Entry('Item A0.1'),
-          Entry('Item A0.2'),
-          Entry('Item A0.3'),
+          Entry('beep'),
         ],
       ),
-      Entry('Section A1'),
-      Entry('Section A2'),
-    ],
-  ),
-  Entry(
-    'Chapter B',
-    <Entry>[
-      Entry('Section B0'),
-      Entry('Section B1'),
-    ],
-  ),
-  Entry(
-    'Chapter C',
-    <Entry>[
-      Entry('Section C0'),
-      Entry('Section C1'),
       Entry(
-        'Section C2',
+        'Entering Past Course',
         <Entry>[
-          Entry('Item C2.0'),
-          Entry('Item C2.1'),
-          Entry('Item C2.2'),
-          Entry('Item C2.3'),
+          Entry('beep'),
+        ],
+      ),
+      Entry(
+        'Updating Task Data',
+        <Entry>[
+          Entry('beep'),
+        ],
+      ),
+      Entry(
+        'Completing a Course',
+        <Entry>[
+          Entry('beep'),
+        ],
+      ),
+      Entry(
+        'Predicting Your GPA/Grades',
+        <Entry>[
+          Entry('beep'),
+        ],
+      ),
+    ],
+  ),
+  Entry(
+    'Progress Page',
+    <Entry>[
+      Entry(
+        'Viewing Progress',
+        <Entry>[
+          Entry('beep'),
+        ],
+      ),
+      Entry(
+        'How Progress is Calculated',
+        <Entry>[
+          Entry('beep'),
         ],
       ),
     ],
