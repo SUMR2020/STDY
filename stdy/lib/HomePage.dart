@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:study/GoogleAPI/Authentication/Authentication.dart';
+import 'package:study/Help/HelpPage.dart';
 import 'package:study/Progress/Observer/ProgressPage.dart';
 import 'Grades/Observer/Overview/AuditPage.dart';
 import 'Schedule/Observer/SchedulePage.dart';
@@ -18,6 +19,7 @@ class _HomeState extends State<Home> {
     SchedulePage(),
     AuditPage(),
     ProgressPage(),
+    HelpPage(),
     SettingsScreen()
   ];
 
