@@ -1,2 +1,10 @@
 March 23rd, 2020 12-1pm:
 - worked on fixing a bug I found with task addition
+
+March 26th, 2020 11am-4pm:
+- Worked on creating a help page with Uzair
+	- Created an expansion tile widget that uses a nested List of entries 
+	to create an interactive widget that a user can utilize if they need help with utilizing the app
+	- Added it to the navigation bar
+	- Will most likely be moving it into settings
+- Started mapping out resources to include in this page, or in a seperate resources page
