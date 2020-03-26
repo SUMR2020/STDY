@@ -4,18 +4,13 @@ import 'package:flutter/material.dart';
 class HelpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('ExpansionTile'),
-        ),
+    return Scaffold(
         body: ListView.builder(
           itemBuilder: (BuildContext context, int index) =>
               HelpTiles(data[index]),
           itemCount: data.length,
         ),
-      ),
-    );
+      );
   }
 }
 
