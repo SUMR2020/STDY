@@ -19,7 +19,6 @@ class _HomeState extends State<Home> {
     SchedulePage(),
     AuditPage(),
     ProgressPage(),
-    HelpPage(),
     SettingsScreen()
   ];
 
@@ -64,9 +63,6 @@ class _HomeState extends State<Home> {
           new BottomNavigationBarItem(
             icon: Icon(Icons.pie_chart),
             title: Text('Progress'),
-          ),  new BottomNavigationBarItem(
-              icon: Icon(Icons.help_outline),
-              title: Text('Help')
           ),
           new BottomNavigationBarItem(
               icon: Icon(Icons.settings),

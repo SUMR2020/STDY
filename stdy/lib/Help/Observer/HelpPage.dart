@@ -5,6 +5,12 @@ class HelpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: new AppBar(
+          centerTitle: true,
+          backgroundColor: Color(0x00000000),
+          elevation: 0,
+          title: Text('ABOUT THE APP')
+      ),
         body: ListView.builder(
           itemBuilder: (BuildContext context, int index) =>
               HelpTiles(data[index]),

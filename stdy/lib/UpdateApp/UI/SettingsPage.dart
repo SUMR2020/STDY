@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:study/UpdateApp/UI/LoginPage.dart';
 import '../../GoogleAPI/Authentication/Authentication.dart';
 import 'package:study/UpdateApp/Observer/MyApp.dart';
+import '../../Help/Observer/HelpPage.dart';
 
 
 
@@ -128,6 +129,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed:()=>Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage())),
+        child: Icon(Icons.help_outline),
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../HomePage.dart';
 import '../../GoogleAPI/Authentication/Authentication.dart';
 
-
 //This class creates the login page
 
 class LoginScreen extends StatefulWidget {
@@ -14,8 +13,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Center(
+      body: Column(children: <Widget>[
+        Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,7 +27,14 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-      ),
+        Expanded(child: Container()),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Text("Made by SUMR", style: TextStyle(fontFamily:'Bebas',
+              fontSize: 23,
+              color: Theme.of(context).primaryColor)),
+        )
+      ]),
     );
   }
 
@@ -36,7 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return OutlineButton(
         splashColor: Theme.of(context).accentColor,
         onPressed: () {
-          Authentication().signInWithGoogle().whenComplete(() {//get authentication
+          Authentication().signInWithGoogle().whenComplete(() {
+            //get authentication
             if (Authentication().authCheck) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
