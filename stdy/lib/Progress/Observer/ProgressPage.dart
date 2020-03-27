@@ -189,13 +189,13 @@ class ProgressPageState extends State<ProgressPage>{
                         color: Theme.of(context).accentColor,)),
                       Tab(icon: Icon(Icons.assignment,
                         color: Theme.of(context).accentColor,)),
-                      Tab(icon: Icon(Icons.build,
+                      Tab(icon: Icon(Icons.subtitles,
                         color: Theme.of(context).accentColor,)
                       ),
-                      Tab(icon: Icon(Icons.personal_video,
+                      Tab(icon: Icon(Icons.ondemand_video,
                         color: Theme.of(context).accentColor,)
                       ),
-                      Tab(icon: Icon(Icons.note,
+                      Tab(icon: Icon(Icons.event_note,
                         color: Theme.of(context).accentColor,)
                       ),
                     ],
