@@ -1,0 +1,632 @@
+@startuml
+title STDY - Class Diagram
+
+skinparam packageStyle cloud
+skinparam package {
+  borderColor Transparent
+  fontColor Transparent
+}
+set namespaceSeparator ::
+skinparam classAttributeIconSize 0
+hide circle
+skinparam class {
+    BackgroundColor white
+    ArrowColor black
+    BorderColor black
+}
+
+class "study::GoogleAPI::Authentication::Authentication.dart::Authentication" {
+  {static} -List<String> _scopes
+  +String name
+  +bool authCheck
+  -FirebaseAuth _author
+  +AuthClient authClient
+  -GoogleSignIn _googleSignIn
+  {static} -Authentication _singleton
+  +Future<bool> signInWithGoogle()
+  +dynamic signOut()
+}
+
+"study::GoogleAPI::Authentication::Authentication.dart::Authentication" <-- "study::GoogleAPI::Authentication::Authentication.dart::Authentication"
+
+class "study::GoogleAPI::Authentication::Authentication.dart::Auth" {
+  -FirebaseAuth _firebaseAuth
+  -FirebaseUser _user
+  +Future<Widget> isLoggedIn()
+}
+
+
+class "study::GoogleAPI::Calendar::CalendarAPI.dart::CalendarBuilder" {
+  +Future<calendar.CalendarAPI> gettingCalendar()
+  +Future<calendar.Events> getEvents()
+}
+
+class "study::GoogleAPI::CloudMessaging::PushNotifications.dart::PushNotificationsManager" {
+  -InitFireStore _db
+  {static} -PushNotificationsManager _instance
+  -FirebaseMessaging _firebaseMessaging
+  +Future<void> init()
+}
+
+"study::GoogleAPI::CloudMessaging::PushNotifications.dart::PushNotificationsManager" --> "study::GoogleAPI::Firestore::InitFirestore.dart::InitFireStore"
+"study::GoogleAPI::CloudMessaging::PushNotifications.dart::PushNotificationsManager" <-- "study::GoogleAPI::CloudMessaging::PushNotifications.dart::PushNotificationsManager"
+
+class "study::GoogleAPI::Firestore::GradesFirestore.dart::GradesFirestore" {
+  +void updateGPA()
+  +void removeCourse()
+  +void updateTask()
+  +void addCourseData()
+  +Future<Map<String, int>> getGPATable()
+  +Future<List<DocumentSnapshot>> getTaskData()
+  +Future<double> getGPA()
+  +void setCourseGrade()
+  +void addingTokenData()
+}
+
+"study::GoogleAPI::Firestore::MainFirestore.dart::MainFirestore" <|-- "study::GoogleAPI::Firestore::GradesFirestore.dart::GradesFirestore"
+
+class "study::GoogleAPI::Firestore::InitFirestore.dart::InitFireStore" {
+  +void getTaskData()
+  +void updateTask()
+  +void addingTokenData()
+}
+
+"study::GoogleAPI::Firestore::MainFirestore.dart::MainFirestore" <|-- "study::GoogleAPI::Firestore::InitFirestore.dart::InitFireStore"
+
+abstract class "study::GoogleAPI::Firestore::MainFirestore.dart::MainFirestore" {
+  -FirebaseAuth _auth
+  +Firestore db
+  +FirebaseUser user
+  +dynamic uid
+  +dynamic addingUid()
+  +Future<List<DocumentSnapshot>> getCourseData()
+  +void addTaskData()
+  +Future<List<DocumentSnapshot>> getTasks()
+  +dynamic updateTask()
+  +dynamic getTaskData()
+}
+
+
+class "study::GoogleAPI::Firestore::TaskFirestore.dart::TaskFireStore" {
+  +String getCourse()
+  +Future<QuerySnapshot> getTasksForCourse()
+  +Future<Documentreference> getTaskData()
+  +Future<List> getDates()
+  +Future<List> getDoneDates()
+  +void updateTask()
+  +void updateDaily()
+  +Future<bool> redistributeData()
+  +Future<List> getGoal()
+  +Future<bool> isDone()
+  +void updateToDo()
+  +void updateDoneToday()
+  +void updateToday()
+  +Future<bool> updateProgressandDoneList()
+}
+
+"study::GoogleAPI::Firestore::MainFirestore.dart::MainFirestore" <|-- "study::GoogleAPI::Firestore::TaskFirestore.dart::TaskFireStore"
+
+class "study::Grades::Helper::AuditItem.dart::AuditItem" {
+  +String expandedValue
+  +String headerValue
+  +List<Course> expandedText
+  +bool isExpanded
+  +String semGPA
+}
+
+class "study::Grades::Helper::Course.dart::Course" {
+  +bool curr
+  +double grade
+  +String id
+  +String code
+  +String sem
+  +int year
+  +String letterGrade
+  +double weighted
+  +String gradeOption
+  +String inGrade
+  +double totalWeight
+  +String toString()
+}
+
+"study::Grades::Helper::Course.dart::Course" --> "study::Grades::Subject::GradesData.dart::GradesData"
+
+class "study::Grades::Helper::GPATable.dart::GPATable" {
+  {static} +List<String> grades
+  +Map<String, int> table
+}
+
+class "study::Grades::Helper::TaskItem.dart::TaskItem" {
+  +String expandedValue
+  +String headerValue
+  +List<Task> expandedText
+  +bool isExpanded
+}
+
+"study::Grades::Helper::TaskItem.dart::TaskItem" --> "study::Grades::Subject::GradesData.dart::GradesData"
+
+class "study::Grades::Observer::Input::CourseFormPage.dart::CourseInputPage" {
+  +State createState()
+}
+
+
+class "study::Grades::Observer::Input::CourseFormPage.dart::CourseInputState" {
+  -String _addCourse
+  -String _addYear
+  -String _addGrade
+  +String dropdownValueSem
+  +String dropdownValueGrade
+  +String dropdownValueLetter
+  -bool _curr
+  +GradesData gradesData
+  -GlobalKey<FormState> _formKey
+  +void addCourseButton()
+  -void _showDialog()
+  -String _validateCourseName()
+  -String _validateCourseYear()
+  -String _validateCourseGrade()
+  -Widget _buildGradeForm()
+  -Widget _buildForm()
+  +Widget build()
+}
+
+"study::Grades::Observer::Input::CourseFormPage.dart::CourseInputState" --> "study::Grades::Subject::GradesData.dart::GradesData"
+
+class "study::Grades::Observer::Input::PrevTaskFormPage.dart::PrevTaskFormPage" {
+  +State createState()
+}
+
+
+class "study::Grades::Observer::Input::PrevTaskFormPage.dart::PrevTaskFormState" {
+  +List<String> tasks
+  -String _weight
+  -String _total
+  -String _grade
+  -String _name
+  -bool _bonus
+  +String dropdownValueTask
+  +GradesData gradesData
+  -GlobalKey<FormState> _formKey
+  +void addCourseButton()
+  -void _showDialog()
+  -String _validateTaskName()
+  -String _validateTaskGrade()
+  -String _validateTaskTotal()
+  -String _validateTaskWeight()
+  +Widget build()
+}
+
+"study::Grades::Observer::Input::PrevTaskFormPage.dart::PrevTaskFormState" --> "study::Grades::Subject::GradesData.dart::GradesData"
+
+class "study::Grades::Observer::Overview::AuditPage.dart::AuditPage" {
+  +State createState()
+}
+
+
+class "study::Grades::Observer::Overview::AuditPage.dart::AuditPageState" {
+  +GradesData gradesData
+  -Future<bool> _futureData
+  -void _removeData()
+  -void _openCoursePage()
+  -void _showDialog()
+  -void _addData()
+  -List _buildCourses()
+  -Widget _buildPanel()
+  +Widget buildUserInfo()
+  +Widget projectWidget()
+  -void _openCoursePredictor()
+  +Widget build()
+}
+
+"study::Grades::Observer::Overview::AuditPage.dart::AuditPageState" --> "study::Grades::Subject::GradesData.dart::GradesData"
+
+class "study::Grades::Observer::Overview::CoursePage.dart::CoursePage" {
+  +State createState()
+}
+
+
+class "study::Grades::Observer::Overview::CoursePage.dart::CoursePageState" {
+  +GradesData gradesData
+  +String gradePred
+  -Future<bool> _futureData
+  -void _addTask()
+  -void _removeData()
+  -void _openTaskPage()
+  -List _buildTasks()
+  -void _openGradePredictor()
+  -Widget _buildPanel()
+  +Widget buildUserInfo()
+  +Widget projectWidget()
+  +Widget build()
+}
+
+"study::Grades::Observer::Overview::CoursePage.dart::CoursePageState" --> "study::Grades::Subject::GradesData.dart::GradesData"
+
+class "study::Grades::Observer::Overview::TaskPage.dart::TaskPage" {
+  +State createState()
+}
+
+
+class "study::Grades::Observer::Overview::TaskPage.dart::TaskState" {
+  -GlobalKey<FormState> _formKey
+  -bool _bonus
+  +GradesData gradesData
+  -String _validateCourseName()
+  +String formatTimestamp()
+  +List taskInfo()
+  +Widget build()
+}
+
+"study::Grades::Observer::Overview::TaskPage.dart::TaskState" --> "study::Grades::Subject::GradesData.dart::GradesData"
+
+class "study::Grades::Observer::Predictor::GPAPredictorPage.dart::GPAPredictorPage" {
+  +State createState()
+}
+
+
+class "study::Grades::Observer::Predictor::GPAPredictorPage.dart::GPAPredictorState" {
+  +bool submitted
+  -String _goalGPA
+  +String dropdownValueGrade
+  +GradesData gradesData
+  -GlobalKey<FormState> _formKey
+  +void calculateGPANeeded()
+  -String _validateCourseGrade()
+  -Widget _buildGradeForm()
+  -List _buildCurrCourses()
+  +List floatingCourseButtons()
+  -void _showDialog()
+  -Widget _buildForm()
+  -String _validateGPAGoal()
+  +Widget build()
+}
+
+"study::Grades::Observer::Predictor::GPAPredictorPage.dart::GPAPredictorState" --> "study::Grades::Subject::GradesData.dart::GradesData"
+
+class "study::Grades::Observer::Predictor::GradePredictorPage.dart::GradePredictorPage" {
+  +State createState()
+}
+
+
+class "study::Grades::Observer::Predictor::GradePredictorPage.dart::GradePredictorState" {
+  +String courseName
+  +String sem
+  +String id
+  +GradesFirestore firehouse
+  +Widget build()
+}
+
+"study::Grades::Observer::Predictor::GradePredictorPage.dart::GradePredictorState" --> "study::GoogleAPI::Firestore::GradesFirestore.dart::GradesFirestore"
+
+class "study::Grades::Subject::GradesData.dart::GradesData" {
+  +GradesFirestore firestore
+  {static} +List<Course> courses
+  {static} +GPATable gpaTable
+  {static} +List<String> semesters
+  {static} +List<AuditItem> auditItems
+  {static} +double gpa
+  {static} +double currGPA
+  {static} +String currCourseID
+  {static} +List<TaskItem> taskItems
+  {static} +List<Task> tasks
+  +double grade
+  +double weighted
+  +String letterGrade
+  +double totalWeights
+  {static} +String currTaskID
+  +int predictCount
+  +List<Course> currCoursePredict
+  +String gpaNeededPredict
+  +Task getTaskByID()
+  +Course getCourseByID()
+  +bool calculateGPAPredict()
+  +void calculateCoursePredictCount()
+  +bool addCurrCoursePredict()
+  +void removeCurrCoursePredict()
+  +bool checkCurrCoursePredictExists()
+  +void removeTaskData()
+  +void removeCourseData()
+  +void addPrevTaskFormData()
+  +void addCourseFormData()
+  +double calculateCurrGPA()
+  +void calculateGPA()
+  +String convertLetterToDouble()
+  +String findNumberGPA()
+  +String findLetterGPA()
+  +String calculateSemGPA()
+  +dynamic refreshAuditPage()
+  +dynamic refreshCoursePage()
+  +Future<bool> fetchGradesData()
+  +Future<bool> fetchTaskObjects()
+  +Future<bool> fetchGPA()
+  +Future<bool> fetchCourseObjects()
+  +Future<bool> fetchGPATable()
+  +void generateTaskItems()
+  +Map getTasksByType()
+  +void generateAuditItems()
+  +Map getCoursesBySem()
+}
+
+"study::Grades::Subject::GradesData.dart::GradesData" --> "study::GoogleAPI::Firestore::GradesFirestore.dart::GradesFirestore"
+"study::Grades::Subject::GradesData.dart::GradesData" --> "study::Grades::Helper::GPATable.dart::GPATable"
+"study::Grades::Subject::GradesData.dart::GradesData" --> "study::Grades::Helper::AuditItem.dart::AuditItem"
+
+class "study::HomePage.dart::Home" {
+  +State createState()
+}
+
+
+class "study::HomePage.dart::_HomeState" {
+  -int _currentIndex
+  -List<Widget> _children
+  +void initState()
+  +Widget build()
+  +void onTabTapped()
+}
+
+
+class "study::Progress::Observer::ProgressPage.dart::progressPage" {
+  +State createState()
+}
+
+
+class "study::Progress::Observer::ProgressPage.dart::PieChartFactory" {
+  +Widget makePieChart()
+}
+
+class "study::Progress::Observer::ProgressPage.dart::LineChartFactory" {
+  +Widget makeLineChart()
+}
+
+class "study::Progress::Observer::ProgressPage.dart::progressPageState" {
+  -List<Series<Task, String>> _seriesPieData
+  -List<Series<Task, String>> _seriesPieDataB
+  -List<Series<Hours, int>> _seriesLineData
+  -dynamic _generateData()
+  +void initState()
+  +Widget build()
+}
+
+
+class "study::Progress::Observer::ProgressPage.dart::Task" {
+  +String task
+  +double taskvalue
+  +Color colorvalue
+}
+
+
+class "study::Progress::Observer::ProgressPage.dart::Hours" {
+  +int hours
+  +int days
+}
+
+class "study::Schedule::Helper::Task.dart::Task" {
+  +String type
+  +String name
+  +String time
+  +String id
+  +String course
+  +String onlyCourse
+  +bool bonus
+  +bool curr
+  +double grade
+  +double weight
+  +int totalGrade
+  +String toString()
+  +bool isNumeric()
+}
+
+class "study::Schedule::Helper::TaskList.dart::TaskList" {
+  -List<Tasks> _tasks
+  -int _index
+  +String current
+  +bool moveNext()
+  +int length()
+  +Task get()
+  +void add()
+}
+
+"study::Schedule::Helper::TaskList.dart::TaskList" --> "study::Schedule::Helper::Task.dart::Task"
+
+
+class "study::Schedule::Observer::CurrTaskFormPage.dart::CurrTaskFormPage" {
+  -String _taskType
+  -int _index
+  +State createState()
+}
+
+
+class "study::Schedule::Observer::CurrTaskFormPage.dart::FormData" {
+  -String _name
+  +String length
+  -DateTime _dueDate
+  -bool _forMarks
+  -bool _bonus
+  -List<DateTime> _dates
+  -String _dropDownValue
+  -bool _monVal
+  -bool _tuVal
+  -bool _wedVal
+  -bool _thurVal
+  -bool _friVal
+  -bool _satVal
+  -bool _sunVal
+  +String getDropDownValue()
+  +void setDropDownValue()
+}
+
+class "study::Schedule::Observer::CurrTaskFormPage.dart::_CurrTaskFormPageState" {
+  -Future<bool> _coursesLoaded
+  -String _taskType
+  -int _index
+  -TaskData _grades
+  -List<String> _courseNames
+  -List<String> _tasks
+  -List<String> _tasks1
+  -GlobalKey<FormState> _formKey
+  -FormData _data
+  +DateTime selectedDate
+  +Future<bool> getCourses()
+  -String _validateName()
+  -String _validateAmount()
+  +void submit()
+  -Future<Null> _selectDate()
+  +Widget checkbox()
+  +Widget build()
+}
+
+"study::Schedule::Observer::CurrTaskFormPage.dart::_CurrTaskFormPageState" --> "study::Schedule::Subject::TaskData.dart::TaskData"
+"study::Schedule::Observer::CurrTaskFormPage.dart::_CurrTaskFormPageState" --> "study::Schedule::Observer::CurrTaskFormPage.dart::FormData"
+
+class "study::Schedule::Observer::SchedulePage.dart::SchedulePage" {
+  +_SchedulePageState createState()
+}
+
+
+class "study::Schedule::Observer::SchedulePage.dart::_SchedulePageState" {
+  +DateTime today
+  +CalendarData calendarManager
+  +TaskData taskManager
+  -Future<bool> _onStartup
+  -Future<bool> _tasksLoaded
+  -Future<bool> _doneTasksLoaded
+  +bool isSwitched
+  -DateTime _currentDate
+  -DateTime _currentDate2
+  -String _currentMonth
+  -DateTime _targetDateTime
+  -CalendarCarousel<EventInterface> _calendarCarouselNoHeader
+  +IconData getIcon()
+  +void updatingCurrentDay()
+  +String getTypeString()
+  -Widget _listDoneTaskView()
+  -Widget _listTaskView()
+  +void createCalendar()
+  +String getListViewTitle()
+  +Widget getCurrentContainer()
+  +Widget build()
+}
+
+"study::Schedule::Observer::SchedulePage.dart::_SchedulePageState" --> "study::Schedule::Subject::CalendarData.dart::CalendarData"
+"study::Schedule::Observer::SchedulePage.dart::_SchedulePageState" --> "study::Schedule::Subject::TaskData.dart::TaskData"
+
+class "study::Schedule::Observer::TaskSelectionPage.dart::SelectionPage" {
+  +State createState()
+}
+
+
+class "study::Schedule::Observer::TaskSelectionPage.dart::_SelectionPageState" {
+  +List<String> tasks
+  +List<IconData> icons
+  +Widget build()
+}
+
+
+class "study::Schedule::Subject::CalendarData.dart::CalendarData" {
+  +EventList<Event> markedDateMap
+  +Map<DateTime, List> eventCal
+  +CalendarApi events
+  +CalendarBuilder c
+  +Future<calendar.CalendarApi> gettingCalendar()
+  +Future<Map<DateTime, List>> getEventMap()
+  +Future<bool> loadEvents()
+  +bool contains()
+}
+
+"study::Schedule::Subject::CalendarData.dart::CalendarData" --> "study::GoogleAPI::Calendar::CalendarAPI.dart::CalendarBuilder"
+
+class "study::Schedule::Subject::TaskData.dart::Course" {
+  -String _name
+  -String _semester
+  -int _year
+}
+
+class "study::Schedule::Subject::TaskData.dart::TaskData" {
+  -List<DocumentSnapshot> _taskDocs
+  -List<Courses> _courseObjs;
+  +TaskList todayTasks
+  +TaskList todayDoneTasks
+  +TaskFireStore taskManager
+  +Future<List<String>> getCourseNameList()
+  +Future<List<DocumentSnapshot>> getCourseData()
+  +void addTaskData()
+  +Future<DateTime> updateDay()
+  +Future<bool> getTasks()
+  +Future<bool> getDoneTasks()
+  +Future<bool> updatingProgress()
+}
+
+"study::Schedule::Subject::TaskData.dart::TaskData" --> "study::Schedule::Subject::TaskData.dart::Course"
+"study::Schedule::Subject::TaskData.dart::TaskData" --> "study::Schedule::Helper::TaskList.dart::TaskList"
+"study::Schedule::Subject::TaskData.dart::TaskData" --> "study::GoogleAPI::Firestore::TaskFirestore.dart::TaskFireStore"
+
+class "study::UpdateApp::Observer::MyApp.dart::MyApp" {
+  +ThemeData loadedTheme
+  +String theme
+  -Future<bool> _themeLoaded
+  +Future<String> getSavedTheme()
+  +Future<bool> gotTheme()
+  +Widget build()
+}
+
+"study::UpdateApp::Observer::MyApp.dart::MyApp" --> "study::UpdateApp::Subject::SettingsData.dart::ThemeChanger"
+
+
+
+class "study::UpdateApp::Subject::SettingsData.dart::ThemeStyle" {
+  +int index
+  {static} +List<ThemeStyle> values
+  {static} +ThemeStyle Light
+  {static} +ThemeStyle Dark
+  {static} +ThemeStyle DarkOLED
+}
+
+"study::UpdateApp::Subject::SettingsData.dart::ThemeStyle" <-- "study::UpdateApp::Subject::SettingsData.dart::ThemeStyle"
+
+class "study::UpdateApp::Subject::SettingsData.dart::ThemeChanger" {
+  -ThemeData _themeData
+  +Future<bool> saveTheme()
+  {static} +Future<String> loadTheme()
+  +dynamic getTheme()
+  +dynamic setTheme()
+}
+
+
+class "study::UpdateApp::Subject::SettingsData.dart::SaveFontScale" {
+  +Future<bool> saveSize()
+  +Future<int> loadScale()
+}
+
+class "study::UpdateApp::UI::LoginPage.dart::LoginScreen" {
+  +_LoginScreenState createState()
+}
+
+
+class "study::UpdateApp::UI::LoginPage.dart::_LoginScreenState" {
+  +Widget build()
+  -Widget _signInButton()
+}
+
+
+class "study::UpdateApp::UI::SettingsPage.dart::SettingsScreen" {
+  +_SettingsScreenState createState()
+}
+
+
+class "study::UpdateApp::UI::SettingsPage.dart::_SettingsScreenState" {
+  +Widget build()
+}
+
+
+class "study::UpdateApp::UI::ThemedApp.dart::ThemedApp" {
+  -Future<bool> _loginState
+  -Auth _auth
+  -Widget _login
+  +Future<bool> loginState()
+  +Widget build()
+}
+
+"study::UpdateApp::UI::ThemedApp.dart::ThemedApp" --> "study::GoogleAPI::Authentication::Authentication.dart::Auth"
+
+
+@enduml
