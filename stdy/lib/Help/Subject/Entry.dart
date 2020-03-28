@@ -75,13 +75,19 @@ final List<Entry> data = <Entry>[
       Entry(
         'Viewing Progress',
         <Entry>[
-          Entry('beep'),
+          Entry('The first tab shows the overall progress of all tasks, '
+              'the following tabs breakdown progress based on the type of task such as assignments, '
+              'projects, readings etc. Flip through the tabs to get a more in-depth look at your progress.'),
         ],
       ),
       Entry(
         'How Progress is Calculated',
         <Entry>[
-          Entry('beep'),
+          Entry('We aggregate the number of tasks in a given week and sum  the number of hours you '
+              'plan to spend on them. Then for each task, the  progress you input is calculated as a '
+              'percentage of that total time. For the actual vs expected amount of work graph, the expected '
+              'amount of work is the time you plan to spend on each task in hours per day, '
+              'and the actual amount of work is what you input as progress. '),
         ],
       ),
     ],
