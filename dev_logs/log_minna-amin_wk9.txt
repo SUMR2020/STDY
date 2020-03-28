@@ -1,0 +1,4 @@
+week 9:
+- Connected database
+- Fetched data from database
+- Parsed data 

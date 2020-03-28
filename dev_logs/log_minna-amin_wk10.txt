@@ -1,0 +1,10 @@
+week 10:
+- Created views
+- Pie chart and line chart visualization
+- Implemented algorithm
+- Fixed colours on charts
+- D4 write up
+- Scrum meeting over discord to discuss video
+- Fixed tab icons to more suitable ones
+- Added shading under area of line graph
+- Added labels to the charts and axis 
