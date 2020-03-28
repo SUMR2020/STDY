@@ -144,8 +144,14 @@ class ProgressPageState extends State<ProgressPage>{
             return charts.LineChart(
               _lineSeriesData(snapshot.data, taskType),
               defaultRenderer: new charts.LineRendererConfig(
-                  includeArea: false, stacked: true),
+                  includeArea: true, stacked: true),
               animate : true,
+              behaviors: [
+                new charts.ChartTitle('Days', behaviorPosition: charts.BehaviorPosition.bottom,
+                titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
+                new charts.ChartTitle('Hours', behaviorPosition: charts.BehaviorPosition.start,
+                    titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
+              ],
             );
           } else {
             return Align(child: CircularProgressIndicator());
@@ -189,13 +195,13 @@ class ProgressPageState extends State<ProgressPage>{
                         color: Theme.of(context).accentColor,)),
                       Tab(icon: Icon(Icons.assignment,
                         color: Theme.of(context).accentColor,)),
-                      Tab(icon: Icon(Icons.build,
+                      Tab(icon: Icon(Icons.subtitles,
                         color: Theme.of(context).accentColor,)
                       ),
-                      Tab(icon: Icon(Icons.personal_video,
+                      Tab(icon: Icon(Icons.ondemand_video,
                         color: Theme.of(context).accentColor,)
                       ),
-                      Tab(icon: Icon(Icons.note,
+                      Tab(icon: Icon(Icons.event_note,
                         color: Theme.of(context).accentColor,)
                       ),
                     ],
@@ -216,7 +222,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
+                              Text("current progress on your tasks", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'total'),
+                              Text("expected vs. actual amount of work done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'total'),
                             ],
                           )
@@ -230,7 +239,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
+                              Text("current progress on your readings", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'reading'),
+                              Text("expected vs. actual amount of work done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'reading'),
                             ],
                           )
@@ -244,7 +256,10 @@ class ProgressPageState extends State<ProgressPage>{
                   child: Center(
                     child: Column(
                       children: <Widget>[
+                        Text("current progress on your assignments", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                        SizedBox(height: 10.0,),
                         makePieChart(taskProgress, 'assignment'),
+                        Text("expected vs. actual amount of work done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                         makeLineChart(timeLineProgress, 'assignment'),
                       ],
                     )
@@ -258,7 +273,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
+                              Text("current progress on your projects", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'project'),
+                              Text("expected vs. actual amount of work done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'project'),
                             ],
                           )
@@ -272,7 +290,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
+                              Text("current progress on your lectures", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'lectures'),
+                              Text("expected vs. actual amount of work done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'lectures'),
                             ],
                           )
@@ -286,7 +307,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
+                              Text("current progress on your notes", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'notes'),
+                              Text("expected vs. actual amount of work done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'notes'),
                             ],
                           )
