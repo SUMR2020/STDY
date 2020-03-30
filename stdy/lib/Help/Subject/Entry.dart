@@ -59,7 +59,7 @@ final List<Entry> data = <Entry>[
         ],
       ),
       Entry(
-        'Deleting Course/task',
+        'Deleting Course/Task',
         <Entry>[
           Entry('To delete either a course or a task, opem the corraponding page (audit/course), then open the drop down expansion pane and click the delete icon on the right.'),
         ],
