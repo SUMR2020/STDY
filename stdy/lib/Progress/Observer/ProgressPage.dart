@@ -222,10 +222,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("CURRENT PROGRESS ON YOUR TASKS", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Current Progress On Your Tasks", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'total'),
-                              Text("EXPECTS VS. ACTUAL WORK DONE", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'total'),
                             ],
                           )
@@ -239,10 +239,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("CURRENT PROGRESS ON YOUR READINGS", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Current Progress On Your Readings", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'reading'),
-                              Text("EXPECTS VS. ACTUAL WORK DONE", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'reading'),
                             ],
                           )
@@ -256,10 +256,10 @@ class ProgressPageState extends State<ProgressPage>{
                   child: Center(
                     child: Column(
                       children: <Widget>[
-                        Text("CURRENT PROGRESS ON YOUR ASSIGNMENTS", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                        Text("Current Progress On Your Assignments", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                         SizedBox(height: 10.0,),
                         makePieChart(taskProgress, 'assignment'),
-                        Text("EXPECTS VS. ACTUAL WORK DONE", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                        Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                         makeLineChart(timeLineProgress, 'assignment'),
                       ],
                     )
@@ -273,10 +273,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("CURRENT PROGRESS ON YOUR PROJECTS", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Current Progress On Your Projects", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'project'),
-                              Text("EXPECTS VS. ACTUAL WORK DONE", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'project'),
                             ],
                           )
@@ -290,10 +290,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("CURRENT PROGRESS ON YOUR LECTURES", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Current Progress On Your Lectures", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'lectures'),
-                              Text("EXPECTS VS. ACTUAL WORK DONE", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'lectures'),
                             ],
                           )
@@ -307,10 +307,10 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("CURRENT PROGRESS ON YOUR NOTES", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Current Progress On Your Notes", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'notes'),
-                              Text("EXPECTS VS. ACTUAL WORK DONE", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               makeLineChart(timeLineProgress, 'notes'),
                             ],
                           )
