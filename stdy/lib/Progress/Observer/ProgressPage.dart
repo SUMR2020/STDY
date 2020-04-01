@@ -115,7 +115,7 @@ class ProgressPageState extends State<ProgressPage>{
         measureFn: (Hours hours,_)=>hours.days,
         colorFn: (Hours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFFDA3A4)),
-        id: 'Hours',
+        id: 'Goal',
 
       ),
     );
@@ -127,7 +127,7 @@ class ProgressPageState extends State<ProgressPage>{
         measureFn: (Hours hours,_)=>hours.days,
         colorFn: (Hours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFE91E63)),
-        id: 'Hours',
+        id: 'Progress',
 
       ),
     );
@@ -151,6 +151,18 @@ class ProgressPageState extends State<ProgressPage>{
                 titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
                 new charts.ChartTitle(ylabel, behaviorPosition: charts.BehaviorPosition.start,
                     titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
+
+                new charts.SeriesLegend(
+                  position: charts.BehaviorPosition.bottom,
+                  outsideJustification: charts.OutsideJustification.endDrawArea,
+                  horizontalFirst: false,
+                  desiredMaxRows: 2,
+                  cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
+                  entryTextStyle: charts.TextStyleSpec(
+                      color: charts.MaterialPalette.pink.shadeDefault,
+                      fontSize: 14 + fontScale
+                  ),
+                )
               ],
             );
           } else {
