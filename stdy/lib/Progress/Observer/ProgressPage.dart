@@ -115,7 +115,7 @@ class ProgressPageState extends State<ProgressPage>{
         measureFn: (Hours hours,_)=>hours.days,
         colorFn: (Hours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFFDA3A4)),
-        id: 'Hours',
+        id: 'Goal',
 
       ),
     );
@@ -127,7 +127,7 @@ class ProgressPageState extends State<ProgressPage>{
         measureFn: (Hours hours,_)=>hours.days,
         colorFn: (Hours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFE91E63)),
-        id: 'Hours',
+        id: 'Progress',
 
       ),
     );
@@ -135,7 +135,7 @@ class ProgressPageState extends State<ProgressPage>{
   }
 
 
-  Widget makeLineChart(Future timelineProgress, var taskType){
+  Widget makeLineChart(Future timelineProgress, var taskType, var ylabel){
     return Expanded(
       child: FutureBuilder(
         future: timelineProgress,
@@ -149,8 +149,20 @@ class ProgressPageState extends State<ProgressPage>{
               behaviors: [
                 new charts.ChartTitle('Days', behaviorPosition: charts.BehaviorPosition.bottom,
                 titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
-                new charts.ChartTitle('Hours', behaviorPosition: charts.BehaviorPosition.start,
+                new charts.ChartTitle(ylabel, behaviorPosition: charts.BehaviorPosition.start,
                     titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
+
+                new charts.SeriesLegend(
+                  position: charts.BehaviorPosition.bottom,
+                  outsideJustification: charts.OutsideJustification.endDrawArea,
+                  horizontalFirst: false,
+                  desiredMaxRows: 2,
+                  cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
+                  entryTextStyle: charts.TextStyleSpec(
+                      color: charts.MaterialPalette.pink.shadeDefault,
+                      fontSize: 14 + fontScale
+                  ),
+                )
               ],
             );
           } else {
@@ -226,7 +238,7 @@ class ProgressPageState extends State<ProgressPage>{
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'total'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
-                              makeLineChart(timeLineProgress, 'total'),
+                              makeLineChart(timeLineProgress, 'total', 'Hours'),
                             ],
                           )
                       )
@@ -243,7 +255,7 @@ class ProgressPageState extends State<ProgressPage>{
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'reading'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
-                              makeLineChart(timeLineProgress, 'reading'),
+                              makeLineChart(timeLineProgress, 'reading', 'Pages'),
                             ],
                           )
                       )
@@ -260,7 +272,7 @@ class ProgressPageState extends State<ProgressPage>{
                         SizedBox(height: 10.0,),
                         makePieChart(taskProgress, 'assignment'),
                         Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
-                        makeLineChart(timeLineProgress, 'assignment'),
+                        makeLineChart(timeLineProgress, 'assignment', 'Hours'),
                       ],
                     )
                   )
@@ -277,7 +289,7 @@ class ProgressPageState extends State<ProgressPage>{
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'project'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
-                              makeLineChart(timeLineProgress, 'project'),
+                              makeLineChart(timeLineProgress, 'project', 'Hours'),
                             ],
                           )
                       )
@@ -294,7 +306,7 @@ class ProgressPageState extends State<ProgressPage>{
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'lectures'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
-                              makeLineChart(timeLineProgress, 'lectures'),
+                              makeLineChart(timeLineProgress, 'lectures', 'Hours'),
                             ],
                           )
                       )
@@ -311,7 +323,7 @@ class ProgressPageState extends State<ProgressPage>{
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'notes'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
-                              makeLineChart(timeLineProgress, 'notes'),
+                              makeLineChart(timeLineProgress, 'notes', 'Hours'),
                             ],
                           )
                       )
