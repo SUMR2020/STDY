@@ -214,8 +214,8 @@ class _CurrTaskFormPageState extends State<CurrTaskFormPage> {
               daily,
           _data._bonus, null, (str.substring(startIndex + start.length, endIndex)));
 
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (_) => Home()));
+          Navigator.pop(context);
+          Navigator.pop(context);
         }
 
       } else {

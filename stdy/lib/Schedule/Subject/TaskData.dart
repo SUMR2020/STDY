@@ -107,10 +107,18 @@ class TaskData {
         }
         var currdates = await taskManager.getDates(docRef);
         List<DateTime> datesObjs = new List<DateTime>();
-        for (Timestamp t in currdates) {
-          DateTime date = (t.toDate());
-          if (date.isAfter(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day-1)))
-            datesObjs.add(DateTime(date.year, date.month, date.day));
+        if (currdates != null) {
+          for (Timestamp t in currdates) {
+            DateTime date = (t.toDate());
+            if (date.isAfter(DateTime(DateTime
+                .now()
+                .year, DateTime
+                .now()
+                .month, DateTime
+                .now()
+                .day - 1)))
+              datesObjs.add(DateTime(date.year, date.month, date.day));
+          }
         }
         docRef.updateData({"dates": datesObjs});
         var num = ((task.data["toDo"]) / datesObjs.length);
