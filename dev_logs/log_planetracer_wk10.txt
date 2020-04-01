@@ -12,3 +12,11 @@ March 26th, 2020 11am-4pm:
 March 29th, 2020 4-5pm:
 - Worked on D4 doc, finished my sections and formatting
 - Worked on the Help Page
+
+March 30th, 2020 1-3pm:
+- worked on the d4 doc, and with Uzair on video ideas
+
+March 31st, 2020 7-9pm:
+- tested for bugs in the code, found on progress page
+- found a bug with task list, and fixed it
+- worked with uzair on fake data entry
