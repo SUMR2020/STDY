@@ -181,6 +181,7 @@ class _CurrTaskFormPageState extends State<CurrTaskFormPage> {
           if ((date.weekday == 6) && (_data._satVal == true)) _data._dates.add(date);
           if ((date.weekday == 7) && (_data._sunVal == true)) _data._dates.add(date);
         }
+        print (dates.length);
         double dailyDouble = int.parse(_data.length)/_data._dates.length;
         String daily = dailyDouble.toStringAsFixed(2);
         if (_data._dates.length == 0){
@@ -214,13 +215,13 @@ class _CurrTaskFormPageState extends State<CurrTaskFormPage> {
               daily,
           _data._bonus, null, (str.substring(startIndex + start.length, endIndex)));
 
-          Navigator.push(
-              context,
+          Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => SchedulePage(),
+                  builder: (context){
+                    return Home();
+                  }
               ));
         }
-
       } else {
         print("not valid");
       }
