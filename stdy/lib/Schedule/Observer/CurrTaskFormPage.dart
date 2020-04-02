@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:study/Schedule/Observer/SchedulePage.dart';
 import '../../HomePage.dart';
 import '../../UpdateApp/Subject/SettingsData.dart';
 import '../Helper/Task.dart';
@@ -180,7 +181,6 @@ class _CurrTaskFormPageState extends State<CurrTaskFormPage> {
           if ((date.weekday == 6) && (_data._satVal == true)) _data._dates.add(date);
           if ((date.weekday == 7) && (_data._sunVal == true)) _data._dates.add(date);
         }
-        print (dates.length);
         double dailyDouble = int.parse(_data.length)/_data._dates.length;
         String daily = dailyDouble.toStringAsFixed(2);
         if (_data._dates.length == 0){
@@ -214,8 +214,11 @@ class _CurrTaskFormPageState extends State<CurrTaskFormPage> {
               daily,
           _data._bonus, null, (str.substring(startIndex + start.length, endIndex)));
 
-          Navigator.pop(context);
-          Navigator.pop(context);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SchedulePage(),
+              ));
         }
 
       } else {
@@ -233,7 +236,6 @@ class _CurrTaskFormPageState extends State<CurrTaskFormPage> {
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {
-        print(picked);
         _data._dueDate = picked;
       });
   }

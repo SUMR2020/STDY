@@ -126,7 +126,7 @@ class TaskFireStore extends MainFirestore{
    }
 
    void updateDoneToday(DocumentReference docRef) async {
-     docRef.updateData({"today": 0});
+     docRef.updateData({"today": "0"});
    }
 
    void updateToday(DocumentReference docRef, String done) async{
@@ -136,6 +136,11 @@ class TaskFireStore extends MainFirestore{
      docRef.updateData({"today": today});
    }
 
+   Future<String> getToday (DocumentReference docRef) async {
+     var before = await docRef.get();
+     var today = before["today"];
+     return today.toString();
+   }
 
   Future<bool> updateProgressandDoneList(DocumentReference docRef, String done) async {
     var before = await docRef.get();

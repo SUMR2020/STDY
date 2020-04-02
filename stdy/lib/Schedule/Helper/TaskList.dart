@@ -28,7 +28,6 @@ class TaskList implements Iterator{
 
   // getting at specific location
   Task get(int i){
-    print (_tasks[i]);
     return _tasks[i];
   }
 

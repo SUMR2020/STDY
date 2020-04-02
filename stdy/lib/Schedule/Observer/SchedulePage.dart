@@ -76,7 +76,6 @@ class _SchedulePageState extends State<SchedulePage>{
 
   // the list view for done tasks, does not include amount
   Widget _listDoneTaskView() {
-    print (taskManager.todayDoneTasks.length);
     return new Container(
         height: 100.0,
         child: new ListView.builder(
@@ -352,7 +351,6 @@ class _SchedulePageState extends State<SchedulePage>{
 
   @override
   Widget build(BuildContext context) {
-    taskManager.printTasks();
     final theme = Provider.of<ThemeChanger>(context);
     updatingCurrentDay();
     return new Scaffold(
