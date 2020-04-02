@@ -20,3 +20,9 @@ March 31st, 2020 7-9pm:
 - tested for bugs in the code, found on progress page
 - found a bug with task list, and fixed it
 - worked with uzair on fake data entry
+
+April 1st, 2020 8-10pm:
+- fixed a bug with the to do list and done list, where it would stay in the to do list after completion
+
+April 2nd, 2020 1-1:30pm:
+- fixed a routng issue 
