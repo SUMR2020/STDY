@@ -77,10 +77,8 @@ class TaskData {
   }
 
   Future<DateTime> updateDay() async {
-      print ("kil me");
       _taskDocs = await taskManager.getTasks();
       for (DocumentSnapshot task in _taskDocs) {
-        print(task.data["name"]);
         var docRef = await taskManager.getTaskData(
             task.data["course"], task.data["id"]);
         var dates = await taskManager.allDates(docRef);
@@ -125,27 +123,21 @@ class TaskData {
         docRef.updateData({
           "daily": (num.toStringAsFixed(2)).toString()
         });
-       // taskManager.redistributeData(task, task.data["id"]);
       }
-
-          // update dates, remove old
-
-          // redistribute the data
   }
 
   Future<bool> getTasks() async {
     _taskDocs = await taskManager.getTasks();
     for (DocumentSnapshot task in _taskDocs) {
-      print(task.toString());
       var docRef = await taskManager.getTaskData(task.data["course"], task.data["id"]);
       var dates = await taskManager.getDates(docRef);
+      var amountDone = await taskManager.getToday(docRef);
       List<DateTime> datesObjs = new List<DateTime>();
       for (Timestamp t in dates) {
         DateTime date = (t.toDate());
         datesObjs.add(DateTime(date.year, date.month, date.day));
       }
-      DateTime today = DateTime.now();
-      if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
+      if (double.parse(amountDone) > 0) {
         Task t = new Task(
             task.data["type"],
             task.data["name"],
@@ -154,6 +146,8 @@ class TaskData {
             task.data["course"],
             task.data["onlyCourse"]);
         todayTasks.add(t);
+        print (t.toString());
+
       }
     }
     return true;
@@ -163,14 +157,14 @@ class TaskData {
     _taskDocs = await taskManager.getTasks();
     for (DocumentSnapshot task in _taskDocs) {
       var docRef = await taskManager.getTaskData(task.data["course"], task.data["id"]);
+      var amountLeft = await taskManager.getToday(docRef);
       var dates = await taskManager.getDoneDates(docRef);
       List<DateTime> datesObjs = new List<DateTime>();
       for (Timestamp t in dates) {
         DateTime date = (t.toDate());
         datesObjs.add(DateTime(date.year, date.month, date.day));
       }
-      DateTime today = DateTime.now();
-      if (datesObjs.contains(DateTime(today.year, today.month, today.day))) {
+      if (double.parse(amountLeft) <= 0) {
         Task t = new Task(
             task.data["type"],
             task.data["name"],
@@ -182,12 +176,6 @@ class TaskData {
       }
     }
     return true;
-  }
-
-  bool printTasks(){
-    while (todayTasks.moveNext()){
-     print(todayTasks.current);
-    }
   }
 
   Future<bool> updatingProgress(String id, String course, String done) async {
