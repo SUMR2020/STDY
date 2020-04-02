@@ -238,7 +238,7 @@ class ProgressPageState extends State<ProgressPage>{
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'total'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
-                              makeLineChart(timeLineProgress, 'total', 'Hours'),
+                              makeLineChart(timeLineProgress, 'total', 'Work Total'),
                             ],
                           )
                       )
