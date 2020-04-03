@@ -198,6 +198,7 @@ class ProgressData {
         }
       }
     }
+    print(timeline['notes']);
     return timeline;
   }
 

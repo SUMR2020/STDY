@@ -97,41 +97,90 @@ class ProgressPageState extends State<ProgressPage>{
     var _seriesLineData = List<charts.Series<Hours,int>> ();
     List<Hours> goal = [];
     List<Hours> progress = [];
-
+    print("taskType: " + taskType);
+    print("data: ");
+    print(data[taskType]);
 
     for (int i = -6; i < 1; i++) {
-      goal.add(Hours(i+7, data[taskType][i.toString()]['totalGoal'].round()));
+      print("i: " + i.toString());
+      print("totalGoal: " + data[taskType][i.toString()]['totalGoal'].round().toString());
+      Hours hours = new Hours(i+7, data[taskType][i.toString()]['totalGoal'].round());
+      print(hours.days.toString());
+      print(hours.hours.toString());
+      goal.add(hours);
 
     }
     for (int i = -6; i < 1; i++) {
-      progress.add(Hours(i+7, data[taskType][i.toString()]['totalProgress'].round()));
+      print("i: " + i.toString());
+      print("totalProgress: " + data[taskType][i.toString()]['totalProgress'].round().toString());
+      Hours hours = new Hours(i+7, data[taskType][i.toString()]['totalProgress'].round());
+      print(hours.days.toString());
+      print(hours.hours.toString());
+      progress.add(hours);
     }
 
+//    List<Hours> test = [
+//      new Hours(1, 10),
+//      new Hours(2, 15),
+//      new Hours(3, 20),
+//      new Hours(4, 25),
+//      new Hours(5, 30),
+//      new Hours(6, 35),
+//      new Hours(7, 40)
+//    ];
+//
+//    List<Hours> test2 = [
+//      new Hours(1, 10),
+//      new Hours(2, 15),
+//      new Hours(3, 20),
+//      new Hours(4, 25),
+//      new Hours(5, 30),
+//      new Hours(6, 35),
+//      new Hours(7, 40)
+//    ];
+//
+//    _seriesLineData.add(
+//      new charts.Series(
+//        data: test,
+//        domainFn: (Hours hours,_)=>hours.days,
+//        measureFn: (Hours hours,_)=>hours.hours,
+//        colorFn: (Hours hours,_)=>
+//            charts.ColorUtil.fromDartColor(Color(0xFF03A9F4)),
+//        id: 'test1',
+//      )
+//    );
+//    _seriesLineData.add(
+//        new charts.Series(
+//          data: test2,
+//          domainFn: (Hours hours,_)=>hours.days,
+//          measureFn: (Hours hours,_)=>hours.hours,
+//          colorFn: (Hours hours,_)=>
+//              charts.ColorUtil.fromDartColor(Color(0xFF5D4037)),
+//          id: 'test2',
+//        )
+//    );
 
-    _seriesLineData.add(
-      charts.Series(
+    return [
+      new charts.Series(
         data: goal,
-        domainFn: (Hours hours,_)=>hours.hours,
-        measureFn: (Hours hours,_)=>hours.days,
+        domainFn: (Hours hours,_)=>hours.days,
+        measureFn: (Hours hours,_)=>hours.hours,
         colorFn: (Hours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFFDA3A4)),
+        id: 'Goal',
+
+      )
+      ..setAttribute(charts.rendererIdKey, 'customArea'),
+      new charts.Series(
+        data: progress,
+        domainFn: (Hours hours,_)=>hours.days,
+        measureFn: (Hours hours,_)=>hours.hours,
+        colorFn: (Hours hours,_)=>
+            charts.ColorUtil.fromDartColor(Color(0xFFE91E63)),
         id: 'Progress',
 
       ),
-    );
-
-    _seriesLineData.add(
-      charts.Series(
-        data: progress,
-        domainFn: (Hours hours,_)=>hours.hours,
-        measureFn: (Hours hours,_)=>hours.days,
-        colorFn: (Hours hours,_)=>
-            charts.ColorUtil.fromDartColor(Color(0xFFE91E63)),
-        id: 'Goal',
-
-      ),
-    );
-    return _seriesLineData;
+    ];
   }
 
 
@@ -143,8 +192,13 @@ class ProgressPageState extends State<ProgressPage>{
           if (snapshot.connectionState == ConnectionState.done){
             return charts.LineChart(
               _lineSeriesData(snapshot.data, taskType),
-              defaultRenderer: new charts.LineRendererConfig(
-                  includeArea: true, stacked: true),
+              customSeriesRenderers: [
+                new charts.LineRendererConfig(
+                  // ID used to link series to this renderer.
+                    customRendererId: 'customArea',
+                    includeArea: true,
+                    stacked: true),
+              ],
               animate : true,
 
               behaviors: [
@@ -348,7 +402,7 @@ class Task{
 }
 
 class Hours{
-  int hours;
-  int days;
-  Hours(this.hours, this.days);
+  final int hours;
+  final int days;
+  Hours(this.days, this.hours);
 }
