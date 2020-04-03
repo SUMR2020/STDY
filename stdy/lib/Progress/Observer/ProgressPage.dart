@@ -93,89 +93,41 @@ class ProgressPageState extends State<ProgressPage>{
     );
   }
 
-  List<charts.Series<Hours,int>> _lineSeriesData(data, taskType){
-    var _seriesLineData = List<charts.Series<Hours,int>> ();
-    List<Hours> goal = [];
-    List<Hours> progress = [];
-    print("taskType: " + taskType);
-    print("data: ");
-    print(data[taskType]);
+  DateTime _getDateTime(var i){
+    DateTime today = DateTime.now();
+    return new DateTime(today.year, today.month, today.day + i);
+  }
+
+  List<charts.Series<TimeSeriesHours,DateTime>> _lineSeriesData(data, taskType){
+    List<TimeSeriesHours> goal = [];
+    List<TimeSeriesHours> progress = [];
 
     for (int i = -6; i < 1; i++) {
-      print("i: " + i.toString());
-      print("totalGoal: " + data[taskType][i.toString()]['totalGoal'].round().toString());
-      Hours hours = new Hours(i+7, data[taskType][i.toString()]['totalGoal'].round());
-      print(hours.days.toString());
-      print(hours.hours.toString());
+      TimeSeriesHours hours = new TimeSeriesHours(_getDateTime(i), data[taskType][i.toString()]['totalGoal'].round());
       goal.add(hours);
 
     }
     for (int i = -6; i < 1; i++) {
-      print("i: " + i.toString());
-      print("totalProgress: " + data[taskType][i.toString()]['totalProgress'].round().toString());
-      Hours hours = new Hours(i+7, data[taskType][i.toString()]['totalProgress'].round());
-      print(hours.days.toString());
-      print(hours.hours.toString());
+      TimeSeriesHours hours = new TimeSeriesHours(_getDateTime(i), data[taskType][i.toString()]['totalProgress'].round());
       progress.add(hours);
     }
 
-//    List<Hours> test = [
-//      new Hours(1, 10),
-//      new Hours(2, 15),
-//      new Hours(3, 20),
-//      new Hours(4, 25),
-//      new Hours(5, 30),
-//      new Hours(6, 35),
-//      new Hours(7, 40)
-//    ];
-//
-//    List<Hours> test2 = [
-//      new Hours(1, 10),
-//      new Hours(2, 15),
-//      new Hours(3, 20),
-//      new Hours(4, 25),
-//      new Hours(5, 30),
-//      new Hours(6, 35),
-//      new Hours(7, 40)
-//    ];
-//
-//    _seriesLineData.add(
-//      new charts.Series(
-//        data: test,
-//        domainFn: (Hours hours,_)=>hours.days,
-//        measureFn: (Hours hours,_)=>hours.hours,
-//        colorFn: (Hours hours,_)=>
-//            charts.ColorUtil.fromDartColor(Color(0xFF03A9F4)),
-//        id: 'test1',
-//      )
-//    );
-//    _seriesLineData.add(
-//        new charts.Series(
-//          data: test2,
-//          domainFn: (Hours hours,_)=>hours.days,
-//          measureFn: (Hours hours,_)=>hours.hours,
-//          colorFn: (Hours hours,_)=>
-//              charts.ColorUtil.fromDartColor(Color(0xFF5D4037)),
-//          id: 'test2',
-//        )
-//    );
-
     return [
-      new charts.Series(
+      new charts.Series<TimeSeriesHours, DateTime>(
         data: goal,
-        domainFn: (Hours hours,_)=>hours.days,
-        measureFn: (Hours hours,_)=>hours.hours,
-        colorFn: (Hours hours,_)=>
+        domainFn: (TimeSeriesHours hours,_)=>hours.time,
+        measureFn: (TimeSeriesHours hours,_)=>hours.hours,
+        colorFn: (TimeSeriesHours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFFDA3A4)),
         id: 'Goal',
 
       )
       ..setAttribute(charts.rendererIdKey, 'customArea'),
-      new charts.Series(
+      new charts.Series<TimeSeriesHours, DateTime>(
         data: progress,
-        domainFn: (Hours hours,_)=>hours.days,
-        measureFn: (Hours hours,_)=>hours.hours,
-        colorFn: (Hours hours,_)=>
+        domainFn: (TimeSeriesHours hours,_)=>hours.time,
+        measureFn: (TimeSeriesHours hours,_)=>hours.hours,
+        colorFn: (TimeSeriesHours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFE91E63)),
         id: 'Progress',
 
@@ -190,7 +142,7 @@ class ProgressPageState extends State<ProgressPage>{
         future: timelineProgress,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done){
-            return charts.LineChart(
+            return charts.TimeSeriesChart(
               _lineSeriesData(snapshot.data, taskType),
               customSeriesRenderers: [
                 new charts.LineRendererConfig(
@@ -202,7 +154,7 @@ class ProgressPageState extends State<ProgressPage>{
               animate : true,
 
               behaviors: [
-                new charts.ChartTitle('Days', behaviorPosition: charts.BehaviorPosition.bottom,
+                new charts.ChartTitle('Date', behaviorPosition: charts.BehaviorPosition.bottom,
                 titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
                 new charts.ChartTitle(ylabel, behaviorPosition: charts.BehaviorPosition.start,
                     titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
@@ -401,8 +353,8 @@ class Task{
 
 }
 
-class Hours{
+class TimeSeriesHours{
+  final DateTime time;
   final int hours;
-  final int days;
-  Hours(this.days, this.hours);
+  TimeSeriesHours(this.time, this.hours);
 }
