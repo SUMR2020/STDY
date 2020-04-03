@@ -7,4 +7,12 @@ week 10:
 - Scrum meeting over discord to discuss video
 - Fixed tab icons to more suitable ones
 - Added shading under area of line graph
-- Added labels to the charts and axis 
+- Added labels to the charts and axis
+
+
+Extra:(week 11)
+- Added write up to help page
+- Fixed y-axis label on line chart for reading page  and home page
+- Added a legend to line chart
+- Changed x-axis to dates from numbers
+- Fixed rendering of line chart
