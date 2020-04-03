@@ -115,7 +115,7 @@ class ProgressPageState extends State<ProgressPage>{
         measureFn: (Hours hours,_)=>hours.days,
         colorFn: (Hours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFFDA3A4)),
-        id: 'Goal',
+        id: 'Progress',
 
       ),
     );
@@ -127,7 +127,7 @@ class ProgressPageState extends State<ProgressPage>{
         measureFn: (Hours hours,_)=>hours.days,
         colorFn: (Hours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFE91E63)),
-        id: 'Progress',
+        id: 'Goal',
 
       ),
     );
@@ -146,6 +146,7 @@ class ProgressPageState extends State<ProgressPage>{
               defaultRenderer: new charts.LineRendererConfig(
                   includeArea: true, stacked: true),
               animate : true,
+
               behaviors: [
                 new charts.ChartTitle('Days', behaviorPosition: charts.BehaviorPosition.bottom,
                 titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
