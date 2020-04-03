@@ -43,12 +43,19 @@ class ProgressPageState extends State<ProgressPage>{
 
 
   List<charts.Series<Task,String>>  _pieSeriesData(data, taskType){
-    List<Task> totalProgress=[];
-    int i = 0;
-    for (var item in data[taskType].entries){
-      totalProgress.add(new Task(item.key, double.parse(item.value['percent'].toStringAsFixed(1)), shades[i]));
-      i++;
+    List<Task> totalProgress;
+    if (data[taskType].length == 0){
+      double percent = 100;
+      totalProgress=[new Task("N/A", double.parse(percent.toStringAsFixed(2)), shades[0])];
+    }else {
+      totalProgress=[];
+      int i = 0;
+      for (var item in data[taskType].entries){
+        totalProgress.add(new Task(item.key, double.parse(item.value['percent'].toStringAsFixed(1)), shades[i]));
+        i++;
+      }
     }
+
     return [new charts.Series(
       data: totalProgress,
       domainFn: (Task task,_)=>task.task,
@@ -151,7 +158,7 @@ class ProgressPageState extends State<ProgressPage>{
                     includeArea: true,
                     stacked: true),
               ],
-              animate : true,
+              animate : false,
 
               behaviors: [
                 new charts.ChartTitle('Date', behaviorPosition: charts.BehaviorPosition.bottom,
