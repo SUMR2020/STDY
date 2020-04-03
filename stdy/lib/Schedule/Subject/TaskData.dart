@@ -87,6 +87,7 @@ class TaskData {
         for (Timestamp t in dates) {
           DateTime date = (t.toDate());
           DoneDatesObjs.add(DateTime(date.year, date.month, date.day));
+          print (date.toString());
         }
         DateTime today = DateTime.now();
         if (!DoneDatesObjs.contains(
@@ -100,7 +101,9 @@ class TaskData {
           var data = await docRef.get();
           goal.add(data["today"]);
           docRef.updateData({"progress": progress});
+          print("updating goal");
           docRef.updateData({"goal": goal});
+          docRef.updateData({"allday": DoneDatesObjs});
           docRef.updateData({"allday": DoneDatesObjs});
         }
         var currdates = await taskManager.getDates(docRef);
