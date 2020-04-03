@@ -93,45 +93,46 @@ class ProgressPageState extends State<ProgressPage>{
     );
   }
 
-  List<charts.Series<Hours,int>> _lineSeriesData(data, taskType){
-    var _seriesLineData = List<charts.Series<Hours,int>> ();
-    List<Hours> goal = [];
-    List<Hours> progress = [];
+  DateTime _getDateTime(var i){
+    DateTime today = DateTime.now();
+    return new DateTime(today.year, today.month, today.day + i);
+  }
 
+  List<charts.Series<TimeSeriesHours,DateTime>> _lineSeriesData(data, taskType){
+    List<TimeSeriesHours> goal = [];
+    List<TimeSeriesHours> progress = [];
 
     for (int i = -6; i < 1; i++) {
-      goal.add(Hours(i+7, data[taskType][i.toString()]['totalGoal'].round()));
+      TimeSeriesHours hours = new TimeSeriesHours(_getDateTime(i), data[taskType][i.toString()]['totalGoal'].round());
+      goal.add(hours);
 
     }
     for (int i = -6; i < 1; i++) {
-      progress.add(Hours(i+7, data[taskType][i.toString()]['totalProgress'].round()));
+      TimeSeriesHours hours = new TimeSeriesHours(_getDateTime(i), data[taskType][i.toString()]['totalProgress'].round());
+      progress.add(hours);
     }
 
-
-    _seriesLineData.add(
-      charts.Series(
+    return [
+      new charts.Series<TimeSeriesHours, DateTime>(
         data: goal,
-        domainFn: (Hours hours,_)=>hours.hours,
-        measureFn: (Hours hours,_)=>hours.days,
-        colorFn: (Hours hours,_)=>
+        domainFn: (TimeSeriesHours hours,_)=>hours.time,
+        measureFn: (TimeSeriesHours hours,_)=>hours.hours,
+        colorFn: (TimeSeriesHours hours,_)=>
             charts.ColorUtil.fromDartColor(Color(0xFFFDA3A4)),
+        id: 'Goal',
+
+      )
+      ..setAttribute(charts.rendererIdKey, 'customArea'),
+      new charts.Series<TimeSeriesHours, DateTime>(
+        data: progress,
+        domainFn: (TimeSeriesHours hours,_)=>hours.time,
+        measureFn: (TimeSeriesHours hours,_)=>hours.hours,
+        colorFn: (TimeSeriesHours hours,_)=>
+            charts.ColorUtil.fromDartColor(Color(0xFFE91E63)),
         id: 'Progress',
 
       ),
-    );
-
-    _seriesLineData.add(
-      charts.Series(
-        data: progress,
-        domainFn: (Hours hours,_)=>hours.hours,
-        measureFn: (Hours hours,_)=>hours.days,
-        colorFn: (Hours hours,_)=>
-            charts.ColorUtil.fromDartColor(Color(0xFFE91E63)),
-        id: 'Goal',
-
-      ),
-    );
-    return _seriesLineData;
+    ];
   }
 
 
@@ -141,14 +142,19 @@ class ProgressPageState extends State<ProgressPage>{
         future: timelineProgress,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done){
-            return charts.LineChart(
+            return charts.TimeSeriesChart(
               _lineSeriesData(snapshot.data, taskType),
-              defaultRenderer: new charts.LineRendererConfig(
-                  includeArea: true, stacked: true),
+              customSeriesRenderers: [
+                new charts.LineRendererConfig(
+                  // ID used to link series to this renderer.
+                    customRendererId: 'customArea',
+                    includeArea: true,
+                    stacked: true),
+              ],
               animate : true,
 
               behaviors: [
-                new charts.ChartTitle('Days', behaviorPosition: charts.BehaviorPosition.bottom,
+                new charts.ChartTitle('Date', behaviorPosition: charts.BehaviorPosition.bottom,
                 titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
                 new charts.ChartTitle(ylabel, behaviorPosition: charts.BehaviorPosition.start,
                     titleOutsideJustification: charts.OutsideJustification.middleDrawArea),
@@ -347,8 +353,8 @@ class Task{
 
 }
 
-class Hours{
-  int hours;
-  int days;
-  Hours(this.hours, this.days);
+class TimeSeriesHours{
+  final DateTime time;
+  final int hours;
+  TimeSeriesHours(this.time, this.hours);
 }

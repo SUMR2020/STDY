@@ -198,6 +198,7 @@ class ProgressData {
         }
       }
     }
+
     return timeline;
   }
 
