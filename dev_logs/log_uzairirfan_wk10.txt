@@ -1,1 +1,3 @@
 Spent 3 hours making the help page into a floating button on settings and adding text to login page and adding custom font
+
+Spent 10 hours making the video for D4
