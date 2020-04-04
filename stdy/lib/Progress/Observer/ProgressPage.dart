@@ -248,7 +248,7 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("Current Progress On Your Tasks", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Task Productivity Distribution", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'total'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
@@ -265,7 +265,7 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("Current Progress On Your Readings", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Reading Productivity Distribution", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'reading'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
@@ -282,7 +282,7 @@ class ProgressPageState extends State<ProgressPage>{
                   child: Center(
                     child: Column(
                       children: <Widget>[
-                        Text("Current Progress On Your Assignments", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                        Text("Assignment Productivity Distribution", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                         SizedBox(height: 10.0,),
                         makePieChart(taskProgress, 'assignment'),
                         Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
@@ -299,7 +299,7 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("Current Progress On Your Projects", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Project Productivity Distribution", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'project'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
@@ -316,7 +316,7 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("Current Progress On Your Lectures", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Lecture Productivity Distribution", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'lectures'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
@@ -333,7 +333,7 @@ class ProgressPageState extends State<ProgressPage>{
                       child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text("Current Progress On Your Notes", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
+                              Text("Notes Productivity Distribution", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
                               SizedBox(height: 10.0,),
                               makePieChart(taskProgress, 'notes'),
                               Text("Expected VS. Actual Work Done", style: TextStyle(color: Color(0xFFFDA3A4), fontSize: 14.0 + fontScale)),
