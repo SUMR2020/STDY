@@ -79,7 +79,7 @@ class ProgressPageState extends State<ProgressPage>{
                       new charts.DatumLegend(
                         outsideJustification: charts.OutsideJustification.start,
                         horizontalFirst: false,
-                        desiredMaxRows: 1,
+                        desiredMaxRows: 2,
                         cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
                         entryTextStyle: charts.TextStyleSpec(
                             color: charts.MaterialPalette.pink.shadeDefault,
