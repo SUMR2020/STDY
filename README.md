@@ -18,6 +18,7 @@ This app was programmed in Dart using the Flutter SDK in Android Studio for deve
 
 ## Screenshots
 
+<p float="left">
 <img src="screenshots/grades.jpg" width="250" height="default" />
 <img src="screenshots/add_course.jpg" width="250" height="default" />
 <img src="screenshots/course.jpg" width="250" height="default" />
@@ -27,6 +28,9 @@ This app was programmed in Dart using the Flutter SDK in Android Studio for deve
 <img src="screenshots/add_task.jpg" width="250" height="default" />
 <img src="screenshots/predictor.jpg" width="250" height="default" />
 <img src="screenshots/chart.jpg" width="250" height="default" />
+
+</p>
+
 
 
 ## Credits
