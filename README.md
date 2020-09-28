@@ -1,4 +1,4 @@
-![alt text](stdy/assets/title.png)
+<img src="stdy/assets/title.png" width="300" height="default" />
 
 # A schedule and grade tracking app for students
 
@@ -18,15 +18,15 @@ This app was programmed in Dart using the Flutter SDK in Android Studio for deve
 
 ## Screenshots
 
-
-![alt text](screenshots/grades.jpg)
-![alt text](screenshots/add_course.jpg)
-![alt text](screenshots/course.jpg)
-![alt text](screenshots/calendar.jpg)
-![alt text](screenshots/theme.jpg)
-![alt text](screenshots/about.jpg)
-![alt text](screenshots/add_task.jpg)
-![alt text](screenshots/predictor.jpg)
+<img src="screenshots/grades.jpg" width="250" height="default" />
+<img src="screenshots/add_course.jpg" width="250" height="default" />
+<img src="screenshots/course.jpg" width="250" height="default" />
+<img src="screenshots/calendar.jpg" width="250" height="default" />
+<img src="screenshots/theme.jpg" width="250" height="default" />
+<img src="screenshots/about.jpg" width="250" height="default" />
+<img src="screenshots/add_task.jpg" width="250" height="default" />
+<img src="screenshots/predictor.jpg" width="250" height="default" />
+<img src="screenshots/chart.jpg" width="250" height="default" />
 
 
 ## Credits
