@@ -44,7 +44,7 @@ grade tracker and grade predictor, firebase data
 **Uzair Irfan**
 
 Roles:
-Settings/fonts, notifications
+Google Authentication, Settings/fonts, notifications
 
 **Minna Amin**
 
